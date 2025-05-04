@@ -15,6 +15,7 @@
  * @see https://westes.github.io/flex/manual/Start-Conditions.html
  */
 %x MULTILINE_COMMENT
+%x STYLE_BLOCK
 
 /**
  * Reusable patterns.
@@ -31,18 +32,40 @@
 <MULTILINE_COMMENT>[^*]+			{ IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 <MULTILINE_COMMENT>.				{ IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 
-"-"									{ return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), SUB); }
-"*"									{ return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), MUL); }
-"/"									{ return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), DIV); }
-"+"									{ return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), ADD); }
+"@define"                          { return DefineLexemeAction(createLexicalAnalyzerContext()); }
+"@use"                             { return UseLexemeAction(createLexicalAnalyzerContext()); }
+"@enddefine"                       { return EndDefineLexemeAction(createLexicalAnalyzerContext()); }
+"@end"                             { return EndLexemeAction(createLexicalAnalyzerContext()); }
 
-"("									{ return ParenthesisLexemeAction(createLexicalAnalyzerContext(), OPEN_PARENTHESIS); }
-")"									{ return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_PARENTHESIS); }
+"@form"                            { return FormLexemeAction(createLexicalAnalyzerContext()); }
+"@img"                             { return ImgLexemeAction(createLexicalAnalyzerContext()); }
+"@footer"                          { return FooterLexemeAction(createLexicalAnalyzerContext()); }
+"@row"                             { return RowLexemeAction(createLexicalAnalyzerContext()); }
+"@column"                          { return ColumnLexemeAction(createLexicalAnalyzerContext()); }
+"@nav"                             { return NavLexemeAction(createLexicalAnalyzerContext()); }
 
-[[:digit:]]+						{ return IntegerLexemeAction(createLexicalAnalyzerContext()); }
+"# "								{ return HeaderLexemeAction(createLexicalAnalyzerContext(), HEADER_1); }
+"## "								{ return HeaderLexemeAction(createLexicalAnalyzerContext(), HEADER_2); }
+"### "								{ return HeaderLexemeAction(createLexicalAnalyzerContext(), HEADER_3); }
+
+"[0-9]+\."                         { return OrderedItemLexemeAction(createLexicalAnalyzerContext()); } // ítem numerado
+"•"                                { return BulletLexemeAction(createLexicalAnalyzerContext()); }     // ítem no numerado
+
+"{"									{ BEGIN(STYLE_BLOCK); return StyleLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACE); }
+<STYLE_BLOCK>"}"					{ BEGIN(INITIAL); return StyleLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACE); }
+<STYLE_BLOCK>[^}]+					{ return StyleContentLexemeAction(createLexicalAnalyzerContext()); }
+
+"["									{ return InputLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACKET); }
+"]"									{ return InputLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACKET); }
+"|"									{ return TableLexemeAction(createLexicalAnalyzerContext(), PIPE); }
+"\""								{ return QuoteLexemeAction(createLexicalAnalyzerContext(), QUOTE); }
+
+\n									{ return NewlineLexemeAction(createLexicalAnalyzerContext()); }
+[^#@\n{[]|]+						{ return TextLexemeAction(createLexicalAnalyzerContext()); }
 
 [[:space:]]+						{ IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 .									{ return UnknownLexemeAction(createLexicalAnalyzerContext()); }
+
 
 %%
 

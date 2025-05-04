@@ -31,57 +31,149 @@ static void _logSyntacticAnalyzerAction(const char * functionName) {
 
 /* PUBLIC FUNCTIONS */
 
-Constant * IntegerConstantSemanticAction(const int value) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Constant * constant = calloc(1, sizeof(Constant));
-	constant->value = value;
-	return constant;
-}
 
-Expression * ArithmeticExpressionSemanticAction(Expression * leftExpression, Expression * rightExpression, ExpressionType type) {
+Node *createDefineNode(const char *name, Node *parameters, Node *statements) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Expression * expression = calloc(1, sizeof(Expression));
-	expression->leftExpression = leftExpression;
-	expression->rightExpression = rightExpression;
-	expression->type = type;
-	return expression;
+	Node *node = createNode(DEFINE_NODE);
+	node->define.name = name;
+	node->define.parameters = parameters;
+	node->define.statements = statements;
+	return node;
 }
-
-Expression * FactorExpressionSemanticAction(Factor * factor) {
+Node *createUseNode(const char *name, Node *parameters) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Expression * expression = calloc(1, sizeof(Expression));
-	expression->factor = factor;
-	expression->type = FACTOR;
-	return expression;
+	Node *node = createNode(USE_NODE);
+	node->use.name = name;
+	node->use.parameters = parameters;
+	return node;
 }
-
-Factor * ConstantFactorSemanticAction(Constant * constant) {
+Node *createParameterListNode(const char *parameter) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Factor * factor = calloc(1, sizeof(Factor));
-	factor->constant = constant;
-	factor->type = CONSTANT;
-	return factor;
+	Node *node = createNode(PARAMETER_LIST_NODE);
+	node->parameterList.parameter = parameter;
+	node->parameterList.next = NULL;
+	return node;
 }
-
-Factor * ExpressionFactorSemanticAction(Expression * expression) {
+Node *appendParameterToList(Node *parameterList, const char *parameter) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Factor * factor = calloc(1, sizeof(Factor));
-	factor->expression = expression;
-	factor->type = EXPRESSION;
-	return factor;
-}
-
-Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Expression * expression) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Program * program = calloc(1, sizeof(Program));
-	program->expression = expression;
-	compilerState->abstractSyntaxtTree = program;
-	if (0 < flexCurrentContext()) {
-		logError(_logger, "The final context is not the default (0): %d", flexCurrentContext());
-		compilerState->succeed = false;
+	Node *node = createNode(PARAMETER_LIST_NODE);
+	node->parameterList.parameter = parameter;
+	node->parameterList.next = NULL;
+	if (parameterList == NULL) {
+		return node;
+	} else {
+		Node *current = parameterList;
+		while (current->parameterList.next != NULL) {
+			current = current->parameterList.next;
+		}
+		current->parameterList.next = node;
+		return parameterList;
 	}
-	else {
-		compilerState->succeed = true;
+}
+Node *createFormNode(const char *name, Node *statements) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Node *node = createNode(FORM_NODE);
+	node->form.name = name;
+	node->form.statements = statements;
+	return node;
+}
+Node *createFooterNode(const char *name, Node *statements) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Node *node = createNode(FOOTER_NODE);
+	node->footer.name = name;
+	node->footer.statements = statements;
+	return node;
+}
+Node *createRowNode(Node *statements) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Node *node = createNode(ROW_NODE);
+	node->row.statements = statements;
+	return node;
+}
+Node *createColumnNode(const char *name, Node *statements) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Node *node = createNode(COLUMN_NODE);
+	node->column.name = name;
+	node->column.statements = statements;
+	return node;
+}
+Node *createNavNode(const char *name, Node *statements) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Node *node = createNode(NAV_NODE);
+	node->nav.name = name;
+	node->nav.statements = statements;
+	return node;
+}
+Node *createOrderedListNode(const char *name, Node *items) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Node *node = createNode(ORDERED_LIST_NODE);
+	node->orderedList.name = name;
+	node->orderedList.items = items;
+	return node;
+}
+Node *createOrderedItemList(const char *item) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Node *node = createNode(ORDERED_ITEM_LIST_NODE);
+	node->orderedItemList.item = item;
+	node->orderedItemList.next = NULL;
+	return node;
+}
+Node *appendOrderedItem(Node *itemList, const char *item) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Node *node = createNode(ORDERED_ITEM_LIST_NODE);
+	node->orderedItemList.item = item;
+	node->orderedItemList.next = NULL;
+	if (itemList == NULL) {
+		return node;
+	} else {
+		Node *current = itemList;
+		while (current->orderedItemList.next != NULL) {
+			current = current->orderedItemList.next;
+		}
+		current->orderedItemList.next = node;
+		return itemList;
 	}
-	return program;
+}
+Node *createUnorderedListNode(const char *name, Node *items) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Node *node = createNode(UNORDERED_LIST_NODE);
+	node->unorderedList.name = name;
+	node->unorderedList.items = items;
+	return node;
+}
+Node *createBulletItemList(const char *item) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Node *node = createNode(BULLET_ITEM_LIST_NODE);
+	node->bulletItemList.item = item;
+	node->bulletItemList.next = NULL;
+	return node;
+}
+Node *appendBulletItem(Node *itemList, const char *item) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Node *node = createNode(BULLET_ITEM_LIST_NODE);
+	node->bulletItemList.item = item;
+	node->bulletItemList.next = NULL;
+	if (itemList == NULL) {
+		return node;
+	} else {
+		Node *current = itemList;
+		while (current->bulletItemList.next != NULL) {
+			current = current->bulletItemList.next;
+		}
+		current->bulletItemList.next = node;
+		return itemList;
+	}
+}
+Node *createTextNode(const char *text) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Node *node = createNode(TEXT_NODE);
+	node->text.text = text;
+	return node;
+}
+Node *createImageNode(const char *url, const char *altText) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Node *node = createNode(IMAGE_NODE);
+	node->image.url = url;
+	node->image.altText = altText;
+	return node;
 }

@@ -18,11 +18,45 @@ void shutdownBisonActionsModule();
  * Bison semantic actions.
  */
 
-Constant * IntegerConstantSemanticAction(const int value);
-Expression * ArithmeticExpressionSemanticAction(Expression * leftExpression, Expression * rightExpression, ExpressionType type);
-Expression * FactorExpressionSemanticAction(Factor * factor);
-Factor * ConstantFactorSemanticAction(Constant * constant);
-Factor * ExpressionFactorSemanticAction(Expression * expression);
-Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Expression * expression);
+
+// Define-related functions
+Node *createDefineNode(const char *name, Node *parameters, Node *statements);
+Node *createUseNode(const char *name, Node *parameters);
+
+// Parameter-related functions
+Node *createParameterListNode(const char *parameter);
+Node *appendParameterToList(Node *parameterList, const char *parameter);
+
+// Form-related functions
+Node *createFormNode(const char *name, Node *statements);
+
+// Footer-related functions
+Node *createFooterNode(const char *name, Node *statements);
+
+// Row-related functions
+Node *createRowNode(Node *statements);
+
+// Column-related functions
+Node *createColumnNode(const char *name, Node *statements);
+
+// Nav-related functions
+Node *createNavNode(const char *name, Node *statements);
+
+// Ordered list-related functions
+Node *createOrderedListNode(const char *name, Node *items);
+Node *createOrderedItemList(const char *item);
+Node *appendOrderedItem(Node *itemList, const char *item);
+
+// Unordered list-related functions
+Node *createUnorderedListNode(const char *name, Node *items);
+Node *createBulletItemList(const char *item);
+Node *appendBulletItem(Node *itemList, const char *item);
+
+// Text-related functions
+Node *createTextNode(const char *text);
+
+// Image-related functions
+Node *createImageNode(const char *url, const char *altText);
+
 
 #endif
