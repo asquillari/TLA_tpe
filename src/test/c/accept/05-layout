@@ -1,0 +1,8 @@
+@row
+  @column width=50%
+    Texto en columna 1
+  @end
+  @column width=50%
+    Texto en columna 2
+  @end
+@end

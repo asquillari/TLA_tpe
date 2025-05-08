@@ -1,0 +1,8 @@
+@form action="/submit"
+Nombre: [text name="nombre"]
+@end
+
+@nav { background: #333; }
+- [Inicio](home.html)
+- [Contacto](contacto.html)
+@end
