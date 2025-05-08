@@ -135,6 +135,7 @@ Token NavLexemeAction(LexicalAnalyzerContext * ctx) {
 
 Token OrderedItemLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->string = strdup(ctx->lexeme);
 	ctx->semanticValue->token = ORDERED_ITEM;
 	destroyLexicalAnalyzerContext(ctx);
 	return ORDERED_ITEM;
@@ -142,6 +143,7 @@ Token OrderedItemLexemeAction(LexicalAnalyzerContext * ctx) {
 
 Token BulletLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->string = strdup(ctx->lexeme);
 	ctx->semanticValue->token = BULLET;
 	destroyLexicalAnalyzerContext(ctx);
 	return BULLET;

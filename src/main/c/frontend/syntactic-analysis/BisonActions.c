@@ -45,7 +45,7 @@ Node *createNode(NodeType type) {
 Node *createDefineNode(const char *name, Node *parameters, Node *statements) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Node *node = createNode(DEFINE_NODE);
-	node->define.name = name;
+	node->define.name = strdup(name);
 	node->define.parameters = parameters;
 	node->define.statements = statements;
 	return node;
@@ -53,7 +53,7 @@ Node *createDefineNode(const char *name, Node *parameters, Node *statements) {
 Node *createUseNode(const char *name, Node *parameters) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Node *node = createNode(USE_NODE);
-	node->use.name = name;
+	node->use.name = strdup(name);
 	node->use.parameters = parameters;
 	return node;
 }
@@ -83,14 +83,14 @@ Node *appendParameterToList(Node *parameterList, const char *parameter) {
 Node *createFormNode(const char *name, Node *statements) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Node *node = createNode(FORM_NODE);
-	node->form.name = name;
+	node->form.name = strdup(name);
 	node->form.statements = statements;
 	return node;
 }
 Node *createFooterNode(const char *name, Node *statements) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Node *node = createNode(FOOTER_NODE);
-	node->footer.name = name;
+	node->footer.name = strdup(name);
 	node->footer.statements = statements;
 	return node;
 }
@@ -103,21 +103,21 @@ Node *createRowNode(Node *statements) {
 Node *createColumnNode(const char *name, Node *statements) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Node *node = createNode(COLUMN_NODE);
-	node->column.name = name;
+	node->column.name = strdup(name);
 	node->column.statements = statements;
 	return node;
 }
 Node *createNavNode(const char *name, Node *statements) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Node *node = createNode(NAV_NODE);
-	node->nav.name = name;
+	node->nav.name = strdup(name);
 	node->nav.statements = statements;
 	return node;
 }
 Node *createOrderedListNode(const char *name, Node *items) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Node *node = createNode(ORDERED_LIST_NODE);
-	node->orderedList.name = name;
+	node->orderedList.name = strdup(name);
 	node->orderedList.items = items;
 	return node;
 }
@@ -147,7 +147,7 @@ Node *appendOrderedItem(Node *itemList, const char *item) {
 Node *createUnorderedListNode(const char *name, Node *items) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Node *node = createNode(UNORDERED_LIST_NODE);
-	node->unorderedList.name = name;
+	node->unorderedList.name = strdup(name);
 	node->unorderedList.items = items;
 	return node;
 }
@@ -177,14 +177,14 @@ Node *appendBulletItem(Node *itemList, const char *item) {
 Node *createTextNode(const char *text) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Node *node = createNode(TEXT_NODE);
-	node->text.text = text;
+	node->text.text = strdup(text);
 	return node;
 }
 Node *createImageNode(const char *url, const char *altText) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Node *node = createNode(IMAGE_NODE);
-	node->image.url = url;
-	node->image.altText = altText;
+	node->image.url = strdup(url);
+	node->image.altText = strdup(altText);
 	return node;
 }
 

@@ -103,23 +103,23 @@ typedef enum {
 
 
 struct DefineNode {
-    const char *name;
+    char *name;
     Node *parameters;
     Node *statements;
 };
 
 struct UseNode {
-    const char *name;
+    char *name;
     Node *parameters;
 };
 
 struct FormNode {
-    const char *name;
+    char *name;
     Node *statements;
 };
 
 struct FooterNode {
-    const char *name;
+    char *name;
     Node *statements;
 };
 
@@ -128,32 +128,32 @@ struct RowNode {
 };
 
 struct ColumnNode {
-    const char *name;
+    char *name;
     Node *statements;
 };
 
 struct NavNode {
-    const char *name;
+    char *name;
     Node *statements;
 };
 
 struct OrderedListNode {
-    const char *name;
+    char *name;
     Node *items;
 };
 
 struct UnorderedListNode {
-    const char *name;
+    char *name;
     Node *items;
 };
 
 struct TextNode {
-    const char *text;
+    char *text;
 };
 
 struct ImageNode {
-    const char *url;
-    const char *altText;
+    char *url;
+    char *altText;
 };
 
 struct Node {
