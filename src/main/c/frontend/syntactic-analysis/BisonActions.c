@@ -31,6 +31,16 @@ static void _logSyntacticAnalyzerAction(const char * functionName) {
 
 /* PUBLIC FUNCTIONS */
 
+Node *createNode(NodeType type) {
+    Node *node = (Node *)malloc(sizeof(Node));
+    if (node == NULL) {
+        fprintf(stderr, "Error: no se pudo asignar memoria para un nuevo nodo\n");
+        exit(EXIT_FAILURE);
+    }
+    memset(node, 0, sizeof(Node));
+    node->type = type;
+    return node;
+}
 
 Node *createDefineNode(const char *name, Node *parameters, Node *statements) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
@@ -176,4 +186,34 @@ Node *createImageNode(const char *url, const char *altText) {
 	node->image.url = url;
 	node->image.altText = altText;
 	return node;
+}
+
+void releaseParameterListNode(Node *parameters){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Node *current = parameters;
+	while (current != NULL) {
+		Node *next = current->parameterList.next;
+		free(current);
+		current = next;
+	}
+}
+
+Node *createStatementList(Node *statement) {
+    _logSyntacticAnalyzerAction(__FUNCTION__);
+    Node *node = createNode(STATEMENT_LIST_NODE);
+    node->next = statement;
+    return node;
+}
+
+Node *appendStatement(Node *list, Node *statement) {
+    _logSyntacticAnalyzerAction(__FUNCTION__);
+    if (list == NULL) {
+        return createStatementList(statement);
+    }
+    Node *current = list;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = statement;
+    return list;
 }

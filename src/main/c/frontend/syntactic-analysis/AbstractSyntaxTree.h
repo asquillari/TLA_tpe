@@ -97,28 +97,29 @@ typedef enum {
     UNORDERED_LIST_NODE,
     BULLET_ITEM_LIST_NODE,
     TEXT_NODE,
-    IMAGE_NODE
+    IMAGE_NODE,
+    STATEMENT_LIST_NODE
 } NodeType;
 
 
 struct DefineNode {
-    char *name;
+    const char *name;
     Node *parameters;
     Node *statements;
 };
 
 struct UseNode {
-    char *name;
+    const char *name;
     Node *parameters;
 };
 
 struct FormNode {
-    char *name;
+    const char *name;
     Node *statements;
 };
 
 struct FooterNode {
-    char *name;
+    const char *name;
     Node *statements;
 };
 
@@ -127,32 +128,32 @@ struct RowNode {
 };
 
 struct ColumnNode {
-    char *name;
+    const char *name;
     Node *statements;
 };
 
 struct NavNode {
-    char *name;
+    const char *name;
     Node *statements;
 };
 
 struct OrderedListNode {
-    char *name;
+    const char *name;
     Node *items;
 };
 
 struct UnorderedListNode {
-    char *name;
+    const char *name;
     Node *items;
 };
 
 struct TextNode {
-    char *text;
+    const char *text;
 };
 
 struct ImageNode {
-    char *url;
-    char *altText;
+    const char *url;
+    const char *altText;
 };
 
 struct Node {
@@ -205,5 +206,7 @@ void releaseOrderedListNode(OrderedListNode *node);
 void releaseUnorderedListNode(UnorderedListNode *node);
 void releaseTextNode(TextNode *node);
 void releaseImageNode(ImageNode *node);
+void releaseParameterListNode(Node *parameters);
+void releaseStatementList(Node *statements);
 
 #endif

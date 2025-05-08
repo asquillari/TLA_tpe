@@ -18,7 +18,7 @@ void shutdownBisonActionsModule();
  * Bison semantic actions.
  */
 
-
+Node *createNode(NodeType type); 
 // Define-related functions
 Node *createDefineNode(const char *name, Node *parameters, Node *statements);
 Node *createUseNode(const char *name, Node *parameters);
@@ -57,6 +57,10 @@ Node *createTextNode(const char *text);
 
 // Image-related functions
 Node *createImageNode(const char *url, const char *altText);
+
+Node *createStatementList(Node *statement);
+Node *appendStatement(Node *list, Node *statement);
+void releaseParameterListNode(Node *parameters);
 
 
 #endif

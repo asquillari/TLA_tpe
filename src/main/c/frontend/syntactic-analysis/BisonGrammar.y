@@ -112,10 +112,10 @@ ordered_list
 
 ordered_items
 	: ORDERED_ITEM {
-		$$ = createOrderedItemList($1);
+		$$ = createOrderedItemList(yytext);
 	}
 	| ordered_items ORDERED_ITEM {
-		$$ = appendOrderedItem($1, $2);
+		$$ = appendOrderedItem($1, yytext);
 	}
 	;
 
@@ -127,10 +127,10 @@ unordered_list
 
 bullet_items
 	: BULLET {
-		$$ = createBulletItemList($1);
+		$$ = createBulletItemList(yytext);
 	}
 	| bullet_items BULLET {
-		$$ = appendBulletItem($1, $2);
+		$$ = appendBulletItem($1, yytext);
 	}
 	;
 

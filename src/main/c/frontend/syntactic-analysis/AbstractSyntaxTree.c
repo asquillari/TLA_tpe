@@ -65,16 +65,66 @@ void releaseProgram(Program * program) {
 	}
 }
 
-void releaseDefineNode(DefineNode *node){
+void releaseStatementList(Node *statements) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (statements != NULL) {
+		Node *current = statements;
+		while (current != NULL) {
+			Node *next = current->next;
+			switch (current->type) {
+				case DEFINE_NODE:
+					releaseDefineNode(&current->define);
+					break;
+				case USE_NODE:
+					releaseUseNode(&current->use);
+					break;
+				case FORM_NODE:
+					releaseFormNode(&current->form);
+					break;
+				case FOOTER_NODE:
+					releaseFooterNode(&current->footer);
+					break;
+				case ROW_NODE:
+					releaseRowNode(&current->row);
+					break;
+				case COLUMN_NODE:
+					releaseColumnNode(&current->column);
+					break;
+				case NAV_NODE:
+					releaseNavNode(&current->nav);
+					break;
+				case ORDERED_LIST_NODE:
+					releaseOrderedListNode(&current->orderedList);
+					break;
+				case UNORDERED_LIST_NODE:
+					releaseUnorderedListNode(&current->unorderedList);
+					break;
+				case TEXT_NODE:
+					releaseTextNode(&current->text);
+					break;
+				case IMAGE_NODE:
+					releaseImageNode(&current->image);
+					break;
+				default:
+					logError(_logger, "Unknown node type: %d", current->type);
+					break;
+			}
+			free(current);
+			current = next;
+		}
+	}
+}
+
+void releaseDefineNode(DefineNode *node) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (node != NULL) {
 		free(node->name);
 		releaseParameterListNode(node->parameters);
-		releaseProgram(node->statements);
-		free(node);
+		releaseStatementList(node->statements);
 	}
 }
-void releaseUseNode(UseNode *node){
+
+void releaseUseNode(UseNode *node) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (node != NULL) {
 		free(node->name);
@@ -82,69 +132,71 @@ void releaseUseNode(UseNode *node){
 		free(node);
 	}
 }
-void releaseFormNode(FormNode *node){
+
+void releaseFormNode(FormNode *node) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (node != NULL) {
 		free(node->name);
-		releaseProgram(node->statements);
-		free(node);
+		releaseStatementList(node->statements);
 	}
 }
-void releaseFooterNode(FooterNode *node){
+
+void releaseFooterNode(FooterNode *node) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (node != NULL) {
 		free(node->name);
-		releaseProgram(node->statements);
-		free(node);
+		releaseStatementList(node->statements);
 	}
 }
-void releaseRowNode(RowNode *node){
+
+void releaseRowNode(RowNode *node) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (node != NULL) {
-		releaseProgram(node->statements);
-		free(node);
+		releaseStatementList(node->statements);
 	}
 }
-void releaseColumnNode(ColumnNode *node){
-	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
-	if (node != NULL) {
-		free(node->name);
-		releaseProgram(node->statements);
-		free(node);
-	}
-}
-void releaseNavNode(NavNode *node){
+
+void releaseColumnNode(ColumnNode *node) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (node != NULL) {
 		free(node->name);
-		releaseProgram(node->statements);
-		free(node);
+		releaseStatementList(node->statements);
 	}
 }
-void releaseOrderedListNode(OrderedListNode *node){
+
+void releaseNavNode(NavNode *node) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (node != NULL) {
 		free(node->name);
-		releaseProgram(node->items);
-		free(node);
+		releaseStatementList(node->statements);
 	}
 }
-void releaseUnorderedListNode(UnorderedListNode *node){
+
+void releaseOrderedListNode(OrderedListNode *node) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (node != NULL) {
 		free(node->name);
-		releaseProgram(node->items);
-		free(node);
+		releaseStatementList(node->items);
 	}
 }
-void releaseTextNode(TextNode *node){
+
+void releaseUnorderedListNode(UnorderedListNode *node) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (node != NULL) {
+		free(node->name);
+		releaseStatementList(node->items);
+	}
+}
+
+void releaseTextNode(TextNode *node) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (node != NULL) {
 		free(node->text);
 		free(node);
 	}
 }
-void releaseImageNode(ImageNode *node){
+
+void releaseImageNode(ImageNode *node) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (node != NULL) {
 		free(node->url);
