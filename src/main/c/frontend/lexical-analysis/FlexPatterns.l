@@ -59,7 +59,6 @@
 "]"									{ return InputLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACKET); }
 "|"									{ return TableLexemeAction(createLexicalAnalyzerContext(), PIPE); }
 "\""								{ return QuoteLexemeAction(createLexicalAnalyzerContext(), QUOTE); }
-
 \n									{ return NewlineLexemeAction(createLexicalAnalyzerContext()); }
 [^#@\n{[]|]+						{ return TextLexemeAction(createLexicalAnalyzerContext()); }
 
