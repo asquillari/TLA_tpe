@@ -34,7 +34,6 @@
 
 "@define"                          { return DefineLexemeAction(createLexicalAnalyzerContext()); }
 "@use"                             { return UseLexemeAction(createLexicalAnalyzerContext()); }
-"@enddefine"                       { return EndDefineLexemeAction(createLexicalAnalyzerContext()); }
 "@end"                             { return EndLexemeAction(createLexicalAnalyzerContext()); }
 
 "@form"                            { return FormLexemeAction(createLexicalAnalyzerContext()); }
@@ -54,6 +53,12 @@
 "{"									{ BEGIN(STYLE_BLOCK); return StyleLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACE); }
 <STYLE_BLOCK>"}"					{ BEGIN(INITIAL); return StyleLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACE); }
 <STYLE_BLOCK>[^}]+					{ return StyleContentLexemeAction(createLexicalAnalyzerContext()); }
+<STYLE_BLOCK>[a-zA-Z_][a-zA-Z0-9_]*   { return KeyLexemeAction(createLexicalAnalyzerContext()); }
+<STYLE_BLOCK>":"                      { return ColonLexemeAction(createLexicalAnalyzerContext()); }
+<STYLE_BLOCK>","                      { return CommaLexemeAction(createLexicalAnalyzerContext()); }
+<STYLE_BLOCK>"\""[^"]*"\""            { return QuotedValueLexemeAction(createLexicalAnalyzerContext()); }
+<STYLE_BLOCK>[^\s:},]+                { return UnquotedValueLexemeAction(createLexicalAnalyzerContext()); }
+
 
 "["									{ return InputLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACKET); }
 "]"									{ return InputLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACKET); }
@@ -61,6 +66,13 @@
 "\""								{ return QuoteLexemeAction(createLexicalAnalyzerContext(), QUOTE); }
 \n									{ return NewlineLexemeAction(createLexicalAnalyzerContext()); }
 [^#@\n{[]|]+						{ return TextLexemeAction(createLexicalAnalyzerContext()); }
+
+"("                              { return OpenParenthesisLexemeAction(createLexicalAnalyzerContext()); }
+")"                              { return CloseParenthesisLexemeAction(createLexicalAnalyzerContext()); }
+":"                              { return ColonLexemeAction(createLexicalAnalyzerContext()); }
+"="                              { return EqualLexemeAction(createLexicalAnalyzerContext()); }
+[a-zA-Z_][a-zA-Z0-9_]*           { return IdentifierLexemeAction(createLexicalAnalyzerContext()); }
+
 
 [[:space:]]+						{ IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 .									{ return UnknownLexemeAction(createLexicalAnalyzerContext()); }

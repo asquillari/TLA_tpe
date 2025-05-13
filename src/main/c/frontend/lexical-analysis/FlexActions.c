@@ -181,3 +181,60 @@ Token InputLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
 	return token;
 }
 
+Token KeyLexemeAction(LexicalAnalyzerContext * ctx){
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->token = KEY;
+	return KEY;
+}
+Token ColonLexemeAction(LexicalAnalyzerContext * ctx){
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->token = COLON;
+	return COLON;
+}
+Token CommaLexemeAction(LexicalAnalyzerContext * ctx){
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->token = COMMA;
+	return COMMA;
+}
+Token UnquotedStringLexemeAction(LexicalAnalyzerContext * ctx){
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->string = strdup(ctx->lexeme);
+	ctx->semanticValue->token = UNQUOTED_VALUE;
+	return UNQUOTED_VALUE;
+}
+
+Token OpenParenthesisLexemeAction(LexicalAnalyzerContext * ctx){
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->token = OPEN_PAREN;
+	return OPEN_PAREN;
+}
+Token CloseParenthesisLexemeAction(LexicalAnalyzerContext * ctx){
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->token = CLOSE_PAREN;
+	return CLOSE_PAREN;
+}
+Token EqualLexemeAction(LexicalAnalyzerContext * ctx){
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->token = EQUALS;
+	return EQUALS;
+}
+
+Token IdentifierLexemeAction(LexicalAnalyzerContext * ctx){
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->string = strdup(ctx->lexeme);
+	ctx->semanticValue->token = IDENTIFIER;
+	return IDENTIFIER;
+}
+
+Token QuotedValueLexemeAction(LexicalAnalyzerContext * ctx){
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->string = strdup(ctx->lexeme);
+	ctx->semanticValue->token = QUOTED_VALUE;
+	return QUOTED_VALUE;
+}
+Token UnquotedValueLexemeAction(LexicalAnalyzerContext * ctx){
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->string = strdup(ctx->lexeme);
+	ctx->semanticValue->token = UNQUOTED_VALUE;
+	return UNQUOTED_VALUE;
+}

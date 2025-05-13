@@ -18,6 +18,9 @@
 %token <string> ORDERED_ITEM BULLET
 %token <token> HEADER_1 HEADER_2 HEADER_3 OPEN_BRACE CLOSE_BRACE OPEN_BRACKET CLOSE_BRACKET PIPE QUOTE
 %token <string> TEXT STYLE_CONTENT
+%token <string> KEY IDENTIFIER UNQUOTED_VALUE QUOTED_VALUE
+%token <token> COLON COMMA EQUALS OPEN_PAREN CLOSE_PAREN
+
 
 // Tipos para no-terminales
 %type <node> program statement statement_list define use form footer row column nav ordered_list unordered_list text image parameters maybe_parameters parameter_list ordered_items bullet_items

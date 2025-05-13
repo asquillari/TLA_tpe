@@ -70,6 +70,18 @@ Token StyleLexemeAction(LexicalAnalyzerContext * ctx, Token token);
 
 Token InputLexemeAction(LexicalAnalyzerContext * ctx, Token token);
 
+Token KeyLexemeAction(LexicalAnalyzerContext * ctx);
+Token ColonLexemeAction(LexicalAnalyzerContext * ctx);
+Token CommaLexemeAction(LexicalAnalyzerContext * ctx);
+Token UnquotedStringLexemeAction(LexicalAnalyzerContext * ctx);
 
+Token OpenParenthesisLexemeAction(LexicalAnalyzerContext * ctx);
+Token CloseParenthesisLexemeAction(LexicalAnalyzerContext * ctx);
+Token EqualLexemeAction(LexicalAnalyzerContext * ctx);
+
+Token IdentifierLexemeAction(LexicalAnalyzerContext * ctx);
+
+Token QuotedValueLexemeAction(LexicalAnalyzerContext * ctx);
+Token UnquotedValueLexemeAction(LexicalAnalyzerContext * ctx);
 
 #endif
