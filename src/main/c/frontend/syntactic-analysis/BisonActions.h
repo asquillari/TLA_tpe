@@ -3,64 +3,64 @@
 
 #include "../../shared/CompilerState.h"
 #include "../../shared/Logger.h"
-#include "../../shared/Type.h"
 #include "AbstractSyntaxTree.h"
 #include "SyntacticAnalyzer.h"
 #include <stdlib.h>
 
-/** Initialize module's internal state. */
+/** Inicializa y libera estado interno del módulo */
 void initializeBisonActionsModule();
-
-/** Shutdown module's internal state. */
 void shutdownBisonActionsModule();
 
 /**
- * Bison semantic actions.
+ * Acciones semánticas para construir nodos del AST
  */
 
-Node *createNode(NodeType type); 
-// Define-related functions
-Node *createDefineNode(const char *name, Node *parameters, Node *statements);
-Node *createUseNode(const char *name, Node *parameters);
+// Programa
+Program* ProgramSemanticAction(CompilerState* compilerState, StatementList* statements);
 
-// Parameter-related functions
-Node *createParameterListNode(const char *parameter);
-Node *appendParameterToList(Node *parameterList, const char *parameter);
+// Sentencias
+StatementList* AppendStatementSemanticAction(StatementList* list, Node* statement);
+StatementList* SingleStatementSemanticAction(Node* statement);
 
-// Form-related functions
-Node *createFormNode(const char *name, Node *statements);
+// Texto
+Node* TextSemanticAction(char* content, int level);
 
-// Footer-related functions
-Node *createFooterNode(const char *name, Node *statements);
+// Imagen
+Node* ImageSemanticAction(char* src, char* alt);
 
-// Row-related functions
-Node *createRowNode(Node *statements);
+// Define / Use
+Node* DefineSemanticAction(char* name, ParameterList* params, StatementList* body);
+Node* UseSemanticAction(char* name, ParameterList* arguments);
 
-// Column-related functions
-Node *createColumnNode(const char *name, Node *statements);
+// Formulario
+Node* FormSemanticAction(char* name, ParameterList* fields, ParameterList* attributes, StatementList* body);
 
-// Nav-related functions
-Node *createNavNode(const char *name, Node *statements);
+// Footer / Row / Column / Nav
+Node* FooterSemanticAction(ParameterList* attrs, StatementList* body);
+Node* RowSemanticAction(StatementList* columns);
+Node* ColumnSemanticAction(ParameterList* attrs, StatementList* body);
+Node* NavSemanticAction(ParameterList* attrs, ListItem* items);
 
-// Ordered list-related functions
-Node *createOrderedListNode(const char *name, Node *items);
-Node *createOrderedItemList(const char *item);
-Node *appendOrderedItem(Node *itemList, const char *item);
+// Listas
+Node* OrderedListSemanticAction(ListItem* items);
+Node* UnorderedListSemanticAction(ListItem* items);
 
-// Unordered list-related functions
-Node *createUnorderedListNode(const char *name, Node *items);
-Node *createBulletItemList(const char *item);
-Node *appendBulletItem(Node *itemList, const char *item);
+// Parámetros y argumentos
+ParameterList* EmptyParameterListSemanticAction();
+ParameterList* SingleParameterSemanticAction(char* name, char* type, char* default_value);
+ParameterList* AppendParameterSemanticAction(ParameterList* list, char* name, char* type, char* default_value);
 
-// Text-related functions
-Node *createTextNode(const char *text);
+// Atributos del bloque (action: ..., method: ..., etc.)
+ParameterList* AttributeListSemanticAction(ParameterList* list, char* key, char* value);
 
-// Image-related functions
-Node *createImageNode(const char *url, const char *altText);
+// Items de lista
+ListItem* ListItemSemanticAction(char* content);
+ListItem* AppendListItemSemanticAction(ListItem* list, char* content);
 
-Node *createStatementList(Node *statement);
-Node *appendStatement(Node *list, Node *statement);
-void releaseParameterListNode(Node *parameters);
+ListItem* PrependOrderedItemSemanticAction(ListItem* list, char* content);
+ListItem* EmptyOrderedItemListSemanticAction(void);
+ListItem* PrependBulletItemSemanticAction(char* item, ListItem* tail);
+ListItem* EmptyBulletItemListSemanticAction(void);
 
 
 #endif

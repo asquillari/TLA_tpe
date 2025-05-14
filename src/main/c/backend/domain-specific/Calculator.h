@@ -35,6 +35,11 @@ ComputationResult divide(const int dividend, const int divisor);
 ComputationResult multiply(const int multiplicand, const int multiplier);
 ComputationResult subtract(const int minuend, const int subtract);
 
+//dummy por ahora
+typedef struct Constant Constant;
+typedef struct Expression Expression;
+typedef struct Factor Factor;
+
 /**
  * Computes the final value of a mathematical constant.
  */

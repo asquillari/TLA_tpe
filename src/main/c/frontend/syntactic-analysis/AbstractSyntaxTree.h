@@ -4,209 +4,169 @@
 #include "../../shared/Logger.h"
 #include <stdlib.h>
 
-/** Initialize module's internal state. */
-void initializeAbstractSyntaxTreeModule();
-
-/** Shutdown module's internal state. */
-void shutdownAbstractSyntaxTreeModule();
-
-/**
- * This typedefs allows self-referencing types.
- */
-
-typedef struct Node Node; // Adelanta la existencia del struct Node
-
-typedef enum ExpressionType ExpressionType;
-typedef enum FactorType FactorType;
-
-typedef struct Constant Constant;
-typedef struct Expression Expression;
-typedef struct Factor Factor;
+typedef struct Node Node;
 typedef struct Program Program;
+typedef struct StatementList StatementList;
+typedef struct Parameter Parameter;
+typedef struct ParameterList ParameterList;
+typedef struct Define Define;
+typedef struct Use Use;
+typedef struct Form Form;
+typedef struct Footer Footer;
+typedef struct Row Row;
+typedef struct Column Column;
+typedef struct Nav Nav;
+typedef struct Text Text;
+typedef struct Image Image;
+typedef struct ListItem ListItem;
+typedef struct OrderedList OrderedList;
+typedef struct UnorderedList UnorderedList;
 
-// New typedefs for AST nodes
-typedef struct DefineNode DefineNode;
-typedef struct UseNode UseNode;
-typedef struct FormNode FormNode;
-typedef struct FooterNode FooterNode;
-typedef struct RowNode RowNode;
-typedef struct ColumnNode ColumnNode;
-typedef struct NavNode NavNode;
-typedef struct OrderedListNode OrderedListNode;
-typedef struct UnorderedListNode UnorderedListNode;
-typedef struct TextNode TextNode;
-typedef struct ImageNode ImageNode;
-
-/**
- * Node types for the Abstract Syntax Tree (AST).
- */
-
-enum ExpressionType {
-    ADDITION,
-    DIVISION,
-    FACTOR,
-    MULTIPLICATION,
-    SUBTRACTION
-};
-
-enum FactorType {
-    CONSTANT,
-    EXPRESSION
-};
-
-struct Constant {
-    int value;
-};
-
-struct Factor {
-    union {
-        Constant * constant;
-        Expression * expression;
-    };
-    FactorType type;
-};
-
-struct Expression {
-    union {
-        Factor * factor;
-        struct {
-            Expression * leftExpression;
-            Expression * rightExpression;
-        };
-    };
-    ExpressionType type;
-};
-
-struct Program {
-    Expression * expression;
-};
-
-// New structures for AST nodes
-
-typedef enum {
-    DEFINE_NODE,
-    USE_NODE,
-    PARAMETER_LIST_NODE,
-    FORM_NODE,
-    FOOTER_NODE,
-    ROW_NODE,
-    COLUMN_NODE,
-    NAV_NODE,
-    ORDERED_LIST_NODE,
-    ORDERED_ITEM_LIST_NODE,
-    UNORDERED_LIST_NODE,
-    BULLET_ITEM_LIST_NODE,
-    TEXT_NODE,
-    IMAGE_NODE,
-    STATEMENT_LIST_NODE
+// -----------------------------
+// Enum de tipos de nodo
+// -----------------------------
+typedef enum NodeType {
+    NODE_DEFINE,
+    NODE_USE,
+    NODE_FORM,
+    NODE_FOOTER,
+    NODE_ROW,
+    NODE_COLUMN,
+    NODE_NAV,
+    NODE_TEXT,
+    NODE_IMAGE,
+    NODE_ORDERED_LIST,
+    NODE_UNORDERED_LIST
 } NodeType;
 
-
-struct DefineNode {
-    char *name;
-    Node *parameters;
-    Node *statements;
-};
-
-struct UseNode {
-    char *name;
-    Node *parameters;
-};
-
-struct FormNode {
-    char *name;
-    Node *statements;
-};
-
-struct FooterNode {
-    char *name;
-    Node *statements;
-};
-
-struct RowNode {
-    Node *statements;
-};
-
-struct ColumnNode {
-    char *name;
-    Node *statements;
-};
-
-struct NavNode {
-    char *name;
-    Node *statements;
-};
-
-struct OrderedListNode {
-    char *name;
-    Node *items;
-};
-
-struct UnorderedListNode {
-    char *name;
-    Node *items;
-};
-
-struct TextNode {
-    char *text;
-};
-
-struct ImageNode {
-    char *url;
-    char *altText;
-};
-
+// -----------------------------
+// Nodo genérico
+// -----------------------------
 struct Node {
     NodeType type;
-    Node *next;
     union {
-        DefineNode define;
-        UseNode use;
-        struct {
-            const char *parameter;
-            Node *next;
-        } parameterList;
-        FormNode form;
-        FooterNode footer;
-        RowNode row;
-        ColumnNode column;
-        NavNode nav;
-        OrderedListNode orderedList;
-        struct {
-            const char *item;
-            Node *next;
-        } orderedItemList;
-        UnorderedListNode unorderedList;
-        struct {
-            const char *item;
-            Node *next;
-        } bulletItemList;
-        TextNode text;
-        ImageNode image;
+        Define* define;
+        Use* use;
+        Form* form;
+        Footer* footer;
+        Row* row;
+        Column* column;
+        Nav* nav;
+        Text* text;
+        Image* image;
+        OrderedList* ordered_list;
+        UnorderedList* unordered_list;
     };
 };
 
-/**
- * Node recursive destructors.
- */
-void releaseConstant(Constant * constant);
-void releaseExpression(Expression * expression);
-void releaseFactor(Factor * factor);
-void releaseProgram(Program * program);
+// -----------------------------
+// Programa y lista de sentencias
+// -----------------------------
+struct Program {
+    StatementList* statements;
+};
 
-// New destructors for AST nodes
-void releaseDefineNode(DefineNode *node);
-void releaseUseNode(UseNode *node);
-void releaseFormNode(FormNode *node);
-void releaseFooterNode(FooterNode *node);
-void releaseRowNode(RowNode *node);
-void releaseColumnNode(ColumnNode *node);
-void releaseNavNode(NavNode *node);
-void releaseOrderedListNode(OrderedListNode *node);
-void releaseUnorderedListNode(UnorderedListNode *node);
-void releaseTextNode(TextNode *node);
-void releaseImageNode(ImageNode *node);
-void releaseParameterListNode(Node *parameters);
-void releaseStatementList(Node *statements);
+struct StatementList {
+    Node* statement;
+    StatementList* next;
+};
+
+// -----------------------------
+// Parámetros
+// -----------------------------
+struct Parameter {
+    char* name;
+    char* type;
+    char* default_value;
+    Parameter* next;
+};
+
+struct ParameterList {
+    Parameter* head;
+};
+
+// -----------------------------
+// Nodo Define y Use
+// -----------------------------
+struct Define {
+    char* name;
+    ParameterList* parameters;
+    StatementList* body;
+};
+
+struct Use {
+    char* name;
+    ParameterList* arguments; // reutiliza estructura de parámetros
+};
+
+// -----------------------------
+// Formulario
+// -----------------------------
+struct Form {
+    char* name;
+    ParameterList* fields;
+    ParameterList* attributes; // ej. method, action
+    StatementList* body;
+};
+
+// -----------------------------
+// Footer, Row, Column, Nav
+// -----------------------------
+struct Footer {
+    ParameterList* attributes;
+    StatementList* body;
+};
+
+struct Row {
+    StatementList* columns; // solo columnas permitidas
+};
+
+struct Column {
+    ParameterList* attributes;
+    StatementList* body;
+};
+
+struct Nav {
+    ParameterList* attributes;
+    ListItem* items;
+};
+
+// -----------------------------
+// Texto, Imagen, Listas
+// -----------------------------
+struct Text {
+    char* content;
+    int level; // 1, 2, 3 para encabezado o 0 para texto plano
+};
+
+struct Image {
+    char* src;
+    char* alt;
+};
+
+struct ListItem {
+    char* content;
+    ListItem* next;
+};
+
+struct OrderedList {
+    ListItem* items;
+};
+
+struct UnorderedList {
+    ListItem* items;
+};
+
+// -----------------------------
+// Funciones de creación y destrucción
+// -----------------------------
+void initializeAbstractSyntaxTreeModule();
+void shutdownAbstractSyntaxTreeModule();
+
+void releaseProgram(Program* program);
+void releaseNode(Node* node);
+void releaseStatementList(StatementList* list);
+void releaseParameterList(ParameterList* params);
+void releaseListItems(ListItem* items);
 
 #endif

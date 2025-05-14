@@ -30,190 +30,204 @@ static void _logSyntacticAnalyzerAction(const char * functionName) {
 }
 
 /* PUBLIC FUNCTIONS */
-
-Node *createNode(NodeType type) {
-    Node *node = (Node *)malloc(sizeof(Node));
-    if (node == NULL) {
-        fprintf(stderr, "Error: no se pudo asignar memoria para un nuevo nodo\n");
-        exit(EXIT_FAILURE);
-    }
-    memset(node, 0, sizeof(Node));
+// Helpers
+static Node* createNode(NodeType type) {
+    Node* node = malloc(sizeof(Node));
     node->type = type;
     return node;
 }
 
-Node *createDefineNode(const char *name, Node *parameters, Node *statements) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Node *node = createNode(DEFINE_NODE);
-	node->define.name = strdup(name);
-	node->define.parameters = parameters;
-	node->define.statements = statements;
-	return node;
-}
-Node *createUseNode(const char *name, Node *parameters) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Node *node = createNode(USE_NODE);
-	node->use.name = strdup(name);
-	node->use.parameters = parameters;
-	return node;
-}
-Node *createParameterListNode(const char *parameter) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Node *node = createNode(PARAMETER_LIST_NODE);
-	node->parameterList.parameter = parameter;
-	node->parameterList.next = NULL;
-	return node;
-}
-Node *appendParameterToList(Node *parameterList, const char *parameter) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Node *node = createNode(PARAMETER_LIST_NODE);
-	node->parameterList.parameter = parameter;
-	node->parameterList.next = NULL;
-	if (parameterList == NULL) {
-		return node;
-	} else {
-		Node *current = parameterList;
-		while (current->parameterList.next != NULL) {
-			current = current->parameterList.next;
-		}
-		current->parameterList.next = node;
-		return parameterList;
-	}
-}
-Node *createFormNode(const char *name, Node *statements) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Node *node = createNode(FORM_NODE);
-	node->form.name = strdup(name);
-	node->form.statements = statements;
-	return node;
-}
-Node *createFooterNode(const char *name, Node *statements) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Node *node = createNode(FOOTER_NODE);
-	node->footer.name = strdup(name);
-	node->footer.statements = statements;
-	return node;
-}
-Node *createRowNode(Node *statements) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Node *node = createNode(ROW_NODE);
-	node->row.statements = statements;
-	return node;
-}
-Node *createColumnNode(const char *name, Node *statements) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Node *node = createNode(COLUMN_NODE);
-	node->column.name = strdup(name);
-	node->column.statements = statements;
-	return node;
-}
-Node *createNavNode(const char *name, Node *statements) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Node *node = createNode(NAV_NODE);
-	node->nav.name = strdup(name);
-	node->nav.statements = statements;
-	return node;
-}
-Node *createOrderedListNode(const char *name, Node *items) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Node *node = createNode(ORDERED_LIST_NODE);
-	node->orderedList.name = strdup(name);
-	node->orderedList.items = items;
-	return node;
-}
-Node *createOrderedItemList(const char *item) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Node *node = createNode(ORDERED_ITEM_LIST_NODE);
-	node->orderedItemList.item = item;
-	node->orderedItemList.next = NULL;
-	return node;
-}
-Node *appendOrderedItem(Node *itemList, const char *item) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Node *node = createNode(ORDERED_ITEM_LIST_NODE);
-	node->orderedItemList.item = item;
-	node->orderedItemList.next = NULL;
-	if (itemList == NULL) {
-		return node;
-	} else {
-		Node *current = itemList;
-		while (current->orderedItemList.next != NULL) {
-			current = current->orderedItemList.next;
-		}
-		current->orderedItemList.next = node;
-		return itemList;
-	}
-}
-Node *createUnorderedListNode(const char *name, Node *items) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Node *node = createNode(UNORDERED_LIST_NODE);
-	node->unorderedList.name = strdup(name);
-	node->unorderedList.items = items;
-	return node;
-}
-Node *createBulletItemList(const char *item) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Node *node = createNode(BULLET_ITEM_LIST_NODE);
-	node->bulletItemList.item = item;
-	node->bulletItemList.next = NULL;
-	return node;
-}
-Node *appendBulletItem(Node *itemList, const char *item) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Node *node = createNode(BULLET_ITEM_LIST_NODE);
-	node->bulletItemList.item = item;
-	node->bulletItemList.next = NULL;
-	if (itemList == NULL) {
-		return node;
-	} else {
-		Node *current = itemList;
-		while (current->bulletItemList.next != NULL) {
-			current = current->bulletItemList.next;
-		}
-		current->bulletItemList.next = node;
-		return itemList;
-	}
-}
-Node *createTextNode(const char *text) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Node *node = createNode(TEXT_NODE);
-	node->text.text = strdup(text);
-	return node;
-}
-Node *createImageNode(const char *url, const char *altText) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Node *node = createNode(IMAGE_NODE);
-	node->image.url = strdup(url);
-	node->image.altText = strdup(altText);
-	return node;
+// Programa
+Program* ProgramSemanticAction(CompilerState* compilerState, StatementList* statements) {
+    Program* program = malloc(sizeof(Program));
+    program->statements = statements;
+    return program;
 }
 
-void releaseParameterListNode(Node *parameters){
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Node *current = parameters;
-	while (current != NULL) {
-		Node *next = current->parameterList.next;
-		free(current);
-		current = next;
-	}
+// Sentencias
+StatementList* AppendStatementSemanticAction(StatementList* list, Node* statement) {
+    if (!list) return SingleStatementSemanticAction(statement);
+
+    StatementList* current = list;
+    while (current->next) current = current->next;
+
+    StatementList* newNode = malloc(sizeof(StatementList));
+    newNode->statement = statement;
+    newNode->next = NULL;
+
+    current->next = newNode;
+    return list;
 }
 
-Node *createStatementList(Node *statement) {
-    _logSyntacticAnalyzerAction(__FUNCTION__);
-    Node *node = createNode(STATEMENT_LIST_NODE);
-    node->next = statement;
+StatementList* SingleStatementSemanticAction(Node* statement) {
+    StatementList* list = malloc(sizeof(StatementList));
+    list->statement = statement;
+    list->next = NULL;
+    return list;
+}
+
+// Texto
+Node* TextSemanticAction(char* content, int level) {
+    Node* node = createNode(NODE_TEXT);
+    node->text = malloc(sizeof(Text)); 
+    node->text->content = strdup(content);
+    node->text->level = level;
     return node;
 }
 
-Node *appendStatement(Node *list, Node *statement) {
-    _logSyntacticAnalyzerAction(__FUNCTION__);
-    if (list == NULL) {
-        return createStatementList(statement);
-    }
-    Node *current = list;
-    while (current->next != NULL) {
-        current = current->next;
-    }
-    current->next = statement;
+// Imagen
+Node* ImageSemanticAction(char* src, char* alt) {
+    Node* node = createNode(NODE_IMAGE);
+    node->image = malloc(sizeof(Image));
+    node->image->src = strdup(src);
+    node->image->alt = strdup(alt);
+    return node;
+}
+
+// Define
+Node* DefineSemanticAction(char* name, ParameterList* params, StatementList* body) {
+    Node* node = createNode(NODE_DEFINE);
+    node->define = malloc(sizeof(Define));
+    node->define->name = strdup(name);
+    node->define->parameters = params;
+    node->define->body = body;
+    return node;
+}
+
+// Use
+Node* UseSemanticAction(char* name, ParameterList* arguments) {
+    Node* node = createNode(NODE_USE);
+    node->use = malloc(sizeof(Use));
+    node->use->name = strdup(name);
+    node->use->arguments = arguments;
+    return node;
+}
+
+// Formulario
+Node* FormSemanticAction(char* name, ParameterList* fields, ParameterList* attributes, StatementList* body) {
+    Node* node = createNode(NODE_FORM);
+    node->form = malloc(sizeof(Form));
+    node->form->name = strdup(name);
+    node->form->fields = fields;
+    node->form->attributes = attributes;
+    node->form->body = body;
+    return node;
+}
+
+// Footer
+Node* FooterSemanticAction(ParameterList* attrs, StatementList* body) {
+    Node* node = createNode(NODE_FOOTER);
+    node->footer = malloc(sizeof(Footer));
+    node->footer->attributes = attrs;
+    node->footer->body = body;
+    return node;
+}
+
+// Row
+Node* RowSemanticAction(StatementList* columns) {
+    Node* node = createNode(NODE_ROW);
+    node->row = malloc(sizeof(Row));
+    node->row->columns = columns;
+    return node;
+}
+
+// Column
+Node* ColumnSemanticAction(ParameterList* attrs, StatementList* body) {
+    Node* node = createNode(NODE_COLUMN);
+    node->column = malloc(sizeof(Column));
+    node->column->attributes = attrs;
+    node->column->body = body;
+    return node;
+}
+
+// Nav
+Node* NavSemanticAction(ParameterList* attrs, ListItem* items) {
+    Node* node = createNode(NODE_NAV);
+    node->nav = malloc(sizeof(Nav));
+    node->nav->attributes = attrs;
+    node->nav->items = items;
+    return node;
+}
+
+// Lista ordenada
+Node* OrderedListSemanticAction(ListItem* items) {
+    Node* node = createNode(NODE_ORDERED_LIST);
+    node->ordered_list = malloc(sizeof(OrderedList));
+    node->ordered_list->items = items;
+    return node;
+}
+
+// Lista no ordenada
+Node* UnorderedListSemanticAction(ListItem* items) {
+    Node* node = createNode(NODE_UNORDERED_LIST);
+    node->unordered_list = malloc(sizeof(UnorderedList));
+    node->unordered_list->items = items;
+    return node;
+}
+
+// Parámetros
+ParameterList* EmptyParameterListSemanticAction() {
+    ParameterList* list = malloc(sizeof(ParameterList));
+    list->head = NULL;
     return list;
+}
+
+ParameterList* SingleParameterSemanticAction(char* name, char* type, char* default_value) {
+    Parameter* param = malloc(sizeof(Parameter));
+    param->name = strdup(name);
+    param->type = strdup(type);
+    param->default_value = strdup(default_value);
+    param->next = NULL;
+
+    ParameterList* list = malloc(sizeof(ParameterList));
+    list->head = param;
+    return list;
+}
+
+ParameterList* AppendParameterSemanticAction(ParameterList* list, char* name, char* type, char* default_value) {
+    Parameter* param = malloc(sizeof(Parameter));
+    param->name = strdup(name);
+    param->type = strdup(type);
+    param->default_value = strdup(default_value);
+    param->next = list->head;
+    list->head = param;
+    return list;
+}
+
+// Items de lista
+ListItem* ListItemSemanticAction(char* content) {
+    ListItem* item = malloc(sizeof(ListItem));
+    item->content = strdup(content);
+    item->next = NULL;
+    return item;
+}
+
+ListItem* AppendListItemSemanticAction(ListItem* list, char* content) {
+    ListItem* item = ListItemSemanticAction(content);
+    item->next = list;
+    return item;
+}
+
+ListItem* PrependOrderedItemSemanticAction(ListItem* list, char* content) {
+	ListItem* item = ListItemSemanticAction(content);
+	item->next = list;
+	return item;
+}
+ListItem* EmptyOrderedItemListSemanticAction(void) {
+	ListItem* list = malloc(sizeof(ListItem));
+	list->content = NULL;
+	list->next = NULL;
+	return list;
+}
+ListItem* PrependBulletItemSemanticAction(char* item, ListItem* tail) {
+	ListItem* newItem = malloc(sizeof(ListItem));
+	newItem->content = strdup(item);
+	newItem->next = tail;
+	return newItem;
+}
+ListItem* EmptyBulletItemListSemanticAction(void) {
+	ListItem* list = malloc(sizeof(ListItem));
+	list->content = NULL;
+	list->next = NULL;
+	return list;
 }
