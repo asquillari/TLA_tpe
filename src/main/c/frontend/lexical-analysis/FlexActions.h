@@ -84,4 +84,8 @@ Token IdentifierLexemeAction(LexicalAnalyzerContext * ctx);
 Token QuotedValueLexemeAction(LexicalAnalyzerContext * ctx);
 Token UnquotedValueLexemeAction(LexicalAnalyzerContext * ctx);
 
+Token CloseBraceLexemeAction(LexicalAnalyzerContext * ctx);
+Token OpenBraceLexemeAction(LexicalAnalyzerContext * ctx);
+Token ListContentLexemeAction(LexicalAnalyzerContext * ctx);
+
 #endif

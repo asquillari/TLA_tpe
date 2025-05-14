@@ -1,7 +1,5 @@
 %{
-
 #include "BisonActions.h"
-
 %}
 
 %define api.value.union.name SemanticValue
@@ -25,6 +23,7 @@
 	struct Text* text;
 	struct Image* image;
 	struct List* list;
+	struct ListItem* list_item;
 	struct OrderedList* ordered_list;
 	struct UnorderedList* unordered_list;
 	struct ParameterList* parameter_list;
@@ -35,30 +34,13 @@
 // -------------------------------
 // TOKENS TERMINALES
 // -------------------------------
-
-// Palabras clave
 %token <token> DEFINE USE ENDDEFINE END FORM IMG FOOTER ROW COLUMN NAV
-
-// Símbolos
-%token <token> COLON COMMA EQUALS OPEN_PAREN CLOSE_PAREN
-%token <token> OPEN_BRACE CLOSE_BRACE OPEN_BRACKET CLOSE_BRACKET PIPE QUOTE
-
-// Tokens de control
+%token <token> COLON COMMA EQUALS OPEN_PAREN CLOSE_PAREN 
+%token <token> OPEN_BRACE CLOSE_BRACE OPEN_BRACKET CLOSE_BRACKET PIPE QUOTE LIST_CONTENT
 %token <token> NEWLINE UNKNOWN
 
-// Texto y contenido
-%token <string> TEXT
-%token <string> STYLE_CONTENT
-%token <string> IDENTIFIER
-%token <string> UNQUOTED_VALUE
-%token <string> QUOTED_VALUE
-%token <string> KEY
-
-// Listas
-%token <string> ORDERED_ITEM
-%token <string> BULLET
-
-// Encabezados
+%token <string> TEXT STYLE_CONTENT IDENTIFIER UNQUOTED_VALUE QUOTED_VALUE KEY
+%token <string> ORDERED_ITEM BULLET
 %token <token> HEADER_1 HEADER_2 HEADER_3
 
 // -------------------------------
@@ -66,28 +48,30 @@
 // -------------------------------
 %type <program> program
 %type <node> statement
-%type <node> statement_list
-%type <node> statement_list_nonempty
+%type <stmt_list> statement_list
+%type <stmt_list> statement_list_nonempty
 
-%type <node> define
-%type <node> use
-%type <node> form
-%type <node> footer
-%type <node> row
-%type <node> column
-%type <node> nav
-%type <node> ordered_list
-%type <node> unordered_list
-%type <node> image
-%type <node> text
+%type <define> define
+%type <use> use
+%type <form> form
+%type <footer> footer
+%type <row> row
+%type <column> column
+%type <nav> nav
+%type <ordered_list> ordered_list_statement
+%type <unordered_list> unordered_list_statement
+%type <image> image
+%type <text> text
 
-%type <node> maybe_parameters
-%type <node> parameters
-%type <node> parameter_list
-%type <node> ordered_items
-%type <node> bullet_items
-%type <node> ordered_items_tail
-%type <node> bullet_items_tail
+%type <parameter_list> maybe_parameters
+%type <parameter_list> parameters
+%type <parameter_list> parameter_list
+%type <list_item> ordered_items
+%type <list_item> ordered_items_tail
+%type <list_item> bullet_items
+%type <list_item> bullet_items_tail
+
+
 
 %%
 
@@ -99,7 +83,6 @@ program:
     }
 ;
 
-// Lista vacía (solo permitida en el programa)
 statement_list:
     /* vacío */
     {
@@ -111,7 +94,6 @@ statement_list:
     }
 ;
 
-// Lista no vacía
 statement_list_nonempty:
       statement
     {
@@ -124,17 +106,17 @@ statement_list_nonempty:
 ;
 
 statement:
-      define
-    | use
-    | form
-    | footer
-    | row
-    | column
-    | nav
-    | ordered_list
-    | unordered_list
-    | image
-    | text
+    define { $$ = (struct Node*)$1; }
+  | use    { $$ = (struct Node*)$1; }
+  | form   { $$ = (struct Node*)$1; }
+  | footer { $$ = (struct Node*)$1; }
+  | row    { $$ = (struct Node*)$1; }
+  | column { $$ = (struct Node*)$1; }
+  | nav    { $$ = (struct Node*)$1; }
+  | ordered_list_statement   { $$ = (struct Node*)$1; }
+  | unordered_list_statement { $$ = (struct Node*)$1; }
+  | image  { $$ = (struct Node*)$1; }
+  | text   { $$ = (struct Node*)$1; }
 ;
 
 define:
@@ -200,39 +182,37 @@ text:
     }
 ;
 
-ordered_list:
-    ordered_items
+ordered_list_statement:
+    OPEN_BRACE ordered_items CLOSE_BRACE
     {
-        $$ = OrderedListSemanticAction($1);
+        $$ = OrderedListSemanticAction($2);
+    }
+;
+
+unordered_list_statement:
+    OPEN_BRACE bullet_items CLOSE_BRACE
+    {
+        $$ = UnorderedListSemanticAction($2);
     }
 ;
 
 ordered_items:
     ORDERED_ITEM ordered_items_tail
     {
-        $$ = PrependOrderedItemSemanticAction($1, $2); 
+        $$ = PrependOrderedItemSemanticAction(createListItem($1), $2->content);
     }
 ;
 
 ordered_items_tail:
     ORDERED_ITEM ordered_items_tail
     {
-        $$ = PrependOrderedItemSemanticAction($1, $2);
+        $$ = PrependOrderedItemSemanticAction(createListItem($1), $2->content);
     }
   | /* vacío */
     {
         $$ = EmptyOrderedItemListSemanticAction();
     }
 ;
-
-
-unordered_list:
-    bullet_items
-    {
-        $$ = UnorderedListSemanticAction($1);
-    }
-;
-
 
 bullet_items:
     BULLET bullet_items_tail
@@ -251,7 +231,6 @@ bullet_items_tail:
         $$ = EmptyBulletItemListSemanticAction();
     }
 ;
-
 
 image:
     IMG QUOTED_VALUE QUOTED_VALUE

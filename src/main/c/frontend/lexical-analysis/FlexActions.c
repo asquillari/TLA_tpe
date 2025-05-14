@@ -272,3 +272,23 @@ Token UnquotedValueLexemeAction(LexicalAnalyzerContext * ctx){
 	destroyLexicalAnalyzerContext(ctx);
 	return UNQUOTED_VALUE;
 }
+
+Token CloseBraceLexemeAction(LexicalAnalyzerContext * ctx){
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->token = CLOSE_BRACE;
+	destroyLexicalAnalyzerContext(ctx);
+	return CLOSE_BRACE;
+}
+Token OpenBraceLexemeAction(LexicalAnalyzerContext * ctx){
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->token = OPEN_BRACE;
+	destroyLexicalAnalyzerContext(ctx);
+	return OPEN_BRACE;
+}
+Token ListContentLexemeAction(LexicalAnalyzerContext * ctx){
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->string = strdup(ctx->lexeme);
+	ctx->semanticValue->token = LIST_CONTENT;
+	destroyLexicalAnalyzerContext(ctx);
+	return LIST_CONTENT;
+}

@@ -67,102 +67,91 @@ StatementList* SingleStatementSemanticAction(Node* statement) {
 }
 
 // Texto
-Node* TextSemanticAction(char* content, int level) {
-    Node* node = createNode(NODE_TEXT);
-    node->text = malloc(sizeof(Text)); 
-    node->text->content = strdup(content);
-    node->text->level = level;
-    return node;
+Text* TextSemanticAction(char* content, int level) {
+    Text* text = malloc(sizeof(Text));
+    text->content = strdup(content);
+    text->level = level;
+    return text;
 }
 
 // Imagen
-Node* ImageSemanticAction(char* src, char* alt) {
-    Node* node = createNode(NODE_IMAGE);
-    node->image = malloc(sizeof(Image));
-    node->image->src = strdup(src);
-    node->image->alt = strdup(alt);
-    return node;
+Image* ImageSemanticAction(char* src, char* alt) {
+    Image* image = malloc(sizeof(Image));
+    image->src = strdup(src);
+    image->alt = strdup(alt);
+    return image;
 }
 
 // Define
-Node* DefineSemanticAction(char* name, ParameterList* params, StatementList* body) {
-    Node* node = createNode(NODE_DEFINE);
-    node->define = malloc(sizeof(Define));
-    node->define->name = strdup(name);
-    node->define->parameters = params;
-    node->define->body = body;
-    return node;
+Define* DefineSemanticAction(char* name, ParameterList* params, StatementList* body) {
+    Define* define = malloc(sizeof(Define));
+    define->name = strdup(name);
+    define->parameters = params;
+    define->body = body;
+    return define;
 }
 
 // Use
-Node* UseSemanticAction(char* name, ParameterList* arguments) {
-    Node* node = createNode(NODE_USE);
-    node->use = malloc(sizeof(Use));
-    node->use->name = strdup(name);
-    node->use->arguments = arguments;
-    return node;
+Use* UseSemanticAction(char* name, ParameterList* arguments) {
+    Use* use = malloc(sizeof(Use));
+    use->name = strdup(name);
+    use->arguments = arguments;
+    return use;
 }
 
 // Formulario
-Node* FormSemanticAction(char* name, ParameterList* fields, ParameterList* attributes, StatementList* body) {
-    Node* node = createNode(NODE_FORM);
-    node->form = malloc(sizeof(Form));
-    node->form->name = strdup(name);
-    node->form->fields = fields;
-    node->form->attributes = attributes;
-    node->form->body = body;
-    return node;
+Form* FormSemanticAction(char* name, ParameterList* fields, ParameterList* attributes, StatementList* body) {
+    Form* form = malloc(sizeof(Form));
+    form->name = strdup(name);
+    form->fields = fields;
+    form->attributes = attributes;
+    form->body = body;
+    return form;
 }
 
 // Footer
-Node* FooterSemanticAction(ParameterList* attrs, StatementList* body) {
-    Node* node = createNode(NODE_FOOTER);
-    node->footer = malloc(sizeof(Footer));
-    node->footer->attributes = attrs;
-    node->footer->body = body;
-    return node;
+Footer* FooterSemanticAction(ParameterList* attrs, StatementList* body) {
+    Footer* footer = malloc(sizeof(Footer));
+    footer->attributes = attrs;
+    footer->body = body;
+    return footer;
 }
 
 // Row
-Node* RowSemanticAction(StatementList* columns) {
-    Node* node = createNode(NODE_ROW);
-    node->row = malloc(sizeof(Row));
-    node->row->columns = columns;
-    return node;
+Row* RowSemanticAction(StatementList* columns) {
+    Row* row = malloc(sizeof(Row));
+    row->columns = columns;
+    return row;
 }
 
 // Column
-Node* ColumnSemanticAction(ParameterList* attrs, StatementList* body) {
-    Node* node = createNode(NODE_COLUMN);
-    node->column = malloc(sizeof(Column));
-    node->column->attributes = attrs;
-    node->column->body = body;
-    return node;
+Column* ColumnSemanticAction(ParameterList* attrs, StatementList* body) {
+    Column* column = malloc(sizeof(Column));
+    column->attributes = attrs;
+    column->body = body;
+    return column;
 }
 
 // Nav
-Node* NavSemanticAction(ParameterList* attrs, ListItem* items) {
-    Node* node = createNode(NODE_NAV);
-    node->nav = malloc(sizeof(Nav));
-    node->nav->attributes = attrs;
-    node->nav->items = items;
-    return node;
+Nav* NavSemanticAction(ParameterList* attrs, ListItem* items) {
+    Nav* nav = malloc(sizeof(Nav));
+    nav->attributes = attrs;
+    nav->items = items;
+    return nav;
 }
 
 // Lista ordenada
-Node* OrderedListSemanticAction(ListItem* items) {
-    Node* node = createNode(NODE_ORDERED_LIST);
-    node->ordered_list = malloc(sizeof(OrderedList));
-    node->ordered_list->items = items;
-    return node;
+OrderedList* OrderedListSemanticAction(ListItem* items) {
+    OrderedList* orderedList = malloc(sizeof(OrderedList));
+    orderedList->items = items;
+    return orderedList;
 }
 
 // Lista no ordenada
-Node* UnorderedListSemanticAction(ListItem* items) {
-    Node* node = createNode(NODE_UNORDERED_LIST);
-    node->unordered_list = malloc(sizeof(UnorderedList));
-    node->unordered_list->items = items;
-    return node;
+UnorderedList* UnorderedListSemanticAction(ListItem* items) {
+    UnorderedList* unorderedList = malloc(sizeof(UnorderedList));
+    unorderedList->items = items;
+    return unorderedList;
 }
 
 // Parámetros
@@ -209,25 +198,29 @@ ListItem* AppendListItemSemanticAction(ListItem* list, char* content) {
 }
 
 ListItem* PrependOrderedItemSemanticAction(ListItem* list, char* content) {
-	ListItem* item = ListItemSemanticAction(content);
-	item->next = list;
-	return item;
+    ListItem* item = ListItemSemanticAction(content);
+    item->next = list;
+    return item;
 }
+
 ListItem* EmptyOrderedItemListSemanticAction(void) {
-	ListItem* list = malloc(sizeof(ListItem));
-	list->content = NULL;
-	list->next = NULL;
-	return list;
+    return NULL;
 }
+
 ListItem* PrependBulletItemSemanticAction(char* item, ListItem* tail) {
-	ListItem* newItem = malloc(sizeof(ListItem));
-	newItem->content = strdup(item);
-	newItem->next = tail;
-	return newItem;
+    ListItem* newItem = malloc(sizeof(ListItem));
+    newItem->content = strdup(item);
+    newItem->next = tail;
+    return newItem;
 }
+
 ListItem* EmptyBulletItemListSemanticAction(void) {
-	ListItem* list = malloc(sizeof(ListItem));
-	list->content = NULL;
-	list->next = NULL;
-	return list;
+    return NULL;
+}
+
+ListItem* createListItem(char* content) {
+    ListItem* item = malloc(sizeof(ListItem));
+    item->content = strdup(content);
+    item->next = NULL;
+    return item;
 }

@@ -3,9 +3,13 @@
 ## Subtítulo
 
 ### Lista Numerada
+{
 1. Primer ítem
 2. Segundo ítem
+}
 
 ### Lista No Numerada
+{
 • Elemento A
 • Elemento B
+}

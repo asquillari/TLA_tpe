@@ -23,27 +23,27 @@ StatementList* AppendStatementSemanticAction(StatementList* list, Node* statemen
 StatementList* SingleStatementSemanticAction(Node* statement);
 
 // Texto
-Node* TextSemanticAction(char* content, int level);
+Text* TextSemanticAction(char* content, int level);
 
 // Imagen
-Node* ImageSemanticAction(char* src, char* alt);
+Image* ImageSemanticAction(char* src, char* alt);
 
 // Define / Use
-Node* DefineSemanticAction(char* name, ParameterList* params, StatementList* body);
-Node* UseSemanticAction(char* name, ParameterList* arguments);
+Define* DefineSemanticAction(char* name, ParameterList* params, StatementList* body);
+Use* UseSemanticAction(char* name, ParameterList* arguments);
 
 // Formulario
-Node* FormSemanticAction(char* name, ParameterList* fields, ParameterList* attributes, StatementList* body);
+Form* FormSemanticAction(char* name, ParameterList* fields, ParameterList* attributes, StatementList* body);
 
 // Footer / Row / Column / Nav
-Node* FooterSemanticAction(ParameterList* attrs, StatementList* body);
-Node* RowSemanticAction(StatementList* columns);
-Node* ColumnSemanticAction(ParameterList* attrs, StatementList* body);
-Node* NavSemanticAction(ParameterList* attrs, ListItem* items);
+Footer* FooterSemanticAction(ParameterList* attrs, StatementList* body);
+Row* RowSemanticAction(StatementList* columns);
+Column* ColumnSemanticAction(ParameterList* attrs, StatementList* body);
+Nav* NavSemanticAction(ParameterList* attrs, ListItem* items);
 
 // Listas
-Node* OrderedListSemanticAction(ListItem* items);
-Node* UnorderedListSemanticAction(ListItem* items);
+OrderedList* OrderedListSemanticAction(ListItem* items);
+UnorderedList* UnorderedListSemanticAction(ListItem* items);
 
 // Parámetros y argumentos
 ParameterList* EmptyParameterListSemanticAction();
@@ -62,5 +62,6 @@ ListItem* EmptyOrderedItemListSemanticAction(void);
 ListItem* PrependBulletItemSemanticAction(char* item, ListItem* tail);
 ListItem* EmptyBulletItemListSemanticAction(void);
 
+ListItem* createListItem(char* content);
 
 #endif

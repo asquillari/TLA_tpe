@@ -2,6 +2,6 @@
 @button { background: blue; }
 {{texto}}
 @end
-@enddefine
+@end
 
 @use botonSimple("Hola Mundo")
