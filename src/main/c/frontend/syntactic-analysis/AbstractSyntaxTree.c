@@ -17,9 +17,11 @@ void shutdownAbstractSyntaxTreeModule() {
 /** PUBLIC FUNCTIONS */
 
 void releaseProgram(Program* program) {
-    if (program == NULL) return;
-    releaseStatementList(program->statements);
-    free(program);
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (program != NULL){
+		releaseStatementList(program->statements);
+    	free(program);
+	}
 }
 
 void releaseNode(Node* node) {

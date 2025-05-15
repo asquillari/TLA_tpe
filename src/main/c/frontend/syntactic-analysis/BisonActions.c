@@ -39,8 +39,15 @@ static Node* createNode(NodeType type) {
 
 // Programa
 Program* ProgramSemanticAction(CompilerState* compilerState, StatementList* statements) {
-    Program* program = malloc(sizeof(Program));
+    Program * program = calloc(1, sizeof(Program));
     program->statements = statements;
+	compilerState->abstractSyntaxtTree = program;
+	if(0 < flexCurrentContext()) {
+		logError(_logger, "The final context is not the default(0): %d", flexCurrentContext());
+		compilerState->succeed = false;
+	} else {
+		compilerState->succeed = true;
+	}
     return program;
 }
 
