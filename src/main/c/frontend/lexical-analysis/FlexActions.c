@@ -135,7 +135,7 @@ Token NavLexemeAction(LexicalAnalyzerContext * ctx) {
 
 Token OrderedItemLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = strdup(ctx->lexeme);
+	ctx->semanticValue->string = ctx->lexeme;
 	ctx->semanticValue->token = ORDERED_ITEM;
 	destroyLexicalAnalyzerContext(ctx);
 	return ORDERED_ITEM;
@@ -143,7 +143,7 @@ Token OrderedItemLexemeAction(LexicalAnalyzerContext * ctx) {
 
 Token BulletLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = strdup(ctx->lexeme);
+	ctx->semanticValue->string = ctx->lexeme;
 	ctx->semanticValue->token = BULLET;
 	destroyLexicalAnalyzerContext(ctx);
 	return BULLET;
@@ -151,7 +151,7 @@ Token BulletLexemeAction(LexicalAnalyzerContext * ctx) {
 
 Token StyleContentLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = strdup(ctx->lexeme);
+	ctx->semanticValue->string = ctx->lexeme;
 	destroyLexicalAnalyzerContext(ctx);
 	return STYLE_CONTENT;
 }
@@ -179,7 +179,7 @@ Token NewlineLexemeAction(LexicalAnalyzerContext * ctx) {
 
 Token TextLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = strdup(ctx->lexeme);
+	ctx->semanticValue->string = ctx->lexeme;
 	destroyLexicalAnalyzerContext(ctx);
 	return TEXT;
 }
@@ -223,9 +223,9 @@ Token CommaLexemeAction(LexicalAnalyzerContext * ctx){
 	destroyLexicalAnalyzerContext(ctx);
 	return COMMA;
 }
-Token UnquotedStringLexemeAction(LexicalAnalyzerContext * ctx){
+Token UnquotedStringLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = strdup(ctx->lexeme);
+	ctx->semanticValue->string = ctx->lexeme;
 	ctx->semanticValue->token = UNQUOTED_VALUE;
 	destroyLexicalAnalyzerContext(ctx);
 	return UNQUOTED_VALUE;
@@ -250,24 +250,25 @@ Token EqualLexemeAction(LexicalAnalyzerContext * ctx){
 	return EQUALS;
 }
 
-Token IdentifierLexemeAction(LexicalAnalyzerContext * ctx){
+Token IdentifierLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = strdup(ctx->lexeme);
+	ctx->semanticValue->string = ctx->lexeme;
 	ctx->semanticValue->token = IDENTIFIER;
 	destroyLexicalAnalyzerContext(ctx);
 	return IDENTIFIER;
 }
 
-Token QuotedValueLexemeAction(LexicalAnalyzerContext * ctx){
+Token QuotedValueLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = strdup(ctx->lexeme);
+	ctx->semanticValue->string = ctx->lexeme;
 	ctx->semanticValue->token = QUOTED_VALUE;
 	destroyLexicalAnalyzerContext(ctx);
 	return QUOTED_VALUE;
 }
-Token UnquotedValueLexemeAction(LexicalAnalyzerContext * ctx){
+
+Token UnquotedValueLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = strdup(ctx->lexeme);
+	ctx->semanticValue->string = ctx->lexeme;
 	ctx->semanticValue->token = UNQUOTED_VALUE;
 	destroyLexicalAnalyzerContext(ctx);
 	return UNQUOTED_VALUE;
@@ -285,9 +286,9 @@ Token OpenBraceLexemeAction(LexicalAnalyzerContext * ctx){
 	destroyLexicalAnalyzerContext(ctx);
 	return OPEN_BRACE;
 }
-Token ListContentLexemeAction(LexicalAnalyzerContext * ctx){
+Token ListContentLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = strdup(ctx->lexeme);
+	ctx->semanticValue->string = ctx->lexeme;
 	ctx->semanticValue->token = LIST_CONTENT;
 	destroyLexicalAnalyzerContext(ctx);
 	return LIST_CONTENT;

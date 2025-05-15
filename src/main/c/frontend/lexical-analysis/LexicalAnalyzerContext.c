@@ -1,5 +1,5 @@
 #include "LexicalAnalyzerContext.h"
-
+#include <stdio.h>
 /**
  * Flex exported variables and functions.
  *
@@ -24,6 +24,7 @@ extern char * yytext;
 /* PUBLIC FUNCTIONS */
 
 LexicalAnalyzerContext * createLexicalAnalyzerContext() {
+	printf("[DEBUG] Creating context\n");
 	LexicalAnalyzerContext * lexicalAnalyzerContext = calloc(1, sizeof(LexicalAnalyzerContext));
 	lexicalAnalyzerContext->length = yyleng;
 	lexicalAnalyzerContext->lexeme = calloc(1 + yyleng, sizeof(char));
@@ -35,6 +36,7 @@ LexicalAnalyzerContext * createLexicalAnalyzerContext() {
 }
 
 void destroyLexicalAnalyzerContext(LexicalAnalyzerContext * lexicalAnalyzerContext) {
+	printf("[DEBUG] Destroying context: %p\n", lexicalAnalyzerContext);
 	if (lexicalAnalyzerContext != NULL) {
 		if (lexicalAnalyzerContext->lexeme != NULL) {
 			free(lexicalAnalyzerContext->lexeme);
@@ -42,3 +44,4 @@ void destroyLexicalAnalyzerContext(LexicalAnalyzerContext * lexicalAnalyzerConte
 		free(lexicalAnalyzerContext);
 	}
 }
+

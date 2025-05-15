@@ -75,104 +75,104 @@ StatementList* SingleStatementSemanticAction(Node* statement) {
 
 // Texto
 Text* TextSemanticAction(char* content, int level) {
-    Text* text = malloc(sizeof(Text));
-    text->content = strdup(content);
+    Text* text = calloc(1, sizeof(Text));
+    text->content = content;  
     text->level = level;
     return text;
 }
 
 // Imagen
 Image* ImageSemanticAction(char* src, char* alt) {
-    Image* image = malloc(sizeof(Image));
-    image->src = strdup(src);
-    image->alt = strdup(alt);
-    return image;
+    Image* image = calloc(1, sizeof(Image));
+	image->src = src;  
+	image->alt = alt; 
+	return image;
 }
 
 // Define
 Define* DefineSemanticAction(char* name, ParameterList* params, StatementList* body) {
-    Define* define = malloc(sizeof(Define));
-    define->name = strdup(name);
-    define->parameters = params;
-    define->body = body;
-    return define;
+    Define * define = calloc(1, sizeof(Define));
+	define->name = name;
+	define->parameters = params;
+	define->body = body;
+	return define;
 }
 
 // Use
 Use* UseSemanticAction(char* name, ParameterList* arguments) {
-    Use* use = malloc(sizeof(Use));
-    use->name = strdup(name);
-    use->arguments = arguments;
-    return use;
+    Use * use = calloc(1, sizeof(Use));
+	use->name = name;
+	use->arguments = arguments;
+	return use;
 }
 
 // Formulario
 Form* FormSemanticAction(char* name, ParameterList* fields, ParameterList* attributes, StatementList* body) {
-    Form* form = malloc(sizeof(Form));
-    form->name = strdup(name);
-    form->fields = fields;
-    form->attributes = attributes;
-    form->body = body;
-    return form;
+    Form* form = calloc(1, sizeof(Form));
+	form->name = name;
+	form->fields = fields;
+	form->attributes = attributes;
+	form->body = body;
+	return form;
 }
 
 // Footer
 Footer* FooterSemanticAction(ParameterList* attrs, StatementList* body) {
-    Footer* footer = malloc(sizeof(Footer));
-    footer->attributes = attrs;
-    footer->body = body;
-    return footer;
+    Footer* footer = calloc(1, sizeof(Footer));
+	footer->attributes = attrs;
+	footer->body = body;
+	return footer;
 }
 
 // Row
 Row* RowSemanticAction(StatementList* columns) {
-    Row* row = malloc(sizeof(Row));
-    row->columns = columns;
-    return row;
+    Row* row = calloc(1, sizeof(Row));
+	row->columns = columns;
+	return row;
 }
 
 // Column
 Column* ColumnSemanticAction(ParameterList* attrs, StatementList* body) {
-    Column* column = malloc(sizeof(Column));
-    column->attributes = attrs;
-    column->body = body;
-    return column;
+    Column* column = calloc(1, sizeof(Column));
+	column->attributes = attrs;
+	column->body = body;
+	return column;
 }
 
 // Nav
 Nav* NavSemanticAction(ParameterList* attrs, ListItem* items) {
-    Nav* nav = malloc(sizeof(Nav));
-    nav->attributes = attrs;
-    nav->items = items;
-    return nav;
+    Nav* nav = calloc(1, sizeof(Nav));
+	nav->attributes = attrs;
+	nav->items = items;
+	return nav;
 }
 
 // Lista ordenada
 OrderedList* OrderedListSemanticAction(ListItem* items) {
-    OrderedList* orderedList = malloc(sizeof(OrderedList));
-    orderedList->items = items;
-    return orderedList;
+    OrderedList* orderedList = calloc(1, sizeof(OrderedList));
+	orderedList->items = items;
+	return orderedList;
 }
 
 // Lista no ordenada
 UnorderedList* UnorderedListSemanticAction(ListItem* items) {
-    UnorderedList* unorderedList = malloc(sizeof(UnorderedList));
-    unorderedList->items = items;
-    return unorderedList;
+    UnorderedList* unorderedList = calloc(1, sizeof(UnorderedList));
+	unorderedList->items = items;
+	return unorderedList;
 }
 
 // Parámetros
 ParameterList* EmptyParameterListSemanticAction() {
-    ParameterList* list = malloc(sizeof(ParameterList));
+    ParameterList* list = calloc(1, sizeof(ParameterList));
     list->head = NULL;
     return list;
 }
 
 ParameterList* SingleParameterSemanticAction(char* name, char* type, char* default_value) {
-    Parameter* param = malloc(sizeof(Parameter));
-    param->name = strdup(name);
-    param->type = strdup(type);
-    param->default_value = strdup(default_value);
+    Parameter* param = calloc(1, sizeof(Parameter));
+    param->name = name;
+    param->type = type;
+    param->default_value = default_value;
     param->next = NULL;
 
     ParameterList* list = malloc(sizeof(ParameterList));
@@ -181,10 +181,10 @@ ParameterList* SingleParameterSemanticAction(char* name, char* type, char* defau
 }
 
 ParameterList* AppendParameterSemanticAction(ParameterList* list, char* name, char* type, char* default_value) {
-    Parameter* param = malloc(sizeof(Parameter));
-    param->name = strdup(name);
-    param->type = strdup(type);
-    param->default_value = strdup(default_value);
+    Parameter* param = calloc(1, sizeof(Parameter));
+    param->name = name;
+    param->type = type;
+    param->default_value = default_value;
     param->next = list->head;
     list->head = param;
     return list;
@@ -192,8 +192,8 @@ ParameterList* AppendParameterSemanticAction(ParameterList* list, char* name, ch
 
 // Items de lista
 ListItem* ListItemSemanticAction(char* content) {
-    ListItem* item = malloc(sizeof(ListItem));
-    item->content = strdup(content);
+    ListItem* item = calloc(1, sizeof(ListItem));
+    item->content = content;
     item->next = NULL;
     return item;
 }
@@ -215,8 +215,8 @@ ListItem* EmptyOrderedItemListSemanticAction(void) {
 }
 
 ListItem* PrependBulletItemSemanticAction(char* item, ListItem* tail) {
-    ListItem* newItem = malloc(sizeof(ListItem));
-    newItem->content = strdup(item);
+    ListItem* newItem = calloc(1, sizeof(ListItem));
+    newItem->content = item;
     newItem->next = tail;
     return newItem;
 }
@@ -226,8 +226,8 @@ ListItem* EmptyBulletItemListSemanticAction(void) {
 }
 
 ListItem* createListItem(char* content) {
-    ListItem* item = malloc(sizeof(ListItem));
-    item->content = strdup(content);
+    ListItem* item = calloc(1, sizeof(ListItem));
+    item->content = content;
     item->next = NULL;
     return item;
 }
