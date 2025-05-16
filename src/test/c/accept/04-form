@@ -1,0 +1,6 @@
+@form formulario1(nombre: text = "Tu nombre", correo: email = "tu@mail.com") { action: POST, method: "/api/submit" }
+  Nombre: {{nombre}}
+  Correo: {{correo}}
+@end
+
+
