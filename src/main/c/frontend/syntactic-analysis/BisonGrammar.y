@@ -97,16 +97,26 @@ statement_list:
 statement_list_nonempty:
       statement
     {
-        $$ = SingleStatementSemanticAction($1);
+        if ($1 == NULL)
+          $$ = NULL;
+        else
+          $$ = SingleStatementSemanticAction($1);
     }
     | statement_list_nonempty statement
     {
-        $$ = AppendStatementSemanticAction($1, $2);
+        if ($2 == NULL)
+          $$ = $1;
+        else if ($1 == NULL)
+          $$ = SingleStatementSemanticAction($2);
+        else
+          $$ = AppendStatementSemanticAction($1, $2);
     }
 ;
 
+
 statement:
-    define { $$ = (struct Node*)$1; }
+    NEWLINE { $$ = NULL; }
+  | define { $$ = (struct Node*)$1; }
   | use    { $$ = (struct Node*)$1; }
   | form   { $$ = (struct Node*)$1; }
   | footer { $$ = (struct Node*)$1; }
@@ -118,6 +128,7 @@ statement:
   | image  { $$ = (struct Node*)$1; }
   | text   { $$ = (struct Node*)$1; }
 ;
+
 
 define:
     DEFINE IDENTIFIER maybe_parameters statement_list_nonempty END

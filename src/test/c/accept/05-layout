@@ -1,12 +1,9 @@
 @row
   @column{ width : 70% }
-    @use tarjetaDestacada("Hola", "Bienvenido al sitio")
+    columna 1
   @end
 
   @column { width : 30% }
-    @form formulario1(nombre: text = "Tu nombre", correo: email = "tu@mail.com") { action: POST, method: "/api/submit" }
-               Nombre: {{nombre}}
-               Correo: {{correo}}
-     @end
+    columna 2
   @end
 @end
