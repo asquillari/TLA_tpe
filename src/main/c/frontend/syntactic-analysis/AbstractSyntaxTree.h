@@ -18,6 +18,8 @@ typedef struct Column Column;
 typedef struct Nav Nav;
 typedef struct Text Text;
 typedef struct Image Image;
+typedef struct Button Button;
+typedef struct Card Card;
 typedef struct ListItem ListItem;
 typedef struct OrderedList OrderedList;
 typedef struct UnorderedList UnorderedList;
@@ -36,7 +38,9 @@ typedef enum NodeType {
     NODE_TEXT,
     NODE_IMAGE,
     NODE_ORDERED_LIST,
-    NODE_UNORDERED_LIST
+    NODE_UNORDERED_LIST,
+    NODE_BUTTON,
+    NODE_CARD,
 } NodeType;
 
 // -----------------------------
@@ -52,6 +56,8 @@ struct Node {
         Row* row;
         Column* column;
         Nav* nav;
+        Button* button;
+        Card* card;
         Text* text;
         Image* image;
         OrderedList* ordered_list;
@@ -125,6 +131,17 @@ struct Column {
     ParameterList* attributes;
     StatementList* body;
 };
+
+struct Button {
+    ParameterList* attributes;  // atributos como style, type, etc.
+    StatementList* body;        // contenido del botón
+};
+
+struct Card {
+    ParameterList* attributes;  // atributos como style, width, etc.
+    StatementList* body;        // contenido del card
+};
+
 
 struct Nav {
     ParameterList* attributes;

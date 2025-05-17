@@ -13,6 +13,7 @@
 %x DIRECTIVE_ID
 %x PARAMS
 %x DIRECTIVE_BODY
+%x BLOCK_DIRECTIVE
 
 %%
 
@@ -32,11 +33,9 @@
 "@define"                       { BEGIN(DIRECTIVE_ID); return DefineLexemeAction(ctx()); }
 "@use"                          { BEGIN(DIRECTIVE_ID); return UseLexemeAction(ctx()); }
 "@form"                         { BEGIN(DIRECTIVE_ID); return FormLexemeAction(ctx()); }
-"@img"                          { BEGIN(DIRECTIVE_ID); return ImgLexemeAction(ctx()); }
-"@nav"                          { BEGIN(DIRECTIVE_BODY); return NavLexemeAction(ctx()); }
-"@footer"                       { BEGIN(DIRECTIVE_BODY); return FooterLexemeAction(ctx()); }
-"@row"                          { BEGIN(DIRECTIVE_BODY); return RowLexemeAction(ctx()); }
-"@column"                       { BEGIN(DIRECTIVE_BODY); return ColumnLexemeAction(ctx()); }
+"@img"                          { return ImgLexemeAction(ctx()); }
+"@row"                          { BEGIN(DIRECTIVE_ID); return RowLexemeAction(ctx()); }
+"@column"                          { BEGIN(DIRECTIVE_ID); return ColumnLexemeAction(ctx()); }
 "@end"                          { BEGIN(INITIAL); return EndLexemeAction(ctx()); }
 
 <DIRECTIVE_ID>[a-zA-Z_][a-zA-Z0-9_]*  { BEGIN(PARAMS); return IdentifierLexemeAction(ctx()); }
@@ -50,11 +49,22 @@
 <PARAMS>"\""[^\"]*"\""      { return QuotedValueLexemeAction(ctx()); }
 <PARAMS>[[:space:]]+           { IgnoredLexemeAction(ctx()); }
 
+<DIRECTIVE_BODY>"@footer"      { BEGIN(BLOCK_DIRECTIVE); return FooterLexemeAction(ctx()); }
+<DIRECTIVE_BODY>"@button"      { BEGIN(BLOCK_DIRECTIVE); return ButtonLexemeAction(ctx()); }
+<DIRECTIVE_BODY>"@card"        { BEGIN(BLOCK_DIRECTIVE); return CardLexemeAction(ctx()); }
+<DIRECTIVE_BODY>"@nav"         { BEGIN(BLOCK_DIRECTIVE); return NavLexemeAction(ctx()); }
 <DIRECTIVE_BODY>"{"            { return StyleLexemeAction(ctx(), OPEN_BRACE); }
 <DIRECTIVE_BODY>"}"            { return StyleLexemeAction(ctx(), CLOSE_BRACE); }
+
+
 <DIRECTIVE_BODY>[^\n]+         { return TextLexemeAction(ctx()); }
 <DIRECTIVE_BODY>\n             { return NewlineLexemeAction(ctx()); }
-<DIRECTIVE_BODY>"@end"         { BEGIN(INITIAL); return EndLexemeAction(ctx()); }
+
+<BLOCK_DIRECTIVE>"@end"        { BEGIN(DIRECTIVE_BODY); return EndLexemeAction(ctx()); }
+<BLOCK_DIRECTIVE>"{"           { return StyleLexemeAction(ctx(), OPEN_BRACE); }
+<BLOCK_DIRECTIVE>"}"           { return StyleLexemeAction(ctx(), CLOSE_BRACE); }
+<BLOCK_DIRECTIVE>[^\n]+        { return TextLexemeAction(ctx()); }
+<BLOCK_DIRECTIVE>\n            { return NewlineLexemeAction(ctx()); }
 
 "#"                            { return HeaderLexemeAction(ctx(), HEADER_1); }
 "##"                           { return HeaderLexemeAction(ctx(), HEADER_2); }

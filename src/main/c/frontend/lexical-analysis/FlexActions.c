@@ -293,3 +293,19 @@ Token ListContentLexemeAction(LexicalAnalyzerContext * ctx) {
 	destroyLexicalAnalyzerContext(ctx);
 	return LIST_CONTENT;
 }
+
+Token ButtonLexemeAction(LexicalAnalyzerContext * ctx) {
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->string = ctx->lexeme;
+	ctx->semanticValue->token = BUTTON;
+	destroyLexicalAnalyzerContext(ctx);
+	return BUTTON;
+}
+
+Token CardLexemeAction(LexicalAnalyzerContext * ctx) {
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->string = ctx->lexeme;
+	ctx->semanticValue->token = CARD;
+	destroyLexicalAnalyzerContext(ctx);
+	return CARD;
+}

@@ -40,6 +40,8 @@ Footer* FooterSemanticAction(ParameterList* attrs, StatementList* body);
 Row* RowSemanticAction(StatementList* columns);
 Column* ColumnSemanticAction(ParameterList* attrs, StatementList* body);
 Nav* NavSemanticAction(ParameterList* attrs, ListItem* items);
+Button* ButtonSemanticAction(ParameterList* attrs, StatementList* body);
+Card* CardSemanticAction(ParameterList* attrs, StatementList* body);
 
 // Listas
 OrderedList* OrderedListSemanticAction(ListItem* items);

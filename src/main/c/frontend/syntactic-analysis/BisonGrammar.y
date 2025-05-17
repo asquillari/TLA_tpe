@@ -22,6 +22,8 @@
 	struct Nav* nav;
 	struct Text* text;
 	struct Image* image;
+    struct Button* button;
+    struct Card* card;
 	struct List* list;
 	struct ListItem* list_item;
 	struct OrderedList* ordered_list;
@@ -38,6 +40,7 @@
 %token <token> COLON COMMA EQUALS OPEN_PAREN CLOSE_PAREN 
 %token <token> OPEN_BRACE CLOSE_BRACE OPEN_BRACKET CLOSE_BRACKET PIPE QUOTE LIST_CONTENT
 %token <token> NEWLINE UNKNOWN
+%token <token> BUTTON CARD
 
 %token <string> TEXT STYLE_CONTENT IDENTIFIER UNQUOTED_VALUE QUOTED_VALUE KEY
 %token <string> ORDERED_ITEM BULLET
@@ -62,6 +65,9 @@
 %type <unordered_list> unordered_list_statement
 %type <image> image
 %type <text> text
+%type <button> button
+%type <card> card
+
 
 %type <parameter_list> maybe_parameters
 %type <parameter_list> parameters
@@ -127,6 +133,8 @@ statement:
   | unordered_list_statement { $$ = (struct Node*)$1; }
   | image  { $$ = (struct Node*)$1; }
   | text   { $$ = (struct Node*)$1; }
+  | button { $$ = (struct Node*)$1; }
+  | card   { $$ = (struct Node*)$1; }
 ;
 
 
@@ -284,3 +292,18 @@ nav:
         $$ = NavSemanticAction($3, $5);
     }
 ;
+
+button:
+    BUTTON OPEN_BRACE parameters CLOSE_BRACE statement_list_nonempty END
+    {
+        $$ = ButtonSemanticAction($3, $5);  
+    }
+;
+
+card:
+    CARD OPEN_BRACE parameters CLOSE_BRACE statement_list_nonempty END
+    {
+        $$ = CardSemanticAction($3, $5);  
+    }
+;
+

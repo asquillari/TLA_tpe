@@ -65,6 +65,16 @@ void releaseNode(Node* node) {
             releaseListItems(node->nav->items);
             free(node->nav);
             break;
+        case NODE_BUTTON:
+            releaseParameterList(node->button->attributes);
+            releaseStatementList(node->button->body);
+            free(node->button);
+            break;
+        case NODE_CARD:
+            releaseParameterList(node->card->attributes);
+            releaseStatementList(node->card->body);
+            free(node->card);
+            break;
         case NODE_TEXT:
             free(node->text->content);
             free(node->text);

@@ -147,6 +147,22 @@ Nav* NavSemanticAction(ParameterList* attrs, ListItem* items) {
 	return nav;
 }
 
+// Button
+Button* ButtonSemanticAction(ParameterList* attrs, StatementList* body) {
+    Button* button = calloc(1, sizeof(Button));
+    button->attributes = attrs;
+    button->body = body;
+    return button;
+}
+
+// Card
+Card* CardSemanticAction(ParameterList* attrs, StatementList* body) {
+    Card* card = calloc(1, sizeof(Card));
+    card->attributes = attrs;
+    card->body = body;
+    return card;
+}
+
 // Lista ordenada
 OrderedList* OrderedListSemanticAction(ListItem* items) {
     OrderedList* orderedList = calloc(1, sizeof(OrderedList));

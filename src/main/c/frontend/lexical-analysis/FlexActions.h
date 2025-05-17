@@ -88,4 +88,7 @@ Token CloseBraceLexemeAction(LexicalAnalyzerContext * ctx);
 Token OpenBraceLexemeAction(LexicalAnalyzerContext * ctx);
 Token ListContentLexemeAction(LexicalAnalyzerContext * ctx);
 
+Token ButtonLexemeAction(LexicalAnalyzerContext * ctx);
+Token CardLexemeAction(LexicalAnalyzerContext * ctx);
+
 #endif
