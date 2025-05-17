@@ -22,18 +22,21 @@
 "@row"                           { return RowLexemeAction(ctx()); }
 "@column"                        { return ColumnLexemeAction(ctx()); }
 "@end"                           { return EndLexemeAction(ctx()); }
-
 "@footer"                        { return FooterLexemeAction(ctx()); }
 "@button"                        { return ButtonLexemeAction(ctx()); }
 "@card"                          { return CardLexemeAction(ctx()); }
 "@nav"                           { return NavLexemeAction(ctx()); }
+"@item"                          { return ItemLexemAction(ctx()); }
 
-"#"                              { return HeaderLexemeAction(ctx(), HEADER_1); }
-"##"                             { return HeaderLexemeAction(ctx(), HEADER_2); }
+"\{\{[a-zA-Z_][a-zA-Z0-9_]*\}\}" { return VariableLexemeAction(ctx()); }
+
 "###"                            { return HeaderLexemeAction(ctx(), HEADER_3); }
+"##"                             { return HeaderLexemeAction(ctx(), HEADER_2); }
+"#"                              { return HeaderLexemeAction(ctx(), HEADER_1); }
 
-"{"\n                            { return OpenBraceLexemeAction(ctx()); }
-"}"                              { return CloseBraceLexemeAction(ctx()); }
+[0-9]+[[:space:]]*\.[[:space:]]* { return OrderedItemLexemeAction(ctx()); }
+"\u2022"                         { return BulletLexemeAction(ctx()); }
+
 "{"                              { return StyleLexemeAction(ctx(), OPEN_BRACE); }
 "}"                              { return StyleLexemeAction(ctx(), CLOSE_BRACE); }
 
@@ -42,22 +45,18 @@
 ":"                              { return ColonLexemeAction(ctx()); }
 ","                              { return CommaLexemeAction(ctx()); }
 "="                              { return EqualLexemeAction(ctx()); }
-
-"["                              { return InputLexemeAction(ctx(), OPEN_BRACKET); }
-"]"                              { return InputLexemeAction(ctx(), CLOSE_BRACKET); }
 "|"                              { return TableLexemeAction(ctx(), PIPE); }
-"\""                             { return QuoteLexemeAction(ctx(), QUOTE); }
 
-[0-9]+"."                        { return OrderedItemLexemeAction(ctx()); }
-"\u2022"                         { return BulletLexemeAction(ctx()); }
+\"[^\"]*\"                       { return QuotedValueLexemeAction(ctx()); }     
+\'[^\']*\'                       { return QuotedParameterValueLexemeAction(ctx()); } 
 
-\"[^\"]*\"                       { return QuotedValueLexemeAction(ctx()); }
 [a-zA-Z_][a-zA-Z0-9_]*           { return IdentifierLexemeAction(ctx()); }
-[^\s:},#@()\[\]|"=\n]+           { return UnquotedValueLexemeAction(ctx()); }
+[^\s:},#@()\[\]|"='`\n]+         { return UnquotedValueLexemeAction(ctx()); }
 
-[^\n]+                           { return TextLexemeAction(ctx()); }
 [[:space:]]+                     { IgnoredLexemeAction(ctx()); }
 \n                               { return NewlineLexemeAction(ctx()); }
+
+
 .                                { return UnknownLexemeAction(ctx()); }
 
 %%

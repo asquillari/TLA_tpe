@@ -5,4 +5,4 @@
 @end
 @end
 
-@use tarjetaDestacada("#Bienvenidos", "##Gracias por visitar nuestro sitio.")
+@use tarjetaDestacada('#Bienvenidos', '##Gracias por visitar nuestro sitio.')

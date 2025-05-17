@@ -80,10 +80,10 @@ void releaseNode(Node* node) {
             free(node->text);
             break;
         case NODE_IMAGE:
-            free(node->image->src);
-            free(node->image->alt);
+            releaseParameterList(node->image->attributes);
             free(node->image);
             break;
+        
         case NODE_ORDERED_LIST:
             releaseListItems(node->ordered_list->items);
             free(node->ordered_list);

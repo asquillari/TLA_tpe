@@ -111,7 +111,7 @@ struct Use {
 struct Form {
     char* name;
     ParameterList* fields;
-    ParameterList* attributes; // ej. method, action
+    ParameterList* attributes;
     StatementList* body;
 };
 
@@ -157,9 +157,9 @@ struct Text {
 };
 
 struct Image {
-    char* src;
-    char* alt;
+    ParameterList* attributes;
 };
+
 
 struct ListItem {
     char* content;

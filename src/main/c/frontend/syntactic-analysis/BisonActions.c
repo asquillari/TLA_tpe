@@ -82,12 +82,12 @@ Text* TextSemanticAction(char* content, int level) {
 }
 
 // Imagen
-Image* ImageSemanticAction(char* src, char* alt) {
+Image* ImageSemanticAction(ParameterList* parameters) {
     Image* image = calloc(1, sizeof(Image));
-	image->src = src;  
-	image->alt = alt; 
-	return image;
+    image->attributes = parameters;
+    return image;
 }
+
 
 // Define
 Define* DefineSemanticAction(char* name, ParameterList* params, StatementList* body) {
@@ -109,12 +109,13 @@ Use* UseSemanticAction(char* name, ParameterList* arguments) {
 // Formulario
 Form* FormSemanticAction(char* name, ParameterList* fields, ParameterList* attributes, StatementList* body) {
     Form* form = calloc(1, sizeof(Form));
-	form->name = name;
-	form->fields = fields;
-	form->attributes = attributes;
-	form->body = body;
-	return form;
+    form->name = name;
+    form->fields = fields;
+    form->attributes = attributes;
+    form->body = body;
+    return form;
 }
+
 
 // Footer
 Footer* FooterSemanticAction(ParameterList* attrs, StatementList* body) {

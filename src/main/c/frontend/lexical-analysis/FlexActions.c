@@ -63,6 +63,8 @@ Token UnknownLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	return UNKNOWN;
 }
 
+
+
 Token DefineLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
 	ctx->semanticValue->token = DEFINE;
@@ -75,20 +77,6 @@ Token UseLexemeAction(LexicalAnalyzerContext * ctx) {
 	ctx->semanticValue->token = USE;
 	destroyLexicalAnalyzerContext(ctx);
 	return USE;
-}
-
-Token EndDefineLexemeAction(LexicalAnalyzerContext * ctx) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->token = ENDDEFINE;
-	destroyLexicalAnalyzerContext(ctx);
-	return ENDDEFINE;
-}
-
-Token EndLexemeAction(LexicalAnalyzerContext * ctx) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->token = END;
-	destroyLexicalAnalyzerContext(ctx);
-	return END;
 }
 
 Token FormLexemeAction(LexicalAnalyzerContext * ctx) {
@@ -105,13 +93,6 @@ Token ImgLexemeAction(LexicalAnalyzerContext * ctx) {
 	return IMG;
 }
 
-Token FooterLexemeAction(LexicalAnalyzerContext * ctx) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->token = FOOTER;
-	destroyLexicalAnalyzerContext(ctx);
-	return FOOTER;
-}
-
 Token RowLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
 	ctx->semanticValue->token = ROW;
@@ -126,12 +107,69 @@ Token ColumnLexemeAction(LexicalAnalyzerContext * ctx) {
 	return COLUMN;
 }
 
+Token EndLexemeAction(LexicalAnalyzerContext * ctx) {
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->token = END;
+	destroyLexicalAnalyzerContext(ctx);
+	return END;
+}
+
+
+Token FooterLexemeAction(LexicalAnalyzerContext * ctx) {
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->token = FOOTER;
+	destroyLexicalAnalyzerContext(ctx);
+	return FOOTER;
+}
+
+Token ButtonLexemeAction(LexicalAnalyzerContext * ctx) {
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->string = ctx->lexeme;
+	ctx->semanticValue->token = BUTTON;
+	destroyLexicalAnalyzerContext(ctx);
+	return BUTTON;
+}
+
+Token CardLexemeAction(LexicalAnalyzerContext * ctx) {
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->string = ctx->lexeme;
+	ctx->semanticValue->token = CARD;
+	destroyLexicalAnalyzerContext(ctx);
+	return CARD;
+}
+
 Token NavLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
 	ctx->semanticValue->token = NAV;
 	destroyLexicalAnalyzerContext(ctx);
 	return NAV;
 }
+
+Token ItemLexemAction(LexicalAnalyzerContext * ctx) {
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->string = ctx->lexeme;
+	ctx->semanticValue->token = ITEM;
+	destroyLexicalAnalyzerContext(ctx);
+	return ITEM;
+}
+
+
+Token VariableLexemeAction(LexicalAnalyzerContext * ctx) {
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->string = ctx->lexeme;
+	ctx->semanticValue->token = VARIABLE;
+	destroyLexicalAnalyzerContext(ctx);
+	return VARIABLE;
+}
+
+
+Token HeaderLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->token = token;
+	destroyLexicalAnalyzerContext(ctx);
+	return token;
+}
+
 
 Token OrderedItemLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
@@ -149,48 +187,6 @@ Token BulletLexemeAction(LexicalAnalyzerContext * ctx) {
 	return BULLET;
 }
 
-Token StyleContentLexemeAction(LexicalAnalyzerContext * ctx) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = ctx->lexeme;
-	destroyLexicalAnalyzerContext(ctx);
-	return STYLE_CONTENT;
-}
-
-Token TableLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->token = token;
-	destroyLexicalAnalyzerContext(ctx);
-	return token;
-}
-
-Token QuoteLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->token = token;
-	destroyLexicalAnalyzerContext(ctx);
-	return token;
-}
-
-Token NewlineLexemeAction(LexicalAnalyzerContext * ctx) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->token = NEWLINE;
-	destroyLexicalAnalyzerContext(ctx);
-	return NEWLINE;
-}
-
-Token TextLexemeAction(LexicalAnalyzerContext * ctx) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = ctx->lexeme;
-	destroyLexicalAnalyzerContext(ctx);
-	return TEXT;
-}
-
-Token HeaderLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->token = token;
-	destroyLexicalAnalyzerContext(ctx);
-	return token;
-}
-
 Token StyleLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
 	ctx->semanticValue->token = token;
@@ -198,38 +194,7 @@ Token StyleLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
 	return token;
 }
 
-Token InputLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->token = token;
-	destroyLexicalAnalyzerContext(ctx);
-	return token;
-}
 
-Token KeyLexemeAction(LexicalAnalyzerContext * ctx){
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->token = KEY;
-	destroyLexicalAnalyzerContext(ctx);
-	return KEY;
-}
-Token ColonLexemeAction(LexicalAnalyzerContext * ctx){
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->token = COLON;
-	destroyLexicalAnalyzerContext(ctx);
-	return COLON;
-}
-Token CommaLexemeAction(LexicalAnalyzerContext * ctx){
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->token = COMMA;
-	destroyLexicalAnalyzerContext(ctx);
-	return COMMA;
-}
-Token UnquotedStringLexemeAction(LexicalAnalyzerContext * ctx) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = ctx->lexeme;
-	ctx->semanticValue->token = UNQUOTED_VALUE;
-	destroyLexicalAnalyzerContext(ctx);
-	return UNQUOTED_VALUE;
-}
 
 Token OpenParenthesisLexemeAction(LexicalAnalyzerContext * ctx){
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
@@ -243,11 +208,50 @@ Token CloseParenthesisLexemeAction(LexicalAnalyzerContext * ctx){
 	destroyLexicalAnalyzerContext(ctx);
 	return CLOSE_PAREN;
 }
+
+Token ColonLexemeAction(LexicalAnalyzerContext * ctx){
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->token = COLON;
+	destroyLexicalAnalyzerContext(ctx);
+	return COLON;
+}
+Token CommaLexemeAction(LexicalAnalyzerContext * ctx){
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->token = COMMA;
+	destroyLexicalAnalyzerContext(ctx);
+	return COMMA;
+}
+
 Token EqualLexemeAction(LexicalAnalyzerContext * ctx){
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
 	ctx->semanticValue->token = EQUALS;
 	destroyLexicalAnalyzerContext(ctx);
 	return EQUALS;
+}
+
+
+Token TableLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->token = token;
+	destroyLexicalAnalyzerContext(ctx);
+	return token;
+}
+
+
+Token QuotedValueLexemeAction(LexicalAnalyzerContext * ctx) {
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->string = ctx->lexeme;
+	ctx->semanticValue->token = QUOTED_VALUE;
+	destroyLexicalAnalyzerContext(ctx);
+	return QUOTED_VALUE;
+}
+
+Token QuotedParameterValueLexemeAction(LexicalAnalyzerContext * ctx) {
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->string = ctx->lexeme;
+	ctx->semanticValue->token = QUOTED_VALUE;
+	destroyLexicalAnalyzerContext(ctx);
+	return QUOTED_VALUE;
 }
 
 Token IdentifierLexemeAction(LexicalAnalyzerContext * ctx) {
@@ -258,14 +262,6 @@ Token IdentifierLexemeAction(LexicalAnalyzerContext * ctx) {
 	return IDENTIFIER;
 }
 
-Token QuotedValueLexemeAction(LexicalAnalyzerContext * ctx) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = ctx->lexeme;
-	ctx->semanticValue->token = QUOTED_VALUE;
-	destroyLexicalAnalyzerContext(ctx);
-	return QUOTED_VALUE;
-}
-
 Token UnquotedValueLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
 	ctx->semanticValue->string = ctx->lexeme;
@@ -274,38 +270,9 @@ Token UnquotedValueLexemeAction(LexicalAnalyzerContext * ctx) {
 	return UNQUOTED_VALUE;
 }
 
-Token CloseBraceLexemeAction(LexicalAnalyzerContext * ctx){
+Token NewlineLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->token = CLOSE_BRACE;
+	ctx->semanticValue->token = NEWLINE;
 	destroyLexicalAnalyzerContext(ctx);
-	return CLOSE_BRACE;
-}
-Token OpenBraceLexemeAction(LexicalAnalyzerContext * ctx){
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->token = OPEN_BRACE;
-	destroyLexicalAnalyzerContext(ctx);
-	return OPEN_BRACE;
-}
-Token ListContentLexemeAction(LexicalAnalyzerContext * ctx) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = ctx->lexeme;
-	ctx->semanticValue->token = LIST_CONTENT;
-	destroyLexicalAnalyzerContext(ctx);
-	return LIST_CONTENT;
-}
-
-Token ButtonLexemeAction(LexicalAnalyzerContext * ctx) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = ctx->lexeme;
-	ctx->semanticValue->token = BUTTON;
-	destroyLexicalAnalyzerContext(ctx);
-	return BUTTON;
-}
-
-Token CardLexemeAction(LexicalAnalyzerContext * ctx) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = ctx->lexeme;
-	ctx->semanticValue->token = CARD;
-	destroyLexicalAnalyzerContext(ctx);
-	return CARD;
+	return NEWLINE;
 }
