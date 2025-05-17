@@ -29,7 +29,7 @@
 	struct OrderedList* ordered_list;
 	struct UnorderedList* unordered_list;
 	struct ParameterList* parameter_list;
-	struct ListItemList* list_item_list;
+	struct ListItem*     list_item_list;
 }
 
 %token <token> DEFINE USE FORM IMG FOOTER ROW COLUMN NAV ITEM END BUTTON CARD
@@ -146,24 +146,24 @@ unordered_list_statement:
 
 ordered_item_list:
     ORDERED_ITEM ordered_item_list_tail
-    { $$ = PrependOrderedItemSemanticAction(createListItem($1), $2); }
+    { $$ = PrependOrderedItemSemanticAction($2, $1); }
 ;
 
 ordered_item_list_tail:
     ORDERED_ITEM ordered_item_list_tail
-    { $$ = PrependOrderedItemSemanticAction(createListItem($1), $2); }
+    { $$ = PrependOrderedItemSemanticAction($2, $1); }
   | /* empty */
     { $$ = EmptyOrderedItemListSemanticAction(); }
 ;
 
 bullet_item_list:
     BULLET bullet_item_list_tail
-    { $$ = PrependBulletItemSemanticAction(createListItem($1), $2); }
+    { $$ = PrependBulletItemSemanticAction($1, $2); }
 ;
 
 bullet_item_list_tail:
     BULLET bullet_item_list_tail
-    { $$ = PrependBulletItemSemanticAction(createListItem($1), $2); }
+    { $$ = PrependBulletItemSemanticAction($1, $2); }
   | /* empty */
     { $$ = EmptyBulletItemListSemanticAction(); }
 ;
@@ -199,9 +199,9 @@ column:
 ;
 
 nav:
-    NAV OPEN_PAREN parameters CLOSE_PAREN statement_list_nonempty END
-    { $$ = NavSemanticAction($3, $5); }
-  | NAV statement_list_nonempty END
+    NAV OPEN_BRACE parameters CLOSE_BRACE bullet_item_list END
+   { $$ = NavSemanticAction($3, $5); }
+  | NAV bullet_item_list  END
     { $$ = NavSemanticAction(NULL, $2); }
 ;
 
