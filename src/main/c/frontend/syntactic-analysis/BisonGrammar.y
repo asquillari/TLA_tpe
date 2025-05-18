@@ -57,7 +57,7 @@
 %type <card> card
 
 %type <parameter_list> maybe_parameters parameters parameter_list
-%type <list_item_list> ordered_item_list ordered_item_list_tail bullet_item_list bullet_item_list_tail
+%type <list_item_list> ordered_item_list bullet_item_list
 
 %%
 
@@ -145,27 +145,17 @@ unordered_list_statement:
 ;
 
 ordered_item_list:
-    ORDERED_ITEM ordered_item_list_tail
-    { $$ = PrependOrderedItemSemanticAction($2, $1); }
-;
-
-ordered_item_list_tail:
-    ORDERED_ITEM ordered_item_list_tail
-    { $$ = PrependOrderedItemSemanticAction($2, $1); }
-  | /* empty */
-    { $$ = EmptyOrderedItemListSemanticAction(); }
+    ORDERED_ITEM NEWLINE
+    { $$ = ListItemSemanticAction($1); }
+  | ordered_item_list ORDERED_ITEM NEWLINE
+    { $$ = PrependOrderedItemSemanticAction($1, $2); }
 ;
 
 bullet_item_list:
-    BULLET bullet_item_list_tail
-    { $$ = PrependBulletItemSemanticAction($1, $2); }
-;
-
-bullet_item_list_tail:
-    BULLET bullet_item_list_tail
-    { $$ = PrependBulletItemSemanticAction($1, $2); }
-  | /* empty */
-    { $$ = EmptyBulletItemListSemanticAction(); }
+    BULLET NEWLINE
+    { $$ = ListItemSemanticAction($1); }
+  | bullet_item_list BULLET NEWLINE
+    { $$ = PrependBulletItemSemanticAction($2, $1); }
 ;
 
 image:
