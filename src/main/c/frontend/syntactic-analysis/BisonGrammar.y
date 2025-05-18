@@ -48,7 +48,7 @@
 %token <token> TABLE_BEGIN
 
 %type <program> program
-%type <node> statement atomic_statement content_item
+%type <node> statement atomic_statement content_item 
 %type <stmt_list> statement_list statement_list_nonempty content_list
 %type <ordered_list>   ordered_list_statement
 %type <unordered_list> unordered_list_statement
@@ -163,7 +163,20 @@ content_list:
 ;
 
 content_item:
-      text { $$ = (struct Node*)$1; }
+     row { $$ = (struct Node*)$1; }
+    | column { $$ = (struct Node*)$1; }
+    | nav { $$ = (struct Node*)$1; }
+    | button { $$ = (struct Node*)$1; }
+    | card { $$ = (struct Node*)$1; }
+    | table { $$ = (struct Node*)$1; }
+    | image { $$ = (struct Node*)$1; }
+    | form { $$ = (struct Node*)$1; }
+    | footer { $$ = (struct Node*)$1; }
+    | define { $$ = (struct Node*)$1; }
+    | use { $$ = (struct Node*)$1; }
+    | text { $$ = (struct Node*)$1; }
+    | ordered_list_statement { $$ = (struct Node*)$1; }
+    | unordered_list_statement { $$ = (struct Node*)$1; }
 ;
 
 text:
@@ -215,9 +228,12 @@ row:
 ;
 
 column:
-    COLUMN OPEN_BRACE style_list CLOSE_BRACE content_list END
-    { $$ = ColumnSemanticAction($3, $5); }
+      COLUMN OPEN_BRACE style_list CLOSE_BRACE content_list END
+        { $$ = ColumnSemanticAction($3, $5); }
+    | COLUMN content_list END
+        { $$ = ColumnSemanticAction(NULL, $2); }
 ;
+
 
 nav:
       NAV OPEN_BRACE style_list CLOSE_BRACE nav_item_list END
