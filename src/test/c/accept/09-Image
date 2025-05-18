@@ -1,1 +1,1 @@
-@img( src='https://example.com/imagen.jpg' alt='Imagen de ejemplo')
+@img( 'https://example.com/imagen.jpg' , 'Imagen de ejemplo')

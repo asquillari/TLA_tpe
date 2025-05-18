@@ -26,7 +26,7 @@ StatementList* SingleStatementSemanticAction(Node* statement);
 Text* TextSemanticAction(char* content, int level);
 
 // Imagen
-Image* ImageSemanticAction(ParameterList* parameters);
+Image* ImageSemanticAction(char * src, char * alt);
 
 // Define / Use
 Define* DefineSemanticAction(char* name, ParameterList* params, StatementList* body);

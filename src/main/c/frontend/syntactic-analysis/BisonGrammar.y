@@ -159,8 +159,10 @@ bullet_item_list:
 ;
 
 image:
-    IMG OPEN_PAREN parameters CLOSE_PAREN
-    { $$ = ImageSemanticAction($3); }
+    IMG OPEN_PAREN QUOTED_VALUE COMMA QUOTED_VALUE CLOSE_PAREN
+    {
+        $$ = ImageSemanticAction($3 , $5);  
+    }
 ;
 
 form:
