@@ -237,10 +237,12 @@ Token TableLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
 	return token;
 }
 
-
 Token QuotedValueLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = ctx->lexeme;
+    const char * yytext = ctx->lexeme;
+    char* str = strdup(yytext + 1);
+    str[strlen(str) - 1] = '\0';
+    ctx->semanticValue->string = str;
 	ctx->semanticValue->token = QUOTED_VALUE;
 	destroyLexicalAnalyzerContext(ctx);
 	return QUOTED_VALUE;
