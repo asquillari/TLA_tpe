@@ -1,5 +1,5 @@
 @define tarjetaDestacada(titulo, texto)
-@card { background: #eee; border: rounded; }
+@card { background: red; border: rounded; }
 # {{titulo}}
 {{texto}}
 @end

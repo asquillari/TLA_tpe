@@ -163,15 +163,19 @@ content_list:
 
 content_item:
       text { $$ = (struct Node*)$1; }
-    | VARIABLE { $$ = (struct Node*) TextSemanticAction($1, 0); }
 ;
 
 text:
-      HEADER_1 QUOTED_VALUE { $$ = TextSemanticAction($2, 1); }
-    | HEADER_2 QUOTED_VALUE { $$ = TextSemanticAction($2, 2); }
-    | HEADER_3 QUOTED_VALUE { $$ = TextSemanticAction($2, 3); }
-    | QUOTED_VALUE { $$ = TextSemanticAction($1, 0); }
+      HEADER_1 QUOTED_VALUE   { $$ = TextSemanticAction($2, 1); }
+    | HEADER_2 QUOTED_VALUE   { $$ = TextSemanticAction($2, 2); }
+    | HEADER_3 QUOTED_VALUE   { $$ = TextSemanticAction($2, 3); }
+    | HEADER_1 VARIABLE       { $$ = TextSemanticAction($2, 1); }
+    | HEADER_2 VARIABLE       { $$ = TextSemanticAction($2, 2); }
+    | HEADER_3 VARIABLE       { $$ = TextSemanticAction($2, 3); }
+    | QUOTED_VALUE            { $$ = TextSemanticAction($1, 0); }
+    | VARIABLE                { $$ = TextSemanticAction($1, 0); }
 ;
+
 
 ordered_list_statement:
     ORDERED_LIST
