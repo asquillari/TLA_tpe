@@ -9,35 +9,14 @@
 %x ORDERED_LIST BULLET_LIST
 
 %%
-^[0-9]+\.[ \t][^\r\n]*\r?\n {
-    BEGIN(ORDERED_LIST);
-    yymore();
+^([0-9]+[[:space:]]*\.[[:space:]]*[^\r\n]*(\r?\n|$))+ {
+    char *dup = strdup(yytext);                  
+    return ListLexemeAction(ctx(), dup, ORDERED_LIST);
 }
 
-<ORDERED_LIST>^[0-9]+\.[ \t][^\r\n]*\r?\n {
-    yymore();
-}
-
-<ORDERED_LIST>\r?\n {
-    BEGIN(INITIAL);
-    ctx()->semanticValue->string = strdup(yytext);
-    return ORDERED_LIST;
-}
-
-
-^\*[ \t][^\r\n]*\r?\n {
-    BEGIN(BULLET_LIST);
-    yymore();
-}
-
-<BULLET_LIST>^\*[ \t][^\r\n]*\r?\n {
-    yymore();
-}
-
-<BULLET_LIST>\r?\n {
-    BEGIN(INITIAL);
-    ctx()->semanticValue->string = strdup(yytext);
-    return BULLET_LIST;
+^(\*[[:space:]][^\r\n]*(\r?\n|$))+     {
+    char *dup = strdup(yytext);
+    return ListLexemeAction(ctx(), dup, BULLET_LIST);
 }
 
 "/*"                             { BEGIN(MULTILINE_COMMENT); BeginMultilineCommentLexemeAction(ctx()); }
@@ -66,7 +45,7 @@
 "#"                              { return HeaderLexemeAction(ctx(), HEADER_1); }
 
 [0-9]+[[:space:]]*\.[[:space:]]* { return OrderedItemLexemeAction(ctx()); }
-"\u2022"                         { return BulletLexemeAction(ctx()); }
+"*"                         { return BulletLexemeAction(ctx()); }
 
 "{"                              { return StyleLexemeAction(ctx(), OPEN_BRACE); }
 "}"                              { return StyleLexemeAction(ctx(), CLOSE_BRACE); }
