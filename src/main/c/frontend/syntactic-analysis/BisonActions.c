@@ -82,9 +82,10 @@ Text* TextSemanticAction(char* content, int level) {
 }
 
 // Imagen
-Image* ImageSemanticAction(ParameterList* parameters) {
+Image* ImageSemanticAction(char* src, char* alt) {
     Image* image = calloc(1, sizeof(Image));
-    image->attributes = parameters;
+    image->src = src;
+    image->alt = alt;
     return image;
 }
 

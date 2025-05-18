@@ -165,7 +165,8 @@ struct Text {
 };
 
 struct Image {
-    ParameterList* attributes;
+    char * src;
+    char * alt;
 };
 
 

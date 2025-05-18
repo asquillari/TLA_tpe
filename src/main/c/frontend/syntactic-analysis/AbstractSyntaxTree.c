@@ -80,7 +80,8 @@ void releaseNode(Node* node) {
             free(node->text);
             break;
         case NODE_IMAGE:
-            releaseParameterList(node->image->attributes);
+            free(node->image->src);
+            free(node->image->alt);
             free(node->image);
             break;
         

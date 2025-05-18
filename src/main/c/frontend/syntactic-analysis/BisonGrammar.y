@@ -189,8 +189,8 @@ unordered_list_statement:
 
 
 image:
-    IMG OPEN_PAREN parameter_list CLOSE_PAREN
-    { $$ = ImageSemanticAction($3); }
+    IMG OPEN_PAREN QUOTED_VALUE COMMA QUOTED_VALUE CLOSE_PAREN
+    {  $$ = ImageSemanticAction($3 , $5);  }
 ;
 
 form:
