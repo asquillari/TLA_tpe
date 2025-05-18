@@ -39,8 +39,11 @@
 %token <string> QUOTED_VALUE UNQUOTED_VALUE IDENTIFIER TEXT
 %token <string> VARIABLE
 
+%left ORDERED_ITEM BULLET
+
 %type <program> program
 %type <node> statement
+%type <node> atomic_statement 
 %type <stmt_list> statement_list statement_list_nonempty
 %type <define> define
 %type <use> use
@@ -73,26 +76,33 @@ statement_list:
     | statement_list_nonempty { $$ = $1; }
 ;
 
-statement_list_nonempty:
-      statement { $$ = SingleStatementSemanticAction($1); }
-    | statement_list_nonempty statement { $$ = AppendStatementSemanticAction($1, $2); }
+atomic_statement:
+    NEWLINE                            { $$ = NULL; }
+  | define                             { $$ = (struct Node*)$1; }
+  | use                                { $$ = (struct Node*)$1; }
+  | form                               { $$ = (struct Node*)$1; }
+  | footer                             { $$ = (struct Node*)$1; }
+  | row                                { $$ = (struct Node*)$1; }
+  | column                             { $$ = (struct Node*)$1; }
+  | nav                                { $$ = (struct Node*)$1; }
+  | image                              { $$ = (struct Node*)$1; }
+  | text                               { $$ = (struct Node*)$1; }
+  | button                             { $$ = (struct Node*)$1; }
+  | card                               { $$ = (struct Node*)$1; }
 ;
 
 statement:
-    NEWLINE { $$ = NULL; }
-  | define { $$ = (struct Node*)$1; }
-  | use { $$ = (struct Node*)$1; }
-  | form { $$ = (struct Node*)$1; }
-  | footer { $$ = (struct Node*)$1; }
-  | row { $$ = (struct Node*)$1; }
-  | column { $$ = (struct Node*)$1; }
-  | nav { $$ = (struct Node*)$1; }
-  | ordered_list_statement { $$ = (struct Node*)$1; }
-  | unordered_list_statement { $$ = (struct Node*)$1; }
-  | image { $$ = (struct Node*)$1; }
-  | text { $$ = (struct Node*)$1; }
-  | button { $$ = (struct Node*)$1; }
-  | card { $$ = (struct Node*)$1; }
+atomic_statement
+       { $$ = $1; }
+  | ordered_list_statement
+       { $$ = (struct Node*)$1; }
+  | unordered_list_statement
+       { $$ = (struct Node*)$1; }
+;
+
+statement_list_nonempty:
+      statement { $$ = SingleStatementSemanticAction($1); }
+    | statement_list_nonempty statement { $$ = AppendStatementSemanticAction($1, $2); }
 ;
 
 define:
@@ -137,11 +147,11 @@ text:
 ;
 
 ordered_list_statement:
-    ordered_item_list { $$ = OrderedListSemanticAction($1); }
+    ordered_item_list                  { $$ = OrderedListSemanticAction($1); }
 ;
 
 unordered_list_statement:
-    bullet_item_list { $$ = UnorderedListSemanticAction($1); }
+    bullet_item_list                   { $$ = UnorderedListSemanticAction($1); }
 ;
 
 ordered_item_list:
