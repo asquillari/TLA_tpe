@@ -165,17 +165,19 @@ Card* CardSemanticAction(ParameterList* attrs, StatementList* body) {
 }
 
 // Lista ordenada
-OrderedList* OrderedListSemanticAction(ListItem* items) {
+OrderedList* OrderedListSemanticAction(char* itemsText) {
+    ListItem* items = ParseListItems(itemsText);
     OrderedList* orderedList = calloc(1, sizeof(OrderedList));
-	orderedList->items = items;
-	return orderedList;
+    orderedList->items = items;
+    return orderedList;
 }
 
 // Lista no ordenada
-UnorderedList* UnorderedListSemanticAction(ListItem* items) {
+UnorderedList* UnorderedListSemanticAction(char* itemsText) {
+    ListItem* items = ParseListItems(itemsText);
     UnorderedList* unorderedList = calloc(1, sizeof(UnorderedList));
-	unorderedList->items = items;
-	return unorderedList;
+    unorderedList->items = items;
+    return unorderedList;
 }
 
 // Parámetros
@@ -247,4 +249,40 @@ ListItem* createListItem(char* content) {
     item->content = content;
     item->next = NULL;
     return item;
+}
+
+
+ListItem* ParseListItems(char* itemsText) {
+    ListItem* head = NULL;
+    ListItem* tail = NULL;
+    char* line = strtok(itemsText, "\r\n");
+    while (line != NULL) {
+        char* content = line;
+
+        // Quitar prefijo numérico "n. "
+        if (isdigit((unsigned char)content[0])) {
+            char* dot = strchr(content, '.');
+            if (dot && dot[1] == ' ') {
+                content = dot + 2;
+            }
+        }
+        // Quitar prefijo de viñeta "* "
+        else if (content[0] == '*' && content[1] == ' ') {
+            content += 2;
+        }
+
+        // Creamos un nodo ListItem con el contenido limpio
+        ListItem* item = ListItemSemanticAction(strdup(content));
+        // Enlazamos al final de la lista
+        if (head == NULL) {
+            head = tail = item;
+        } else {
+            tail->next = item;
+            tail = item;
+        }
+
+        line = strtok(NULL, "\r\n");
+    }
+
+    return head;
 }

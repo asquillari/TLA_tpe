@@ -6,8 +6,44 @@
 %option stack
 
 %x MULTILINE_COMMENT
+%x ORDERED_LIST BULLET_LIST
 
 %%
+
+^[0-9]+\.[ \t].*\r?\n      {
+   BEGIN(ORDERED_LIST);
+   yymore();  /* empezamos a acumular en yytext */
+}
+
+<ORDERED_LIST>^[0-9]+\.[ \t].*\r?\n  {
+   yymore();  /* seguimos acumulando cada línea adicional */
+}
+
+<ORDERED_LIST>[^0-9]         {
+   /* cualquier cosa que no sea un nuevo ítem rompe la lista */
+   BEGIN(INITIAL);
+   /* yytext ya tiene todas las líneas; devolvemos un token atómico */
+   ctx()->semanticValue->string = strdup(yytext);
+   return ORDERED_LIST;
+}
+
+
+^\*[ \t][^\r\n]*\r?\n {
+    /* entramos en estado BULLET_LIST y acumulamos */
+    BEGIN(BULLET_LIST);
+    yymore();
+}
+<BULLET_LIST>^\*[ \t][^\r\n]*\r?\n {
+    /* seguimos acumulando cada línea que empiece con “* ” */
+    yymore();
+}
+<BULLET_LIST>.* {
+    /* al no coincidir con “* ”, salimos y emitimos todo el bloque */
+    BEGIN(INITIAL);
+    yylval.string = strdup(yytext);
+    return BULLET_LIST;
+}
+
 
 "/*"                             { BEGIN(MULTILINE_COMMENT); BeginMultilineCommentLexemeAction(ctx()); }
 <MULTILINE_COMMENT>"*/"          { EndMultilineCommentLexemeAction(ctx()); BEGIN(INITIAL); }

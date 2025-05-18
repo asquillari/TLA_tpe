@@ -38,13 +38,13 @@
 %token <string> ORDERED_ITEM BULLET
 %token <string> QUOTED_VALUE UNQUOTED_VALUE IDENTIFIER TEXT
 %token <string> VARIABLE
-
-%left ORDERED_ITEM BULLET
+%token <string> ORDERED_LIST BULLET_LIST
 
 %type <program> program
-%type <node> statement
-%type <node> atomic_statement 
+%type <node> statement atomic_statement
 %type <stmt_list> statement_list statement_list_nonempty
+%type <ordered_list>   ordered_list_statement
+%type <unordered_list> unordered_list_statement
 %type <define> define
 %type <use> use
 %type <form> form
@@ -52,23 +52,18 @@
 %type <row> row
 %type <column> column
 %type <nav> nav
-%type <ordered_list> ordered_list_statement
-%type <unordered_list> unordered_list_statement
 %type <image> image
 %type <text> text
 %type <button> button
 %type <card> card
 
 %type <parameter_list> maybe_parameters parameters parameter_list
-%type <list_item_list> ordered_item_list bullet_item_list
 
 %%
 
 program:
     statement_list
-    {
-        $$ = ProgramSemanticAction(currentCompilerState(), $1);
-    }
+    { $$ = ProgramSemanticAction(currentCompilerState(), $1); }
 ;
 
 statement_list:
@@ -91,19 +86,16 @@ atomic_statement:
   | card                               { $$ = (struct Node*)$1; }
 ;
 
-statement:
-atomic_statement
-       { $$ = $1; }
-  | ordered_list_statement
-       { $$ = (struct Node*)$1; }
-  | unordered_list_statement
-       { $$ = (struct Node*)$1; }
-;
+ statement:
+     atomic_statement                   { $$ = $1; }
+   | ordered_list_statement             { $$ = (struct Node*)$1; }
+   | unordered_list_statement           { $$ = (struct Node*)$1; }
+ ;
 
-statement_list_nonempty:
-      statement { $$ = SingleStatementSemanticAction($1); }
-    | statement_list_nonempty statement { $$ = AppendStatementSemanticAction($1, $2); }
-;
+ statement_list_nonempty:
+     statement                          { $$ = SingleStatementSemanticAction($1); }
+   | statement_list_nonempty statement  { $$ = AppendStatementSemanticAction($1, $2); }
+ ;
 
 define:
     DEFINE IDENTIFIER maybe_parameters statement_list_nonempty END
@@ -147,26 +139,15 @@ text:
 ;
 
 ordered_list_statement:
-    ordered_item_list                  { $$ = OrderedListSemanticAction($1); }
+    ORDERED_LIST
+    { $$ = OrderedListSemanticAction($1); }
 ;
 
 unordered_list_statement:
-    bullet_item_list                   { $$ = UnorderedListSemanticAction($1); }
+    BULLET_LIST
+    { $$ = UnorderedListSemanticAction($1); }
 ;
 
-ordered_item_list:
-    ORDERED_ITEM NEWLINE
-    { $$ = ListItemSemanticAction($1); }
-  | ordered_item_list ORDERED_ITEM NEWLINE
-    { $$ = PrependOrderedItemSemanticAction($1, $2); }
-;
-
-bullet_item_list:
-    BULLET NEWLINE
-    { $$ = ListItemSemanticAction($1); }
-  | bullet_item_list BULLET NEWLINE
-    { $$ = PrependBulletItemSemanticAction($2, $1); }
-;
 
 image:
     IMG OPEN_PAREN parameters CLOSE_PAREN
@@ -198,12 +179,18 @@ column:
     { $$ = ColumnSemanticAction($3, $5); }
 ;
 
-nav:
-    NAV OPEN_BRACE parameters CLOSE_BRACE bullet_item_list END
-   { $$ = NavSemanticAction($3, $5); }
-  | NAV bullet_item_list  END
-    { $$ = NavSemanticAction(NULL, $2); }
-;
+ nav:
+     NAV OPEN_BRACE parameters CLOSE_BRACE unordered_list_statement END
+     {
+         UnorderedList* ul = (UnorderedList*)$5;
+         $$ = NavSemanticAction($3, ul->items);
+     }
+   | NAV unordered_list_statement END
+     {
+         UnorderedList* ul = (UnorderedList*)$2;
+         $$ = NavSemanticAction(NULL, ul->items);
+     }
+ ;
 
 
 button:
