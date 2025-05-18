@@ -50,11 +50,13 @@
 \"[^\"]*\"                       { return QuotedValueLexemeAction(ctx()); }     
 \'[^\']*\'                       { return QuotedParameterValueLexemeAction(ctx()); } 
 
+[[:space:]]+                     { IgnoredLexemeAction(ctx()); }
+
 [a-zA-Z_][a-zA-Z0-9_]*           { return IdentifierLexemeAction(ctx()); }
 [^\s:},#@()\[\]|"='`\n]+         { return UnquotedValueLexemeAction(ctx()); }
 
 \n                               { return NewlineLexemeAction(ctx()); }
-[[:space:]]+                     { IgnoredLexemeAction(ctx()); }
+
 
 
 .                                { return UnknownLexemeAction(ctx()); }

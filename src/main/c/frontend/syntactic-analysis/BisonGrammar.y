@@ -130,10 +130,10 @@ parameter_list:
 ;
 
 text:
-      HEADER_1 TEXT { $$ = TextSemanticAction($2, 1); }
-    | HEADER_2 TEXT { $$ = TextSemanticAction($2, 2); }
-    | HEADER_3 TEXT { $$ = TextSemanticAction($2, 3); }
-    | TEXT { $$ = TextSemanticAction($1, 0); }
+      HEADER_1 QUOTED_VALUE { $$ = TextSemanticAction($2, 1); }
+    | HEADER_2 QUOTED_VALUE { $$ = TextSemanticAction($2, 2); }
+    | HEADER_3 QUOTED_VALUE { $$ = TextSemanticAction($2, 3); }
+    | QUOTED_VALUE { $$ = TextSemanticAction($1, 0); }
 ;
 
 ordered_list_statement:
