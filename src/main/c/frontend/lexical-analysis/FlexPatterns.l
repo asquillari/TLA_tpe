@@ -30,7 +30,7 @@
 "@table"                         {return TABLE_BEGIN;}
 
 
-"\{\{[a-zA-Z_][a-zA-Z0-9_]*\}\}" { return VariableLexemeAction(ctx()); }
+"{{"[a-zA-Z_][a-zA-Z0-9_]*"}}"   { return VariableLexemeAction(ctx()); }
 
 "###"                            { return HeaderLexemeAction(ctx(), HEADER_3); }
 "##"                             { return HeaderLexemeAction(ctx(), HEADER_2); }
@@ -55,7 +55,7 @@
 [[:space:]]+                     { IgnoredLexemeAction(ctx()); }
 
 [a-zA-Z_][a-zA-Z0-9_]*           { return IdentifierLexemeAction(ctx()); }
-[^\s:},#@()\[\]|"='`\n]+         { return UnquotedValueLexemeAction(ctx()); }
+[^ \t\r\n\f\v:},#@()\[\]|"='`]+  { return UnquotedValueLexemeAction(ctx()); }
 
 \n                               { return NewlineLexemeAction(ctx()); }
 
