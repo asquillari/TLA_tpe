@@ -66,4 +66,6 @@ Token UnquotedValueLexemeAction(LexicalAnalyzerContext * ctx);
 
 Token NewlineLexemeAction(LexicalAnalyzerContext * ctx);
 
+Token ListLexemeAction(LexicalAnalyzerContext * ctx, char *text, Token token);
+
 #endif

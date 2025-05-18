@@ -1,6 +1,3 @@
-### "titulo Lista No Numerada"
-{
-•⁠  "⁠Elemento A"
-•⁠ "⁠Elemento B"
-•"⁠⁠Elemento C"
-}
+* "Primer viñeta de prueba"
+* "Segunda viñeta de prueba"
+* "Tercera viñeta de prueba"

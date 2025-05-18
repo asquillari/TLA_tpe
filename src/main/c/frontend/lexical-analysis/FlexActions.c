@@ -187,6 +187,17 @@ Token BulletLexemeAction(LexicalAnalyzerContext * ctx) {
 	return BULLET;
 }
 
+Token ListLexemeAction(LexicalAnalyzerContext * ctx, char *text, Token token) {
+    // loggea el contexto (lexema, línea, etc.)
+    _logLexicalAnalyzerContext(__FUNCTION__, ctx);
+    // asigna el bloque completo duplicado
+    ctx->semanticValue->string = text;
+    ctx->semanticValue->token  = token;
+    // libera la estructura de contexto pero NO libera `text`
+    destroyLexicalAnalyzerContext(ctx);
+    return token;
+}
+
 Token StyleLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
 	ctx->semanticValue->token = token;

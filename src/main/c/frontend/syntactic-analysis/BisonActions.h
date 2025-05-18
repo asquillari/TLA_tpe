@@ -44,8 +44,8 @@ Button* ButtonSemanticAction(ParameterList* attrs, StatementList* body);
 Card* CardSemanticAction(ParameterList* attrs, StatementList* body);
 
 // Listas
-OrderedList* OrderedListSemanticAction(ListItem* items);
-UnorderedList* UnorderedListSemanticAction(ListItem* items);
+OrderedList* OrderedListSemanticAction(char* itemsText);
+UnorderedList* UnorderedListSemanticAction(char* itemsText);
 
 // Parámetros y argumentos
 ParameterList* EmptyParameterListSemanticAction();
@@ -76,5 +76,7 @@ TableCellList* SingleTableCellAction(TableCell* cell);
 TableCellList* AppendTableCellAction(TableCellList* list, TableCell* cell);
 TableCell* TableCellSemanticAction(char* value);
 
+
+ListItem* ParseListItems(char* itemsText);
 
 #endif
