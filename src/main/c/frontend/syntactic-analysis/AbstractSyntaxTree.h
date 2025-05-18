@@ -23,6 +23,12 @@ typedef struct Card Card;
 typedef struct ListItem ListItem;
 typedef struct OrderedList OrderedList;
 typedef struct UnorderedList UnorderedList;
+typedef struct Table Table;
+typedef struct TableRow TableRow;
+typedef struct TableCell TableCell;
+typedef struct TableRowList TableRowList;
+typedef struct TableCellList TableCellList;
+
 
 // -----------------------------
 // Enum de tipos de nodo
@@ -41,6 +47,7 @@ typedef enum NodeType {
     NODE_UNORDERED_LIST,
     NODE_BUTTON,
     NODE_CARD,
+    NODE_TABLE,
 } NodeType;
 
 // -----------------------------
@@ -62,6 +69,7 @@ struct Node {
         Image* image;
         OrderedList* ordered_list;
         UnorderedList* unordered_list;
+        Table* table;
     };
 };
 
@@ -173,6 +181,29 @@ struct OrderedList {
 struct UnorderedList {
     ListItem* items;
 };
+
+typedef struct TableCell {
+    char* content;
+} TableCell;
+
+typedef struct TableCellList {
+    TableCell* cell;
+    struct TableCellList* next;
+} TableCellList;
+
+typedef struct TableRow {
+    TableCellList* cells;
+} TableRow;
+
+typedef struct TableRowList {
+    TableRow* row;
+    struct TableRowList* next;
+} TableRowList;
+
+typedef struct Table {
+    TableRowList* rows;
+} Table;
+
 
 // -----------------------------
 // Funciones de creación y destrucción

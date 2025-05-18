@@ -1,4 +1,5 @@
+@table
 | "Nombre "     | "Edad" | "Ciudad" |
-|-----------|------|--------|
 | "Juan"        | "25"   | "Buenos Aires"|
-| "María"       | "30"   | "Córdoba"     |
+| "Maria"       | "30"   | "Cordoba"     |
+@end

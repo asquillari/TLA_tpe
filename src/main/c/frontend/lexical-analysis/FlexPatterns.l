@@ -27,6 +27,8 @@
 "@card"                          { return CardLexemeAction(ctx()); }
 "@nav"                           { return NavLexemeAction(ctx()); }
 "@item"                          { return ItemLexemAction(ctx()); }
+"@table"                         {return TABLE_BEGIN;}
+
 
 "\{\{[a-zA-Z_][a-zA-Z0-9_]*\}\}" { return VariableLexemeAction(ctx()); }
 

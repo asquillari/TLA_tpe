@@ -30,6 +30,12 @@
 	struct UnorderedList* unordered_list;
 	struct ParameterList* parameter_list;
 	struct ListItem*     list_item_list;
+
+    struct Table* table;
+	struct TableRow* table_row;
+	struct TableCell* table_cell;
+	struct TableRowList* table_row_list;
+	struct TableCellList* table_cell_list;
 }
 
 %token <token> DEFINE USE FORM IMG FOOTER ROW COLUMN NAV ITEM END BUTTON CARD
@@ -59,7 +65,20 @@
 %type <parameter_list> maybe_parameters parameters parameter_list
 %type <list_item_list> ordered_item_list bullet_item_list
 
+%token <token> TABLE_BEGIN TABLE_END
+
+%type <table> table
+%type <table_row> table_row
+%type <table_cell> table_cell
+%type <table_row_list> table_row_list
+%type <table_cell_list> nonempty_table_cell_list
+
+
+%left PIPE
+%nonassoc TABLE_ROW_END
+
 %%
+
 
 program:
     statement_list
@@ -93,6 +112,44 @@ statement:
   | text { $$ = (struct Node*)$1; }
   | button { $$ = (struct Node*)$1; }
   | card { $$ = (struct Node*)$1; }
+  | table { $$ = (struct Node*)$1; }
+;
+
+table:
+    TABLE_BEGIN table_row_list END
+    {
+        $$ = TableSemanticAction($2);
+    }
+;
+
+
+table_row_list:
+      table_row
+        { $$ = SingleTableRowAction($1); }
+    | table_row_list table_row
+        { $$ = AppendTableRowAction($1, $2); }
+;
+
+
+table_row:
+    PIPE nonempty_table_cell_list PIPE 
+    {
+        $$ = TableRowSemanticAction($2);
+    }
+;
+
+nonempty_table_cell_list:
+      table_cell
+        { $$ = SingleTableCellAction($1); }
+    | nonempty_table_cell_list PIPE table_cell
+        { $$ = AppendTableCellAction($1, $3); }
+;
+
+table_cell:
+    QUOTED_VALUE
+    {
+        $$ = TableCellSemanticAction($1);
+    }
 ;
 
 define:
@@ -124,9 +181,9 @@ parameters:
 
 parameter_list:
       IDENTIFIER COLON IDENTIFIER EQUALS QUOTED_VALUE
-    { $$ = SingleParameterSemanticAction($1, $3, $5); }
+        { $$ = SingleParameterSemanticAction($1, $3, $5); }
     | IDENTIFIER COLON IDENTIFIER EQUALS QUOTED_VALUE COMMA parameter_list
-    { $$ = AppendParameterSemanticAction($7, $1, $3, $5); }
+        { $$ = AppendParameterSemanticAction($7, $1, $3, $5); }
 ;
 
 text:
@@ -145,17 +202,17 @@ unordered_list_statement:
 ;
 
 ordered_item_list:
-    ORDERED_ITEM NEWLINE
-    { $$ = ListItemSemanticAction($1); }
-  | ordered_item_list ORDERED_ITEM NEWLINE
-    { $$ = PrependOrderedItemSemanticAction($1, $2); }
+      ORDERED_ITEM NEWLINE
+        { $$ = ListItemSemanticAction($1); }
+    | ordered_item_list ORDERED_ITEM NEWLINE
+        { $$ = PrependOrderedItemSemanticAction($1, $2); }
 ;
 
 bullet_item_list:
-    BULLET NEWLINE
-    { $$ = ListItemSemanticAction($1); }
-  | bullet_item_list BULLET NEWLINE
-    { $$ = PrependBulletItemSemanticAction($2, $1); }
+      BULLET NEWLINE
+        { $$ = ListItemSemanticAction($1); }
+    | bullet_item_list BULLET NEWLINE
+        { $$ = PrependBulletItemSemanticAction($2, $1); }
 ;
 
 image:
@@ -171,7 +228,6 @@ form:
   | FORM IDENTIFIER statement_list_nonempty END
     { $$ = FormSemanticAction($2, NULL, NULL, $3); }
 ;
-
 
 footer:
     FOOTER OPEN_BRACE parameters CLOSE_BRACE statement_list_nonempty END
@@ -190,11 +246,10 @@ column:
 
 nav:
     NAV OPEN_BRACE parameters CLOSE_BRACE bullet_item_list END
-   { $$ = NavSemanticAction($3, $5); }
-  | NAV bullet_item_list  END
+    { $$ = NavSemanticAction($3, $5); }
+  | NAV bullet_item_list END
     { $$ = NavSemanticAction(NULL, $2); }
 ;
-
 
 button:
     BUTTON OPEN_BRACE parameters CLOSE_BRACE statement_list_nonempty END

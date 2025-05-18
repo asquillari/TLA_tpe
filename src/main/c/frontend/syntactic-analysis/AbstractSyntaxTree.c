@@ -92,6 +92,27 @@ void releaseNode(Node* node) {
             releaseListItems(node->unordered_list->items);
             free(node->unordered_list);
             break;
+            case NODE_TABLE:
+            if (node->table != NULL) {
+                TableRowList* row = node->table->rows;
+                while (row != NULL) {
+                    TableRowList* nextRow = row->next;
+                    TableCellList* cell = row->row->cells;
+                    while (cell != NULL) {
+                        TableCellList* nextCell = cell->next;
+                        free(cell->cell->content);
+                        free(cell->cell);
+                        free(cell);
+                        cell = nextCell;
+                    }
+                    free(row->row);
+                    free(row);
+                    row = nextRow;
+                }
+                free(node->table);
+            }
+            break;
+        
         default:
             break;
     }

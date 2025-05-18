@@ -66,4 +66,15 @@ ListItem* EmptyBulletItemListSemanticAction(void);
 
 ListItem* createListItem(char* content);
 
+
+//Table
+Table* TableSemanticAction(TableRowList* rows);
+TableRow* TableRowSemanticAction(TableCellList* cells);
+TableRowList* SingleTableRowAction(TableRow* row);
+TableRowList* AppendTableRowAction(TableRowList* list, TableRow* row);
+TableCellList* SingleTableCellAction(TableCell* cell);
+TableCellList* AppendTableCellAction(TableCellList* list, TableCell* cell);
+TableCell* TableCellSemanticAction(char* value);
+
+
 #endif

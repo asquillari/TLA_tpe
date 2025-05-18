@@ -248,3 +248,72 @@ ListItem* createListItem(char* content) {
     item->next = NULL;
     return item;
 }
+
+
+Table* TableSemanticAction(TableRowList* rows) {
+    Table* table = (Table*)malloc(sizeof(Table));
+    table->rows = rows;
+    return table;
+}
+
+TableRow* TableRowSemanticAction(TableCellList* cells) {
+    TableRow* row = (TableRow*)malloc(sizeof(TableRow));
+    row->cells = cells;
+    return row;
+}
+
+TableRowList* SingleTableRowAction(TableRow* row) {
+    TableRowList* list = (TableRowList*)malloc(sizeof(TableRowList));
+    list->row = row;
+    list->next = NULL;
+    return list;
+}
+
+TableRowList* AppendTableRowAction(TableRowList* list, TableRow* row) {
+    if (list == NULL) {
+        return SingleTableRowAction(row);
+    }
+
+    TableRowList* head = list;
+    while (list->next != NULL) {
+        list = list->next;
+    }
+
+    TableRowList* newNode = (TableRowList*)malloc(sizeof(TableRowList));
+    newNode->row = row;
+    newNode->next = NULL;
+    list->next = newNode;
+
+    return head;
+}
+
+TableCellList* SingleTableCellAction(TableCell* cell) {
+    TableCellList* list = (TableCellList*)malloc(sizeof(TableCellList));
+    list->cell = cell;
+    list->next = NULL;
+    return list;
+}
+
+TableCellList* AppendTableCellAction(TableCellList* list, TableCell* cell) {
+    if (list == NULL) {
+        return SingleTableCellAction(cell);
+    }
+
+    TableCellList* head = list;
+    while (list->next != NULL) {
+        list = list->next;
+    }
+
+    TableCellList* newNode = (TableCellList*)malloc(sizeof(TableCellList));
+    newNode->cell = cell;
+    newNode->next = NULL;
+    list->next = newNode;
+
+    return head;
+}
+
+TableCell* TableCellSemanticAction(char* value) {
+    TableCell* cell = (TableCell*)malloc(sizeof(TableCell));
+    cell->content = value; 
+    return cell;
+}
