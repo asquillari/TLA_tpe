@@ -147,7 +147,15 @@ void releaseParameterList(ParameterList* params) {
 void releaseListItems(ListItem* items) {
     while (items != NULL) {
         ListItem* next = items->next;
-        free(items->content);
+        
+        if (items->content != NULL) {
+            free(items->content);
+        }
+
+        if (items->parameters != NULL) {
+            releaseParameterList(items->parameters);
+        }
+
         free(items);
         items = next;
     }

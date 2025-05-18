@@ -142,12 +142,13 @@ Column* ColumnSemanticAction(ParameterList* attrs, StatementList* body) {
 }
 
 // Nav
-Nav* NavSemanticAction(ParameterList* attrs, ListItem* items) {
+Nav* NavSemanticAction(ParameterList* style, ListItem* items) {
     Nav* nav = calloc(1, sizeof(Nav));
-	nav->attributes = attrs;
-	nav->items = items;
-	return nav;
+    nav->attributes = style;
+    nav->items = items;
+    return nav;
 }
+
 
 // Button
 Button* ButtonSemanticAction(ParameterList* attrs, StatementList* body) {
@@ -355,4 +356,23 @@ ListItem* ParseListItems(char* itemsText) {
     }
 
     return head;
+}
+
+ListItem* SingleListItemNodeSemanticAction(ListItem* item) {
+    return item;
+}
+
+ListItem* AppendListItemNodeSemanticAction(ListItem* list, ListItem* item) {
+    if (list == NULL) return item;
+    ListItem* current = list;
+    while (current->next != NULL)
+        current = current->next;
+    current->next = item;
+    return list;
+}
+
+ListItem* ListItemSemanticActionWithParameters(ParameterList* parameters) {
+    ListItem* item = calloc(1, sizeof(ListItem));
+    item->parameters = parameters;
+    return item;
 }

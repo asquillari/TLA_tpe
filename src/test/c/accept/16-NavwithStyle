@@ -1,8 +1,4 @@
-/*
-el primer parametro es el label y el segundo el link
-*/
-
-@nav
+@nav{background: red;}
     @item('Inicio', 'home.html')
     @item('Servicios', 'servicios.html')
     @item('Contacto', 'contacto.html')

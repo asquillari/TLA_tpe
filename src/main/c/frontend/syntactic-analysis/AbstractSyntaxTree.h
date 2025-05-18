@@ -170,10 +170,12 @@ struct Image {
 };
 
 
-struct ListItem {
-    char* content;
+typedef struct ListItem {
+    ParameterList* parameters;
+    char* content; 
     ListItem* next;
-};
+} ListItem;
+
 
 struct OrderedList {
     ListItem* items;

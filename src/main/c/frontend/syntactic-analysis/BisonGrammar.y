@@ -30,7 +30,6 @@
 	struct UnorderedList* unordered_list;
 	struct ParameterList* parameter_list;
 	struct ListItem* list_item_list;
-
 	struct Table* table;
 	struct TableRow* table_row;
 	struct TableCell* table_cell;
@@ -73,6 +72,8 @@
 %type <parameter_list> maybe_parameters parameter_list
 %type <parameter_list> style_list style_item_list
 %type <parameter_list> argument_list argument_list_nonempty
+%type <list_item_list> nav_item_list
+%type <list_item> nav_item
 
 %%
 
@@ -99,19 +100,19 @@ atomic_statement:
   | text                               { $$ = (struct Node*)$1; }
   | button                             { $$ = (struct Node*)$1; }
   | card                               { $$ = (struct Node*)$1; }
-  | table { $$ = (struct Node*)$1; }
+  | table                              { $$ = (struct Node*)$1; }
 ;
 
- statement:
-     atomic_statement                   { $$ = $1; }
-   | ordered_list_statement             { $$ = (struct Node*)$1; }
-   | unordered_list_statement           { $$ = (struct Node*)$1; }
- ;
+statement:
+    atomic_statement                   { $$ = $1; }
+  | ordered_list_statement             { $$ = (struct Node*)$1; }
+  | unordered_list_statement           { $$ = (struct Node*)$1; }
+;
 
- statement_list_nonempty:
-     statement                          { $$ = SingleStatementSemanticAction($1); }
-   | statement_list_nonempty statement  { $$ = AppendStatementSemanticAction($1, $2); }
- ;
+statement_list_nonempty:
+    statement                          { $$ = SingleStatementSemanticAction($1); }
+  | statement_list_nonempty statement  { $$ = AppendStatementSemanticAction($1, $2); }
+;
 
 define:
     DEFINE IDENTIFIER maybe_parameters statement_list_nonempty END
@@ -176,7 +177,6 @@ text:
     | VARIABLE                { $$ = TextSemanticAction($1, 0); }
 ;
 
-
 ordered_list_statement:
     ORDERED_LIST
     { $$ = OrderedListSemanticAction($1); }
@@ -186,7 +186,6 @@ unordered_list_statement:
     BULLET_LIST
     { $$ = UnorderedListSemanticAction($1); }
 ;
-
 
 image:
     IMG OPEN_PAREN QUOTED_VALUE COMMA QUOTED_VALUE CLOSE_PAREN
@@ -203,9 +202,12 @@ form:
 ;
 
 footer:
-    FOOTER OPEN_BRACE style_list CLOSE_BRACE content_list END
-    { $$ = FooterSemanticAction($3, $5); }
+      FOOTER OPEN_BRACE style_list CLOSE_BRACE content_list END
+        { $$ = FooterSemanticAction($3, $5); }
+    | FOOTER content_list END
+        { $$ = FooterSemanticAction(NULL, $2); }
 ;
+
 
 row:
     ROW content_list END
@@ -218,27 +220,44 @@ column:
 ;
 
 nav:
-     NAV OPEN_BRACE parameter_list CLOSE_BRACE unordered_list_statement END
-     {
-         UnorderedList* ul = (UnorderedList*)$5;
-         $$ = NavSemanticAction($3, ul->items);
-     }
-   | NAV unordered_list_statement END
-     {
-         UnorderedList* ul = (UnorderedList*)$2;
-         $$ = NavSemanticAction(NULL, ul->items);
-     }
- ;
+      NAV OPEN_BRACE style_list CLOSE_BRACE nav_item_list END
+        { $$ = NavSemanticAction($3, $5); }
+    | NAV nav_item_list END
+        { $$ = NavSemanticAction(NULL, $2); }
+;
+
+
+
+nav_item_list:
+      nav_item { $$ = SingleListItemNodeSemanticAction($1); }
+    | nav_item_list nav_item { $$ = AppendListItemNodeSemanticAction($1, $2); }
+;
+
+nav_item:
+    ITEM OPEN_PAREN QUOTED_VALUE COMMA QUOTED_VALUE CLOSE_PAREN
+    {
+        ParameterList* params = SingleParameterSemanticAction("label", NULL, $3);
+        params = AppendParameterSemanticAction(params, "link", NULL, $5);
+        $$ = ListItemSemanticActionWithParameters(params);
+    }
+;
+
 
 button:
-    BUTTON OPEN_BRACE style_list CLOSE_BRACE content_list END
-    { $$ = ButtonSemanticAction($3, $5); }
+      BUTTON OPEN_BRACE style_list CLOSE_BRACE content_list END
+        { $$ = ButtonSemanticAction($3, $5); }
+    | BUTTON content_list END
+        { $$ = ButtonSemanticAction(NULL, $2); }
 ;
 
+
 card:
-    CARD OPEN_BRACE style_list CLOSE_BRACE content_list END
-    { $$ = CardSemanticAction($3, $5); }
+      CARD OPEN_BRACE style_list CLOSE_BRACE content_list END
+        { $$ = CardSemanticAction($3, $5); }
+    | CARD content_list END
+        { $$ = CardSemanticAction(NULL, $2); }
 ;
+
 
 table:
     TABLE_BEGIN table_row_list END

@@ -78,5 +78,9 @@ TableCell* TableCellSemanticAction(char* value);
 
 
 ListItem* ParseListItems(char* itemsText);
+ListItem* SingleListItemNodeSemanticAction(ListItem* item);
+ListItem* AppendListItemNodeSemanticAction(ListItem* list, ListItem* item);
+ListItem* ListItemSemanticActionWithParameters(ParameterList* parameters);
+
 
 #endif
