@@ -127,6 +127,8 @@ parameter_list:
     { $$ = SingleParameterSemanticAction($1, $3, $5); }
     | IDENTIFIER COLON IDENTIFIER EQUALS QUOTED_VALUE COMMA parameter_list
     { $$ = AppendParameterSemanticAction($7, $1, $3, $5); }
+    | IDENTIFIER COLON UNQUOTED_VALUE
+    { $$ = SingleParameterSemanticAction($1, NULL, $3); }
 ;
 
 text:
@@ -134,6 +136,7 @@ text:
     | HEADER_2 TEXT { $$ = TextSemanticAction($2, 2); }
     | HEADER_3 TEXT { $$ = TextSemanticAction($2, 3); }
     | TEXT { $$ = TextSemanticAction($1, 0); }
+    | QUOTED_VALUE { $$ = TextSemanticAction($1, 0); }
 ;
 
 ordered_list_statement:
@@ -160,9 +163,7 @@ bullet_item_list:
 
 image:
     IMG OPEN_PAREN QUOTED_VALUE COMMA QUOTED_VALUE CLOSE_PAREN
-    {
-        $$ = ImageSemanticAction($3 , $5);  
-    }
+    {  $$ = ImageSemanticAction($3 , $5);  }
 ;
 
 form:
