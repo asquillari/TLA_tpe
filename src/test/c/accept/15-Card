@@ -1,8 +1,7 @@
 @define tarjetaDestacada(titulo, texto)
 @card { background: red; border: rounded; }
-# {{titulo}}
+#{{titulo}}
 {{texto}}
 @end
 @end
 
-@use tarjetaDestacada('#Bienvenidos', '##Gracias por visitar nuestro sitio.')

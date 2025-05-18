@@ -6,8 +6,18 @@
 %option stack
 
 %x MULTILINE_COMMENT
+%x ORDERED_LIST BULLET_LIST
 
 %%
+^([0-9]+[[:space:]]*\.[[:space:]]*[^\r\n]*(\r?\n|$))+ {
+    char *dup = strdup(yytext);                  
+    return ListLexemeAction(ctx(), dup, ORDERED_LIST);
+}
+
+^(\*[[:space:]][^\r\n]*(\r?\n|$))+     {
+    char *dup = strdup(yytext);
+    return ListLexemeAction(ctx(), dup, BULLET_LIST);
+}
 
 "/*"                             { BEGIN(MULTILINE_COMMENT); BeginMultilineCommentLexemeAction(ctx()); }
 <MULTILINE_COMMENT>"*/"          { EndMultilineCommentLexemeAction(ctx()); BEGIN(INITIAL); }
@@ -27,15 +37,17 @@
 "@card"                          { return CardLexemeAction(ctx()); }
 "@nav"                           { return NavLexemeAction(ctx()); }
 "@item"                          { return ItemLexemAction(ctx()); }
+"@table"                         {return TABLE_BEGIN;}
 
-"\{\{[a-zA-Z_][a-zA-Z0-9_]*\}\}" { return VariableLexemeAction(ctx()); }
+
+"{{"[a-zA-Z_][a-zA-Z0-9_]*"}}"   { return VariableLexemeAction(ctx()); }
 
 "###"                            { return HeaderLexemeAction(ctx(), HEADER_3); }
 "##"                             { return HeaderLexemeAction(ctx(), HEADER_2); }
 "#"                              { return HeaderLexemeAction(ctx(), HEADER_1); }
 
 [0-9]+[[:space:]]*\.[[:space:]]* { return OrderedItemLexemeAction(ctx()); }
-"\u2022"                         { return BulletLexemeAction(ctx()); }
+"*"                         { return BulletLexemeAction(ctx()); }
 
 "{"                              { return StyleLexemeAction(ctx(), OPEN_BRACE); }
 "}"                              { return StyleLexemeAction(ctx(), CLOSE_BRACE); }
@@ -50,11 +62,12 @@
 \"[^\"]*\"                       { return QuotedValueLexemeAction(ctx()); }     
 \'[^\']*\'                       { return QuotedParameterValueLexemeAction(ctx()); } 
 
-[a-zA-Z_][a-zA-Z0-9_]*           { return IdentifierLexemeAction(ctx()); }
-[^ \t\n\r:},#@()\[\]|"'=]+       { return UnquotedValueLexemeAction(ctx()); }
-
-\n                               { return NewlineLexemeAction(ctx()); }
 [[:space:]]+                     { IgnoredLexemeAction(ctx()); }
+
+[a-zA-Z_][a-zA-Z0-9_]*           { return IdentifierLexemeAction(ctx()); }
+[^[:space:]:},#@()\[\]|"='`\n]+    { return UnquotedValueLexemeAction(ctx()); }
+
+
 
 
 .                                { return UnknownLexemeAction(ctx()); }

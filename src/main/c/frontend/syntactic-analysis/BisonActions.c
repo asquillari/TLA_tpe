@@ -166,17 +166,19 @@ Card* CardSemanticAction(ParameterList* attrs, StatementList* body) {
 }
 
 // Lista ordenada
-OrderedList* OrderedListSemanticAction(ListItem* items) {
+OrderedList* OrderedListSemanticAction(char* itemsText) {
+    ListItem* items = ParseListItems(itemsText);
     OrderedList* orderedList = calloc(1, sizeof(OrderedList));
-	orderedList->items = items;
-	return orderedList;
+    orderedList->items = items;
+    return orderedList;
 }
 
 // Lista no ordenada
-UnorderedList* UnorderedListSemanticAction(ListItem* items) {
+UnorderedList* UnorderedListSemanticAction(char* itemsText) {
+    ListItem* items = ParseListItems(itemsText);
     UnorderedList* unorderedList = calloc(1, sizeof(UnorderedList));
-	unorderedList->items = items;
-	return unorderedList;
+    unorderedList->items = items;
+    return unorderedList;
 }
 
 // Parámetros
@@ -248,4 +250,109 @@ ListItem* createListItem(char* content) {
     item->content = content;
     item->next = NULL;
     return item;
+}
+
+
+Table* TableSemanticAction(TableRowList* rows) {
+    Table* table = (Table*)malloc(sizeof(Table));
+    table->rows = rows;
+    return table;
+}
+
+TableRow* TableRowSemanticAction(TableCellList* cells) {
+    TableRow* row = (TableRow*)malloc(sizeof(TableRow));
+    row->cells = cells;
+    return row;
+}
+
+TableRowList* SingleTableRowAction(TableRow* row) {
+    TableRowList* list = (TableRowList*)malloc(sizeof(TableRowList));
+    list->row = row;
+    list->next = NULL;
+    return list;
+}
+
+TableRowList* AppendTableRowAction(TableRowList* list, TableRow* row) {
+    if (list == NULL) {
+        return SingleTableRowAction(row);
+    }
+
+    TableRowList* head = list;
+    while (list->next != NULL) {
+        list = list->next;
+    }
+
+    TableRowList* newNode = (TableRowList*)malloc(sizeof(TableRowList));
+    newNode->row = row;
+    newNode->next = NULL;
+    list->next = newNode;
+
+    return head;
+}
+
+TableCellList* SingleTableCellAction(TableCell* cell) {
+    TableCellList* list = (TableCellList*)malloc(sizeof(TableCellList));
+    list->cell = cell;
+    list->next = NULL;
+    return list;
+}
+
+TableCellList* AppendTableCellAction(TableCellList* list, TableCell* cell) {
+    if (list == NULL) {
+        return SingleTableCellAction(cell);
+    }
+
+    TableCellList* head = list;
+    while (list->next != NULL) {
+        list = list->next;
+    }
+
+    TableCellList* newNode = (TableCellList*)malloc(sizeof(TableCellList));
+    newNode->cell = cell;
+    newNode->next = NULL;
+    list->next = newNode;
+
+    return head;
+}
+
+TableCell* TableCellSemanticAction(char* value) {
+    TableCell* cell = (TableCell*)malloc(sizeof(TableCell));
+    cell->content = value; 
+    return cell;
+}
+
+
+ListItem* ParseListItems(char* itemsText) {
+    ListItem* head = NULL;
+    ListItem* tail = NULL;
+    char* line = strtok(itemsText, "\r\n");
+    while (line != NULL) {
+        char* content = line;
+
+        // Quitar prefijo numérico "n. "
+        if (isdigit((unsigned char)content[0])) {
+            char* dot = strchr(content, '.');
+            if (dot && dot[1] == ' ') {
+                content = dot + 2;
+            }
+        }
+        // Quitar prefijo de viñeta "* "
+        else if (content[0] == '*' && content[1] == ' ') {
+            content += 2;
+        }
+
+        // Creamos un nodo ListItem con el contenido limpio
+        ListItem* item = ListItemSemanticAction(strdup(content));
+        // Enlazamos al final de la lista
+        if (head == NULL) {
+            head = tail = item;
+        } else {
+            tail->next = item;
+            tail = item;
+        }
+
+        line = strtok(NULL, "\r\n");
+    }
+
+    return head;
 }
