@@ -15,20 +15,20 @@
 <MULTILINE_COMMENT>[^*]+         { IgnoredLexemeAction(ctx()); }
 <MULTILINE_COMMENT>.             { IgnoredLexemeAction(ctx()); }
 
-"@define"                        { return DefineLexemeAction(ctx()); }
-"@use"                           { return UseLexemeAction(ctx()); }
-"@form"                          { return FormLexemeAction(ctx()); }
-"@img"                           { return ImgLexemeAction(ctx()); }
-"@row"                           { return RowLexemeAction(ctx()); }
-"@column"                        { return ColumnLexemeAction(ctx()); }
-"@end"                           { return EndLexemeAction(ctx()); }
-"@footer"                        { return FooterLexemeAction(ctx()); }
-"@button"                        { return ButtonLexemeAction(ctx()); }
-"@card"                          { return CardLexemeAction(ctx()); }
-"@nav"                           { return NavLexemeAction(ctx()); }
-"@item"                          { return ItemLexemAction(ctx()); }
-"@table"                         {return TABLE_BEGIN;}
-"@list"                          { return LIST_BEGIN; }
+"@define"                        { return TagLexemeAction(ctx(), DEFINE); }
+"@use"                           { return TagLexemeAction(ctx(), USE); }
+"@form"                          { return TagLexemeAction(ctx(), FORM); }
+"@img"                           { return TagLexemeAction(ctx(), IMG); }
+"@row"                           { return TagLexemeAction(ctx(), ROW); }
+"@column"                        { return TagLexemeAction(ctx(), COLUMN); }
+"@end"                           { return TagLexemeAction(ctx(), END); }
+"@footer"                        { return TagLexemeAction(ctx(), FOOTER); }
+"@button"                        { return TagLexemeAction(ctx(), BUTTON); }
+"@card"                          { return TagLexemeAction(ctx(), CARD); }
+"@nav"                           { return TagLexemeAction(ctx(), NAV); }
+"@item"                          { return TagLexemeAction(ctx(), ITEM); }
+"@table"                         { return TagLexemeAction(ctx(), TABLE_BEGIN); }
+"@list"                          { return TagLexemeAction(ctx(), LIST_BEGIN); }
 
 
 "{{"[a-zA-Z_][a-zA-Z0-9_]*"}}"   { return VariableLexemeAction(ctx()); }
@@ -46,8 +46,8 @@
 "["                              { return ActionLexemeAction(ctx(), OPEN_BRACKET); }
 "]"                              { return ActionLexemeAction(ctx(), CLOSE_BRACKET); }
 
-"\("                             { return OpenParenthesisLexemeAction(ctx()); }
-"\)"                             { return CloseParenthesisLexemeAction(ctx()); }
+"("                              { return ParenthesisLexemeAction(ctx(), OPEN_PAREN); }
+")"                              { return ParenthesisLexemeAction(ctx(), CLOSE_PAREN); }
 ":"                              { return ColonLexemeAction(ctx()); }
 ","                              { return CommaLexemeAction(ctx()); }
 "="                              { return EqualLexemeAction(ctx()); }
@@ -59,7 +59,7 @@
 [[:space:]]+                     { IgnoredLexemeAction(ctx()); }
 
 [a-zA-Z_][a-zA-Z0-9_]*           { return IdentifierLexemeAction(ctx()); }
-[^[:space:]:{},@()\[\]|"='`\n]+;    { return UnquotedValueLexemeAction(ctx()); }
+[^[:space:]:{},@()\[\]|"='`\n]+; { return UnquotedValueLexemeAction(ctx()); }
 
 
 

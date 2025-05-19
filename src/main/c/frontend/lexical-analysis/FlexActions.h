@@ -10,6 +10,7 @@
 #include "LexicalAnalyzerContext.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 
 /** Initialize module's internal state. */
@@ -28,19 +29,7 @@ void IgnoredLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 
 Token UnknownLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 
-
-Token DefineLexemeAction(LexicalAnalyzerContext * ctx);
-Token UseLexemeAction(LexicalAnalyzerContext * ctx);
-Token FormLexemeAction(LexicalAnalyzerContext * ctx);
-Token ImgLexemeAction(LexicalAnalyzerContext * ctx);
-Token RowLexemeAction(LexicalAnalyzerContext * ctx);
-Token ColumnLexemeAction(LexicalAnalyzerContext * ctx);
-Token EndLexemeAction(LexicalAnalyzerContext * ctx);
-Token FooterLexemeAction(LexicalAnalyzerContext * ctx);
-Token ButtonLexemeAction(LexicalAnalyzerContext * ctx);
-Token CardLexemeAction(LexicalAnalyzerContext * ctx);
-Token NavLexemeAction(LexicalAnalyzerContext * ctx);
-Token ItemLexemAction(LexicalAnalyzerContext * ctx);
+Token TagLexemeAction(LexicalAnalyzerContext *ctx, Token token);
 
 Token VariableLexemeAction(LexicalAnalyzerContext * ctx);
 
@@ -52,8 +41,7 @@ Token BulletLexemeAction(LexicalAnalyzerContext * ctx);
 Token StyleLexemeAction(LexicalAnalyzerContext * ctx, Token token);
 Token ActionLexemeAction(LexicalAnalyzerContext * ctx, Token token);
 
-Token OpenParenthesisLexemeAction(LexicalAnalyzerContext * ctx);
-Token CloseParenthesisLexemeAction(LexicalAnalyzerContext * ctx);
+Token ParenthesisLexemeAction(LexicalAnalyzerContext * ctx, Token token);
 Token ColonLexemeAction(LexicalAnalyzerContext * ctx);
 Token CommaLexemeAction(LexicalAnalyzerContext * ctx);
 Token EqualLexemeAction(LexicalAnalyzerContext * ctx);

@@ -63,96 +63,12 @@ Token UnknownLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	return UNKNOWN;
 }
 
-
-
-Token DefineLexemeAction(LexicalAnalyzerContext * ctx) {
+Token TagLexemeAction(LexicalAnalyzerContext *ctx, Token token) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->token = DEFINE;
+	ctx->semanticValue->token = token;
 	destroyLexicalAnalyzerContext(ctx);
-	return DEFINE;
+	return token;
 }
-
-Token UseLexemeAction(LexicalAnalyzerContext * ctx) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->token = USE;
-	destroyLexicalAnalyzerContext(ctx);
-	return USE;
-}
-
-Token FormLexemeAction(LexicalAnalyzerContext * ctx) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->token = FORM;
-	destroyLexicalAnalyzerContext(ctx);
-	return FORM;
-}
-
-Token ImgLexemeAction(LexicalAnalyzerContext * ctx) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->token = IMG;
-	destroyLexicalAnalyzerContext(ctx);
-	return IMG;
-}
-
-Token RowLexemeAction(LexicalAnalyzerContext * ctx) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->token = ROW;
-	destroyLexicalAnalyzerContext(ctx);
-	return ROW;
-}
-
-Token ColumnLexemeAction(LexicalAnalyzerContext * ctx) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->token = COLUMN;
-	destroyLexicalAnalyzerContext(ctx);
-	return COLUMN;
-}
-
-Token EndLexemeAction(LexicalAnalyzerContext * ctx) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->token = END;
-	destroyLexicalAnalyzerContext(ctx);
-	return END;
-}
-
-
-Token FooterLexemeAction(LexicalAnalyzerContext * ctx) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->token = FOOTER;
-	destroyLexicalAnalyzerContext(ctx);
-	return FOOTER;
-}
-
-Token ButtonLexemeAction(LexicalAnalyzerContext * ctx) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = ctx->lexeme;
-	ctx->semanticValue->token = BUTTON;
-	destroyLexicalAnalyzerContext(ctx);
-	return BUTTON;
-}
-
-Token CardLexemeAction(LexicalAnalyzerContext * ctx) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = ctx->lexeme;
-	ctx->semanticValue->token = CARD;
-	destroyLexicalAnalyzerContext(ctx);
-	return CARD;
-}
-
-Token NavLexemeAction(LexicalAnalyzerContext * ctx) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->token = NAV;
-	destroyLexicalAnalyzerContext(ctx);
-	return NAV;
-}
-
-Token ItemLexemAction(LexicalAnalyzerContext * ctx) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = ctx->lexeme;
-	ctx->semanticValue->token = ITEM;
-	destroyLexicalAnalyzerContext(ctx);
-	return ITEM;
-}
-
 
 Token VariableLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
@@ -188,12 +104,9 @@ Token BulletLexemeAction(LexicalAnalyzerContext * ctx) {
 }
 
 Token ListLexemeAction(LexicalAnalyzerContext * ctx, char *text, Token token) {
-    // loggea el contexto (lexema, línea, etc.)
     _logLexicalAnalyzerContext(__FUNCTION__, ctx);
-    // asigna el bloque completo duplicado
     ctx->semanticValue->string = text;
     ctx->semanticValue->token  = token;
-    // libera la estructura de contexto pero NO libera `text`
     destroyLexicalAnalyzerContext(ctx);
     return token;
 }
@@ -213,17 +126,11 @@ Token ActionLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
 }
 
 
-Token OpenParenthesisLexemeAction(LexicalAnalyzerContext * ctx){
+Token ParenthesisLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->token = OPEN_PAREN;
+	ctx->semanticValue->token = token;
 	destroyLexicalAnalyzerContext(ctx);
-	return OPEN_PAREN;
-}
-Token CloseParenthesisLexemeAction(LexicalAnalyzerContext * ctx){
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->token = CLOSE_PAREN;
-	destroyLexicalAnalyzerContext(ctx);
-	return CLOSE_PAREN;
+	return token;
 }
 
 Token ColonLexemeAction(LexicalAnalyzerContext * ctx){
