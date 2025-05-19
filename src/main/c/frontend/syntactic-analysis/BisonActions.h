@@ -33,7 +33,7 @@ Define* DefineSemanticAction(char* name, ParameterList* params, StatementList* b
 Use* UseSemanticAction(char* name, ParameterList* arguments);
 
 // Formulario
-Form* FormSemanticAction(char* name, ParameterList* fields, ParameterList* attributes, StatementList* body);
+Form* FormSemanticAction(ParameterList* attrs, ParameterList* styles, ListItem* items);
 
 // Footer / Row / Column / Nav
 Footer* FooterSemanticAction(ParameterList* attrs, StatementList* body);
@@ -41,6 +41,7 @@ Row* RowSemanticAction(StatementList* columns);
 Column* ColumnSemanticAction(ParameterList* attrs, StatementList* body);
 Nav* NavSemanticAction(ParameterList* attrs, ListItem* items);
 Button* ButtonSemanticAction(ParameterList* attrs, StatementList* body);
+Button* ButtonWithAttrsSemanticAction(ParameterList* attrs, ParameterList* styles, StatementList* body);
 Card* CardSemanticAction(ParameterList* attrs, StatementList* body);
 
 // Listas

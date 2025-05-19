@@ -205,6 +205,12 @@ Token StyleLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
 	return token;
 }
 
+Token ActionLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->token = token;
+	destroyLexicalAnalyzerContext(ctx);
+	return token;
+}
 
 
 Token OpenParenthesisLexemeAction(LexicalAnalyzerContext * ctx){

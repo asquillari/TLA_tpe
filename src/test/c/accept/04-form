@@ -1,6 +1,6 @@
-@form formulario1(nombre: text = 'Tu nombre', correo: email = 'tu@mail.com')
-  Nombre: {{nombre}}
-  Correo: {{correo}}
+@form [ action: POST;  method: /api/submit ]
+    @item('Nombre', 'Tu nombre')
+    @item('Correo', 'tu@mail.com')
 @end
 
 

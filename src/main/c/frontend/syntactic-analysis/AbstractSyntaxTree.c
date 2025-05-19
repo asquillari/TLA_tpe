@@ -40,10 +40,9 @@ void releaseNode(Node* node) {
             free(node->use);
             break;
         case NODE_FORM:
-            releaseParameterList(node->form->fields);
             releaseParameterList(node->form->attributes);
-            releaseStatementList(node->form->body);
-            free(node->form->name);
+            releaseParameterList(node->form->styles);
+            releaseListItems(node->form->body);
             free(node->form);
             break;
         case NODE_FOOTER:
@@ -67,6 +66,7 @@ void releaseNode(Node* node) {
             break;
         case NODE_BUTTON:
             releaseParameterList(node->button->attributes);
+            releaseParameterList(node->button->styles);
             releaseStatementList(node->button->body);
             free(node->button);
             break;

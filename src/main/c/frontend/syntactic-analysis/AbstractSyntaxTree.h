@@ -117,11 +117,11 @@ struct Use {
 // Formulario
 // -----------------------------
 struct Form {
-    char* name;
-    ParameterList* fields;
-    ParameterList* attributes;
-    StatementList* body;
+    ParameterList* attributes;  // parámetros entre corchetes []
+    ParameterList* styles;      // parámetros de estilo entre llaves {}
+    ListItem* body;        // ítems o contenido del form
 };
+
 
 // -----------------------------
 // Footer, Row, Column, Nav
@@ -141,9 +141,11 @@ struct Column {
 };
 
 struct Button {
-    ParameterList* attributes;  // atributos como style, type, etc.
+    ParameterList* attributes;  // atributos entre corchetes []
+    ParameterList* styles;      // estilos entre llaves {}
     StatementList* body;        // contenido del botón
 };
+
 
 struct Card {
     ParameterList* attributes;  // atributos como style, width, etc.

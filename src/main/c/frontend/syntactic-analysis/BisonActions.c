@@ -108,14 +108,15 @@ Use* UseSemanticAction(char* name, ParameterList* arguments) {
 }
 
 // Formulario
-Form* FormSemanticAction(char* name, ParameterList* fields, ParameterList* attributes, StatementList* body) {
-    Form* form = calloc(1, sizeof(Form));
-    form->name = name;
-    form->fields = fields;
-    form->attributes = attributes;
-    form->body = body;
+Form* FormSemanticAction(ParameterList* attrs, ParameterList* styles, ListItem* items) {
+    Form* form = calloc(1, sizeof(Nav));
+    form->attributes = attrs;
+    form->styles = styles;
+    form->body = items;
     return form;
 }
+
+
 
 
 // Footer
@@ -151,12 +152,18 @@ Nav* NavSemanticAction(ParameterList* style, ListItem* items) {
 
 
 // Button
-Button* ButtonSemanticAction(ParameterList* attrs, StatementList* body) {
+Button* ButtonWithAttrsSemanticAction(ParameterList* attrs, ParameterList* styles, StatementList* body) {
     Button* button = calloc(1, sizeof(Button));
     button->attributes = attrs;
+    button->styles = styles;
     button->body = body;
     return button;
 }
+
+Button* ButtonSemanticAction(ParameterList* styles, StatementList* body) {
+    return ButtonWithAttrsSemanticAction(NULL, styles, body);
+}
+
 
 // Card
 Card* CardSemanticAction(ParameterList* attrs, StatementList* body) {

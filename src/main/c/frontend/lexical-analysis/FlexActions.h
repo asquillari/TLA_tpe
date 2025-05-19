@@ -50,6 +50,7 @@ Token OrderedItemLexemeAction(LexicalAnalyzerContext * ctx);
 Token BulletLexemeAction(LexicalAnalyzerContext * ctx);
 
 Token StyleLexemeAction(LexicalAnalyzerContext * ctx, Token token);
+Token ActionLexemeAction(LexicalAnalyzerContext * ctx, Token token);
 
 Token OpenParenthesisLexemeAction(LexicalAnalyzerContext * ctx);
 Token CloseParenthesisLexemeAction(LexicalAnalyzerContext * ctx);

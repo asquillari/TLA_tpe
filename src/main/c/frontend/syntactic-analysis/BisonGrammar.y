@@ -72,8 +72,8 @@
 %type <parameter_list> maybe_parameters parameter_list
 %type <parameter_list> style_list style_item_list
 %type <parameter_list> argument_list argument_list_nonempty
-%type <list_item_list> nav_item_list
-%type <list_item> nav_item
+%type <list_item_list> nav_item_list form_item_list
+%type <list_item> nav_item form_item
 
 %%
 
@@ -206,12 +206,36 @@ image:
 ;
 
 form:
-      FORM IDENTIFIER OPEN_PAREN parameter_list CLOSE_PAREN OPEN_PAREN parameter_list CLOSE_PAREN content_list END
-        { $$ = FormSemanticAction($2, $4, $7, $9); }
-    | FORM IDENTIFIER OPEN_PAREN parameter_list CLOSE_PAREN content_list END
-        { $$ = FormSemanticAction($2, $4, NULL, $6); }
-    | FORM IDENTIFIER content_list END
-        { $$ = FormSemanticAction($2, NULL, NULL, $3); }
+      FORM OPEN_BRACKET style_list CLOSE_BRACKET OPEN_BRACE style_list CLOSE_BRACE form_item_list END
+        { $$ = FormSemanticAction($3, $6, $8); }
+
+    | FORM OPEN_BRACE style_list CLOSE_BRACE OPEN_BRACKET style_list CLOSE_BRACKET form_item_list END
+        { $$ = FormSemanticAction($6, $3, $8); }
+
+    | FORM OPEN_BRACKET style_list CLOSE_BRACKET form_item_list END
+        { $$ = FormSemanticAction($3, NULL, $5); }
+
+    | FORM OPEN_BRACE style_list CLOSE_BRACE form_item_list END
+        { $$ = FormSemanticAction(NULL, $3, $5); }
+
+    | FORM form_item_list END
+        { $$ = FormSemanticAction(NULL, NULL, $2); }
+;
+
+
+
+form_item_list:
+      form_item { $$ = SingleListItemNodeSemanticAction($1); }
+    | form_item_list form_item { $$ = AppendListItemNodeSemanticAction($1, $2); }
+;
+
+form_item:
+    ITEM OPEN_PAREN QUOTED_VALUE COMMA QUOTED_VALUE CLOSE_PAREN
+    {
+        ParameterList* params = SingleParameterSemanticAction("label", NULL, $3);
+        params = AppendParameterSemanticAction(params, "placeholder", NULL, $5);
+        $$ = ListItemSemanticActionWithParameters(params);
+    }
 ;
 
 footer:
@@ -260,11 +284,23 @@ nav_item:
 
 
 button:
-      BUTTON OPEN_BRACE style_list CLOSE_BRACE content_list END
+      BUTTON OPEN_BRACKET style_list CLOSE_BRACKET OPEN_BRACE style_list CLOSE_BRACE content_list END
+        { $$ = ButtonWithAttrsSemanticAction($3, $6, $8); }
+
+    | BUTTON OPEN_BRACE style_list CLOSE_BRACE OPEN_BRACKET style_list CLOSE_BRACKET content_list END
+        { $$ = ButtonWithAttrsSemanticAction($6, $3, $8); }
+
+    | BUTTON OPEN_BRACE style_list CLOSE_BRACE content_list END
         { $$ = ButtonSemanticAction($3, $5); }
+
+    | BUTTON OPEN_BRACKET style_list CLOSE_BRACKET content_list END
+        { $$ = ButtonWithAttrsSemanticAction($3, NULL, $5); }
+
     | BUTTON content_list END
-        { $$ = ButtonSemanticAction(NULL, $2); }
+        { $$ = ButtonWithAttrsSemanticAction(NULL, NULL, $2); }
 ;
+
+
 
 
 card:

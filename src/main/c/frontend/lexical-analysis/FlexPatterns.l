@@ -52,6 +52,9 @@
 "{"                              { return StyleLexemeAction(ctx(), OPEN_BRACE); }
 "}"                              { return StyleLexemeAction(ctx(), CLOSE_BRACE); }
 
+"["                              { return ActionLexemeAction(ctx(), OPEN_BRACKET); }
+"]"                              { return ActionLexemeAction(ctx(), CLOSE_BRACKET); }
+
 "\("                             { return OpenParenthesisLexemeAction(ctx()); }
 "\)"                             { return CloseParenthesisLexemeAction(ctx()); }
 ":"                              { return ColonLexemeAction(ctx()); }
