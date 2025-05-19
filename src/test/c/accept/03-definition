@@ -1,5 +1,5 @@
 @define botonSimple(texto)
-@button { background: blue; }
+@button 
 {{texto}}
 @end
 @end

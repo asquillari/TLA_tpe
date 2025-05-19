@@ -109,7 +109,7 @@ Use* UseSemanticAction(char* name, ParameterList* arguments) {
 
 // Formulario
 Form* FormSemanticAction(ParameterList* attrs, ParameterList* styles, ListItem* items) {
-    Form* form = calloc(1, sizeof(Nav));
+    Form* form = calloc(1, sizeof(Form));
     form->attributes = attrs;
     form->styles = styles;
     form->body = items;
