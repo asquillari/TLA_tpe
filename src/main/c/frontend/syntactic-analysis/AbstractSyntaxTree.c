@@ -137,9 +137,9 @@ void releaseParameterList(ParameterList* params) {
     Parameter* current = params->head;
     while (current != NULL) {
         Parameter* next = current->next;
-        free(current->name);
+        //free(current->name);
         free(current->type);
-        free(current->default_value);
+        //free(current->default_value);
         free(current);
         current = next;
     }

@@ -69,11 +69,11 @@
 
 @use tarjetaDestacada('#Bienvenidos', '##Gracias por visitar nuestro sitio.')
 
-@define button
+
 @button { background: blue; }
 {{texto}}
 @end
-@end
+
 
 @define tarjetaDestacada(titulo, texto)
 @card { background: #eee; border: rounded; }

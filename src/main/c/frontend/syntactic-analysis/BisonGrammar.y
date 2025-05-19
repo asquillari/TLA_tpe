@@ -57,8 +57,8 @@
 %type <nav> nav
 %type <image> image
 %type <text> text
-%type <button> button
-%type <card> card
+%type <node> button
+%type <node> card
 %type <table> table
 %type <table_row> table_row
 %type <table_cell> table_cell
@@ -206,8 +206,8 @@ content_item:
      row { $$ = (struct Node*)$1; }
     | column { $$ = (struct Node*)$1; }
     | nav { $$ = (struct Node*)$1; }
-    | button { $$ = (struct Node*)$1; }
-    | card { $$ = (struct Node*)$1; }
+    | button { $$ = $1; }
+    | card { $$ = $1; }
     | table { $$ = (struct Node*)$1; }
     | image { $$ = (struct Node*)$1; }
     | form { $$ = (struct Node*)$1; }
@@ -314,29 +314,30 @@ nav_item:
 
 button:
       BUTTON OPEN_BRACKET style_list CLOSE_BRACKET OPEN_BRACE style_list CLOSE_BRACE content_list END
-        { $$ = ButtonWithAttrsSemanticAction($3, $6, $8); }
+        { $$ = createButtonNode(ButtonWithAttrsSemanticAction($3, $6, $8)); }
 
     | BUTTON OPEN_BRACE style_list CLOSE_BRACE OPEN_BRACKET style_list CLOSE_BRACKET content_list END
-        { $$ = ButtonWithAttrsSemanticAction($6, $3, $8); }
+        { $$ = createButtonNode(ButtonWithAttrsSemanticAction($6, $3, $8)); }
 
     | BUTTON OPEN_BRACE style_list CLOSE_BRACE content_list END
-        { $$ = ButtonSemanticAction($3, $5); }
+        { $$ = createButtonNode(ButtonSemanticAction($3, $5)); }
 
     | BUTTON OPEN_BRACKET style_list CLOSE_BRACKET content_list END
-        { $$ = ButtonWithAttrsSemanticAction($3, NULL, $5); }
+        { $$ = createButtonNode(ButtonWithAttrsSemanticAction($3, NULL, $5)); }
 
     | BUTTON content_list END
-        { $$ = ButtonWithAttrsSemanticAction(NULL, NULL, $2); }
+        { $$ = createButtonNode(ButtonWithAttrsSemanticAction(NULL, NULL, $2)); }
 ;
+
 
 
 
 
 card:
       CARD OPEN_BRACE style_list CLOSE_BRACE content_list END
-        { $$ = CardSemanticAction($3, $5); }
+        { $$ = createCardNode(CardSemanticAction($3, $5)); }
     | CARD content_list END
-        { $$ = CardSemanticAction(NULL, $2); }
+        { $$ = createCardNode(CardSemanticAction(NULL, $2)); }
 ;
 
 

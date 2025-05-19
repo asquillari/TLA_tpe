@@ -42,7 +42,9 @@ Column* ColumnSemanticAction(ParameterList* attrs, StatementList* body);
 Nav* NavSemanticAction(ParameterList* attrs, ListItem* items);
 Button* ButtonSemanticAction(ParameterList* attrs, StatementList* body);
 Button* ButtonWithAttrsSemanticAction(ParameterList* attrs, ParameterList* styles, StatementList* body);
+Node* createButtonNode(Button* button);
 Card* CardSemanticAction(ParameterList* attrs, StatementList* body);
+Node* createCardNode(Card* card);
 
 // Listas
 OrderedList* OrderedListWithStyleSemanticAction(ParameterList* style, ListItem* items);

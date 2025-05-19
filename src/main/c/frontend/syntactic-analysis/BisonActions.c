@@ -152,6 +152,14 @@ Nav* NavSemanticAction(ParameterList* style, ListItem* items) {
 
 
 // Button
+Node* createButtonNode(Button* button) {
+    Node* node = calloc(1, sizeof(Node));
+    node->type = NODE_BUTTON;
+    node->button = button;
+    return node;
+}
+
+
 Button* ButtonWithAttrsSemanticAction(ParameterList* attrs, ParameterList* styles, StatementList* body) {
     Button* button = calloc(1, sizeof(Button));
     button->attributes = attrs;
@@ -162,6 +170,14 @@ Button* ButtonWithAttrsSemanticAction(ParameterList* attrs, ParameterList* style
 
 Button* ButtonSemanticAction(ParameterList* styles, StatementList* body) {
     return ButtonWithAttrsSemanticAction(NULL, styles, body);
+}
+
+
+Node* createCardNode(Card* card) {
+    Node* node = calloc(1, sizeof(Node));
+    node->type = NODE_CARD;
+    node->card = card;
+    return node;
 }
 
 
@@ -195,6 +211,7 @@ ParameterList* EmptyParameterListSemanticAction() {
     list->head = NULL;
     return list;
 }
+
 
 ParameterList* SingleParameterSemanticAction(char* name, char* type, char* default_value) {
     Parameter* param = calloc(1, sizeof(Parameter));
