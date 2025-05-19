@@ -1,0 +1,81 @@
+#"Titulo Principal" 
+## "Titulo Secundario" 
+## "Titulo Secundario"
+
+@define botonSimple(texto)
+@button { background: blue; }
+{{texto}}
+@end
+@end
+
+@use botonSimple('Hola Mundo')
+
+@form [ action: POST;  method: /api/submit; ]
+    @item('Nombre', 'Tu nombre')
+    @item('Correo', 'tu@mail.com')
+@end
+
+
+@row
+  @column{ width : 70%; }
+    "columna 1"
+  @end
+
+  @column { width : 30%; }
+    "columna 2"
+  @end
+@end
+
+
+@nav
+    @item('Inicio', 'home.html')
+    @item('Servicios','servicios.html')
+    @item('Contacto', 'contacto.html')
+@end
+
+
+@use navbar1
+
+@img('https://example.com/imagen.jpg','Imagen de ejemplo')
+
+@table
+| "Nombre "     | "Edad" | "Ciudad" |
+| "Juan"        | "25"   | "Buenos Aires"|
+| "Maria"       | "30"   | "Cordoba"     |
+@end
+
+
+#"titulo de lista numerada"
+@list
+1 . "Primer item"
+2. "Segundo item"
+3. "Tercer item"
+@end
+
+
+### "titulo Lista No Numerada"
+@list
+* "Primer item"
+* "Segundo item"
+* "Tercer item"
+@end
+
+@define tarjetaDestacada(titulo, texto)
+@card { background: eee; border: rounded; }
+#{{titulo}}
+{{texto}}
+@end
+@end
+
+@use tarjetaDestacada('#Bienvenidos', '##Gracias por visitar nuestro sitio.')
+
+@button { background: blue; }
+{{texto}}
+@end
+
+@define tarjetaDestacada(titulo, texto)
+@card { background: #eee; border: rounded; }
+# {{titulo}}
+{{texto}}
+@end
+@end
