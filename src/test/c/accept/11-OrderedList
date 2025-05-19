@@ -1,3 +1,6 @@
-1. "Primer ítem de prueba"
-2. "Segundo ítem de prueba"
-3. "Tercer ítem de prueba"
+@list
+1. "⁠Primer item"
+2. "⁠Segundo item"
+3. "⁠Terceiro item"
+@end
+

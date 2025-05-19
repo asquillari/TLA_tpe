@@ -37,21 +37,17 @@
 	struct TableCellList* table_cell_list;
 }
 
-%token <token> DEFINE USE FORM IMG FOOTER ROW COLUMN NAV ITEM END BUTTON CARD
+%token <token> DEFINE USE FORM IMG FOOTER ROW COLUMN NAV ITEM END BUTTON CARD LIST_BEGIN TABLE_BEGIN
 %token <token> OPEN_PAREN CLOSE_PAREN OPEN_BRACE CLOSE_BRACE COLON COMMA EQUALS OPEN_BRACKET CLOSE_BRACKET PIPE QUOTE
 %token <token> NEWLINE UNKNOWN HEADER_1 HEADER_2 HEADER_3
 %token <string> ORDERED_ITEM BULLET
 %token <string> QUOTED_VALUE UNQUOTED_VALUE IDENTIFIER TEXT
 %token <string> VARIABLE
-%token <string> ORDERED_LIST BULLET_LIST
 
-%token <token> TABLE_BEGIN
 
 %type <program> program
-%type <node> statement atomic_statement content_item 
+%type <node> statement atomic_statement content_item list_statement
 %type <stmt_list> statement_list statement_list_nonempty content_list
-%type <ordered_list>   ordered_list_statement
-%type <unordered_list> unordered_list_statement
 %type <define> define
 %type <use> use
 %type <form> form
@@ -69,10 +65,10 @@
 %type <table_row_list> table_row_list
 %type <table_cell_list> nonempty_table_cell_list
 
-%type <parameter_list> maybe_parameters parameter_list
+%type <parameter_list> maybe_parameters parameter_list style_block_opt
 %type <parameter_list> style_list style_item_list
 %type <parameter_list> argument_list argument_list_nonempty
-%type <list_item_list> nav_item_list form_item_list
+%type <list_item_list> nav_item_list form_item_list ordered_items unordered_items
 %type <list_item> nav_item form_item
 
 %%
@@ -105,9 +101,53 @@ atomic_statement:
 
 statement:
     atomic_statement                   { $$ = $1; }
-  | ordered_list_statement             { $$ = (struct Node*)$1; }
-  | unordered_list_statement           { $$ = (struct Node*)$1; }
+  | list_statement                    { $$ = (struct Node*)$1; }
 ;
+
+list_statement:
+      LIST_BEGIN style_block_opt ordered_items END
+        { $$ = (struct Node*)OrderedListWithStyleSemanticAction($2, $3); }
+
+    | LIST_BEGIN style_block_opt unordered_items END
+        { $$ = (struct Node*)UnorderedListWithStyleSemanticAction($2, $3); }
+;
+
+style_block_opt:
+      /* empty */ { $$ = EmptyParameterListSemanticAction(); }
+    | OPEN_BRACE style_list CLOSE_BRACE { $$ = $2; }
+;
+
+
+ordered_items:
+      ORDERED_ITEM QUOTED_VALUE
+        {
+          ParameterList* p = SingleParameterSemanticAction("text", NULL, $2);
+          ListItem* item = ListItemSemanticActionWithParameters(p);
+          $$ = SingleListItemNodeSemanticAction(item);
+        }
+    | ordered_items ORDERED_ITEM QUOTED_VALUE
+        {
+          ParameterList* p = SingleParameterSemanticAction("text", NULL, $3);
+          ListItem* item = ListItemSemanticActionWithParameters(p);
+          $$ = AppendListItemNodeSemanticAction($1, item);
+        }
+;
+
+unordered_items:
+      BULLET QUOTED_VALUE
+        {
+          ParameterList* p = SingleParameterSemanticAction("text", NULL, $2);
+          ListItem* item = ListItemSemanticActionWithParameters(p);
+          $$ = SingleListItemNodeSemanticAction(item);
+        }
+    | unordered_items BULLET QUOTED_VALUE
+        {
+          ParameterList* p = SingleParameterSemanticAction("text", NULL, $3);
+          ListItem* item = ListItemSemanticActionWithParameters(p);
+          $$ = AppendListItemNodeSemanticAction($1, item);
+        }
+;
+
 
 statement_list_nonempty:
     statement                          { $$ = SingleStatementSemanticAction($1); }
@@ -175,8 +215,6 @@ content_item:
     | define { $$ = (struct Node*)$1; }
     | use { $$ = (struct Node*)$1; }
     | text { $$ = (struct Node*)$1; }
-    | ordered_list_statement { $$ = (struct Node*)$1; }
-    | unordered_list_statement { $$ = (struct Node*)$1; }
 ;
 
 text:
@@ -190,15 +228,6 @@ text:
     | VARIABLE                { $$ = TextSemanticAction($1, 0); }
 ;
 
-ordered_list_statement:
-    ORDERED_LIST
-    { $$ = OrderedListSemanticAction($1); }
-;
-
-unordered_list_statement:
-    BULLET_LIST
-    { $$ = UnorderedListSemanticAction($1); }
-;
 
 image:
     IMG OPEN_PAREN QUOTED_VALUE COMMA QUOTED_VALUE CLOSE_PAREN

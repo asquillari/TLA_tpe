@@ -1,9 +1,9 @@
 @row
-  @column{ width : 70% }
+  @column{ width : 70%; }
     "columna 1"
   @end
 
-  @column { width : 30% }
+  @column { width : 30%; }
     "columna 2"
   @end
 @end

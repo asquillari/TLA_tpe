@@ -45,8 +45,10 @@ Button* ButtonWithAttrsSemanticAction(ParameterList* attrs, ParameterList* style
 Card* CardSemanticAction(ParameterList* attrs, StatementList* body);
 
 // Listas
-OrderedList* OrderedListSemanticAction(char* itemsText);
-UnorderedList* UnorderedListSemanticAction(char* itemsText);
+OrderedList* OrderedListWithStyleSemanticAction(ParameterList* style, ListItem* items);
+UnorderedList* UnorderedListWithStyleSemanticAction(ParameterList* style, ListItem* items);
+
+
 
 // Parámetros y argumentos
 ParameterList* EmptyParameterListSemanticAction();

@@ -181,10 +181,12 @@ typedef struct ListItem {
 
 struct OrderedList {
     ListItem* items;
+    ParameterList* attributes; // atributos como style, width, etc.
 };
 
 struct UnorderedList {
     ListItem* items;
+    ParameterList* attributes; // atributos como style, width, etc.
 };
 
 typedef struct TableCell {

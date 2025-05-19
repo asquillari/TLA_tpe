@@ -1,3 +1,6 @@
-* "Primer viñeta de prueba"
-* "Segunda viñeta de prueba"
-* "Tercera viñeta de prueba"
+@list
+* "Elemento 1"
+* "Elemento 2"
+* "Elemento 3"
+@end
+

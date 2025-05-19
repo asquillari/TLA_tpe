@@ -87,13 +87,15 @@ void releaseNode(Node* node) {
         
         case NODE_ORDERED_LIST:
             releaseListItems(node->ordered_list->items);
+            releaseParameterList(node->ordered_list->attributes);
             free(node->ordered_list);
             break;
         case NODE_UNORDERED_LIST:
             releaseListItems(node->unordered_list->items);
+            releaseParameterList(node->unordered_list->attributes);
             free(node->unordered_list);
             break;
-            case NODE_TABLE:
+        case NODE_TABLE:
             if (node->table != NULL) {
                 TableRowList* row = node->table->rows;
                 while (row != NULL) {

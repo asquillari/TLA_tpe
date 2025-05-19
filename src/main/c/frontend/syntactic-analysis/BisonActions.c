@@ -173,21 +173,21 @@ Card* CardSemanticAction(ParameterList* attrs, StatementList* body) {
     return card;
 }
 
-// Lista ordenada
-OrderedList* OrderedListSemanticAction(char* itemsText) {
-    ListItem* items = ParseListItems(itemsText);
-    OrderedList* orderedList = calloc(1, sizeof(OrderedList));
-    orderedList->items = items;
-    return orderedList;
+OrderedList* OrderedListWithStyleSemanticAction(ParameterList* style, ListItem* items) {
+    OrderedList* list = calloc(1, sizeof(OrderedList));
+    list->items = items;
+    list->attributes = style;
+    return list;
 }
 
-// Lista no ordenada
-UnorderedList* UnorderedListSemanticAction(char* itemsText) {
-    ListItem* items = ParseListItems(itemsText);
-    UnorderedList* unorderedList = calloc(1, sizeof(UnorderedList));
-    unorderedList->items = items;
-    return unorderedList;
+UnorderedList* UnorderedListWithStyleSemanticAction(ParameterList* style, ListItem* items) {
+    UnorderedList* list = calloc(1, sizeof(UnorderedList));
+    list->items = items;
+    list->attributes = style;
+    return list;
 }
+
+
 
 // Parámetros
 ParameterList* EmptyParameterListSemanticAction() {
