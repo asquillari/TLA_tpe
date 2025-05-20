@@ -53,7 +53,7 @@
 "="                              { return EqualLexemeAction(ctx()); }
 "|"                              { return TableLexemeAction(ctx(), PIPE); }
 
-\"[^\"]*\"                       { return QuotedValueLexemeAction(ctx()); }     
+\"([^\\"]|\\.)*\"                { return QuotedValueLexemeAction(ctx()); }     
 \'[^\']*\'                       { return QuotedParameterValueLexemeAction(ctx()); } 
 
 [[:space:]]+                     { IgnoredLexemeAction(ctx()); }
