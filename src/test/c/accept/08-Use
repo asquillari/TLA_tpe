@@ -1,1 +1,1 @@
-@use navbar1
+@use navbar1('hola')

@@ -1,5 +1,6 @@
-@define buton1
 @button { background: blue; }
 {{texto}}
 @end
+
+@button
 @end

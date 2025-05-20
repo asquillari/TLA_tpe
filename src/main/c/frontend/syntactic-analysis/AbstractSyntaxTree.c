@@ -19,146 +19,119 @@ void shutdownAbstractSyntaxTreeModule() {
 void releaseProgram(Program* program) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (program != NULL){
-		releaseStatementList(program->statements);
-    	free(program);
+        releaseStatementList(program->statements);
+        free(program);
 	}
 }
 
-void releaseNode(Node* node) {
-    if (node == NULL) return;
-
-    switch (node->type) {
-        case NODE_DEFINE:
-            releaseParameterList(node->define->parameters);
-            releaseStatementList(node->define->body);
-            free(node->define->name);
-            free(node->define);
-            break;
-        case NODE_USE:
-            releaseParameterList(node->use->arguments);
-            free(node->use->name);
-            free(node->use);
-            break;
-        case NODE_FORM:
-            releaseParameterList(node->form->attributes);
-            releaseParameterList(node->form->styles);
-            releaseListItems(node->form->body);
-            free(node->form);
-            break;
-        case NODE_FOOTER:
-            releaseParameterList(node->footer->attributes);
-            releaseStatementList(node->footer->body);
-            free(node->footer);
-            break;
-        case NODE_ROW:
-            releaseStatementList(node->row->columns);
-            free(node->row);
-            break;
-        case NODE_COLUMN:
-            releaseParameterList(node->column->attributes);
-            releaseStatementList(node->column->body);
-            free(node->column);
-            break;
-        case NODE_NAV:
-            releaseParameterList(node->nav->attributes);
-            releaseListItems(node->nav->items);
-            free(node->nav);
-            break;
-        case NODE_BUTTON:
-            releaseParameterList(node->button->attributes);
-            releaseParameterList(node->button->styles);
-            releaseStatementList(node->button->body);
-            free(node->button);
-            break;
-        case NODE_CARD:
-            releaseParameterList(node->card->attributes);
-            releaseStatementList(node->card->body);
-            free(node->card);
-            break;
-        case NODE_TEXT:
-            free(node->text->content);
-            free(node->text);
-            break;
-        case NODE_IMAGE:
-            free(node->image->src);
-            free(node->image->alt);
-            free(node->image);
-            break;
-        
-        case NODE_ORDERED_LIST:
-            releaseListItems(node->ordered_list->items);
-            releaseParameterList(node->ordered_list->attributes);
-            free(node->ordered_list);
-            break;
-        case NODE_UNORDERED_LIST:
-            releaseListItems(node->unordered_list->items);
-            releaseParameterList(node->unordered_list->attributes);
-            free(node->unordered_list);
-            break;
-        case NODE_TABLE:
-            if (node->table != NULL) {
-                TableRowList* row = node->table->rows;
-                while (row != NULL) {
-                    TableRowList* nextRow = row->next;
-                    TableCellList* cell = row->row->cells;
-                    while (cell != NULL) {
-                        TableCellList* nextCell = cell->next;
-                        free(cell->cell->content);
-                        free(cell->cell);
-                        free(cell);
-                        cell = nextCell;
-                    }
-                    free(row->row);
-                    free(row);
-                    row = nextRow;
-                }
-                free(node->table);
-            }
-            break;
-        
-        default:
-            break;
-    }
-
-    free(node);
-}
-
+// ------------------------
+// Lista de Statements
+// ------------------------
 void releaseStatementList(StatementList* list) {
-    while (list != NULL) {
-        StatementList* next = list->next;
-        releaseNode(list->statement);
-        free(list);
-        list = next;
-    }
+	while (list != NULL) {
+		StatementList* next = list->next;
+		releaseStatement(list->statement);
+		free(list);
+		list = next;
+	}
 }
 
-void releaseParameterList(ParameterList* params) {
-    if (params == NULL) return;
-    Parameter* current = params->head;
-    while (current != NULL) {
+// ------------------------
+// Statement
+// ------------------------
+void releaseStatement(Statement* statement) {
+	if (statement == NULL) return;
+
+	switch (statement->type) {
+		case STATEMENT_TEXT:
+            logDebugging(_logger, "Releasing text: %s", __FUNCTION__);
+			if (statement->text != NULL) {
+				free(statement->text);
+			}
+			break;
+        case STATEMENT_IMAGE:
+            releaseParameterList(statement->image->style);
+            free(statement->image);
+            break;
+        case STATEMENT_BUTTON:
+            releaseParameterList(statement->button->style);
+            releaseParameterList(statement->button->action);
+            releaseStatementList(statement->button->body);
+            free(statement->button);
+            break;
+        case STATEMENT_CARD:
+            releaseParameterList(statement->card->style);
+            releaseStatementList(statement->card->body);
+            free(statement->card);
+            break;
+        case STATEMENT_DEFINE:
+            releaseParameterList(statement->define->parameters);
+            releaseParameterList(statement->define->style);
+            releaseStatementList(statement->define->body);
+            free(statement->define);
+            break;
+        case STATEMENT_USE:
+            releaseParameterList(statement->use->parameters);
+            free(statement->use);
+            break;
+        case STATEMENT_FORM:
+            releaseParameterList(statement->form->style);
+            releaseParameterList(statement->form->attributes);
+            releaseFormItems(statement->form->items);
+            free(statement->form);
+            break;
+        case STATEMENT_NAV:
+            releaseParameterList(statement->nav->style);
+            releaseParameterList(statement->nav->attributes);
+            releaseNavItems(statement->nav->items);
+            free(statement->nav);
+            break;
+        case STATEMENT_FOOTER:
+            releaseParameterList(statement->footer->style);
+            releaseStatementList(statement->footer->body);
+            free(statement->footer);
+            break;
+        case STATEMENT_COLUMN:
+            releaseParameterList(statement->column->style);
+            releaseStatementList(statement->column->body);
+            free(statement->column);
+            break;
+        case STATEMENT_ROW:
+            releaseParameterList(statement->row->style);
+            releaseStatementList(statement->row->columns);
+            free(statement->row);
+            break;
+		default:
+			break;
+	}
+
+	free(statement);
+}
+
+void releaseParameterList(ParameterList* list) {
+    if (!list) return;
+    Parameter* current = list->head;
+    while (current) {
         Parameter* next = current->next;
-        //free(current->name);
-        free(current->type);
-        //free(current->default_value);
         free(current);
         current = next;
     }
-    free(params);
+    free(list);
 }
 
-void releaseListItems(ListItem* items) {
-    while (items != NULL) {
-        ListItem* next = items->next;
-        
-        if (items->content != NULL) {
-            free(items->content);
-        }
-
-        if (items->parameters != NULL) {
-            releaseParameterList(items->parameters);
-        }
-
-        free(items);
-        items = next;
+void releaseFormItems(FormItem* item) {
+    while (item) {
+        FormItem* next = item->next;
+        free(item);
+        item = next;
     }
 }
+
+void releaseNavItems(NavItem* item) {
+    while (item) {
+        NavItem* next = item->next;
+        free(item);
+        item = next;
+    }
+}
+

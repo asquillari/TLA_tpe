@@ -75,9 +75,8 @@
 @end
 
 
-@define tarjetaDestacada(titulo, texto)
-@card { background: #eee; border: rounded; }
+@card
 # {{titulo}}
 {{texto}}
 @end
-@end
+

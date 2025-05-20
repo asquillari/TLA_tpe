@@ -163,10 +163,7 @@ Token TableLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
 
 Token QuotedValueLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-    const char * yytext = ctx->lexeme;
-    char* str = strdup(yytext + 1);
-    str[strlen(str) - 1] = '\0';
-    ctx->semanticValue->string = str;
+	ctx->semanticValue->string = ctx->lexeme;
 	ctx->semanticValue->token = QUOTED_VALUE;
 	destroyLexicalAnalyzerContext(ctx);
 	return QUOTED_VALUE;
@@ -179,6 +176,7 @@ Token QuotedParameterValueLexemeAction(LexicalAnalyzerContext * ctx) {
 	destroyLexicalAnalyzerContext(ctx);
 	return QUOTED_VALUE;
 }
+
 
 Token IdentifierLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
@@ -195,6 +193,7 @@ Token UnquotedValueLexemeAction(LexicalAnalyzerContext * ctx) {
 	destroyLexicalAnalyzerContext(ctx);
 	return UNQUOTED_VALUE;
 }
+
 
 Token NewlineLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);

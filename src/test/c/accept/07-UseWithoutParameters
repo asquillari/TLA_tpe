@@ -1,0 +1,7 @@
+@define sinParametros
+@button
+"Texto sin parámetros"
+@end
+@end
+
+@use sinParametros

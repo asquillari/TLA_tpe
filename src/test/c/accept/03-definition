@@ -3,5 +3,3 @@
 {{texto}}
 @end
 @end
-
-@use botonSimple('Hola Mundo')

@@ -16,76 +16,39 @@ void shutdownBisonActionsModule();
  */
 
 // Programa
-Program* ProgramSemanticAction(CompilerState* compilerState, StatementList* statements);
+Program* StatementSemanticAction(CompilerState* compilerState, StatementList* statement);
+ParameterList* createParameterList();
+void appendParameter(ParameterList* list, char* key, char* value);
 
-// Sentencias
-StatementList* AppendStatementSemanticAction(StatementList* list, Node* statement);
-StatementList* SingleStatementSemanticAction(Node* statement);
-
-// Texto
-Text* TextSemanticAction(char* content, int level);
-
-// Imagen
-Image* ImageSemanticAction(char * src, char * alt);
-
-// Define / Use
-Define* DefineSemanticAction(char* name, ParameterList* params, StatementList* body);
-Use* UseSemanticAction(char* name, ParameterList* arguments);
-
-// Formulario
-Form* FormSemanticAction(ParameterList* attrs, ParameterList* styles, ListItem* items);
-
-// Footer / Row / Column / Nav
-Footer* FooterSemanticAction(ParameterList* attrs, StatementList* body);
-Row* RowSemanticAction(StatementList* columns);
-Column* ColumnSemanticAction(ParameterList* attrs, StatementList* body);
-Nav* NavSemanticAction(ParameterList* attrs, ListItem* items);
-Button* ButtonSemanticAction(ParameterList* attrs, StatementList* body);
-Button* ButtonWithAttrsSemanticAction(ParameterList* attrs, ParameterList* styles, StatementList* body);
-Node* createButtonNode(Button* button);
-Card* CardSemanticAction(ParameterList* attrs, StatementList* body);
-Node* createCardNode(Card* card);
-
-// Listas
-OrderedList* OrderedListWithStyleSemanticAction(ParameterList* style, ListItem* items);
-UnorderedList* UnorderedListWithStyleSemanticAction(ParameterList* style, ListItem* items);
+StatementList* createSingleStatementList(Statement* stmt);
+StatementList* appendStatementToList(StatementList* list, Statement* stmt);
 
 
+Statement* TextFromQuotedValueSemanticAction(char* value);
+Statement* TextFromVariableSemanticAction(char* varName);
 
-// Parámetros y argumentos
-ParameterList* EmptyParameterListSemanticAction();
-ParameterList* SingleParameterSemanticAction(char* name, char* type, char* default_value);
-ParameterList* AppendParameterSemanticAction(ParameterList* list, char* name, char* type, char* default_value);
+Statement* ImageSemanticAction(ParameterList* style, char* src, char* alt);
 
-// Atributos del bloque (action: ..., method: ..., etc.)
-ParameterList* AttributeListSemanticAction(ParameterList* list, char* key, char* value);
+Statement* ButtonSemanticAction(ParameterList* style, ParameterList* action, StatementList* body);
 
-// Items de lista
-ListItem* ListItemSemanticAction(char* content);
-ListItem* AppendListItemSemanticAction(ListItem* list, char* content);
+Statement* CardSemanticAction(ParameterList* style, StatementList* body);
 
-ListItem* PrependOrderedItemSemanticAction(ListItem* list, char* content);
-ListItem* EmptyOrderedItemListSemanticAction(void);
-ListItem* PrependBulletItemSemanticAction(char* item, ListItem* tail);
-ListItem* EmptyBulletItemListSemanticAction(void);
+Statement* DefineSemanticAction(char* name, ParameterList* parameters, ParameterList* style, StatementList* body);
 
-ListItem* createListItem(char* content);
+Statement* UseSemanticAction(char* name, ParameterList* parameters);
 
+FormItem* FormItemSemanticAction(char* label, char* placeholder);
+FormItem* appendFormItem(FormItem* list, FormItem* newItem);
+Statement* FormSemanticAction(ParameterList* style, ParameterList* attrs, FormItem* items);
 
-//Table
-Table* TableSemanticAction(TableRowList* rows);
-TableRow* TableRowSemanticAction(TableCellList* cells);
-TableRowList* SingleTableRowAction(TableRow* row);
-TableRowList* AppendTableRowAction(TableRowList* list, TableRow* row);
-TableCellList* SingleTableCellAction(TableCell* cell);
-TableCellList* AppendTableCellAction(TableCellList* list, TableCell* cell);
-TableCell* TableCellSemanticAction(char* value);
+NavItem* NavItemSemanticAction(char* label, char* link);
+NavItem* appendNavItem(NavItem* list, NavItem* newItem);
+Statement* NavSemanticAction(ParameterList* style, ParameterList* attrs, NavItem* items);
 
+Statement* FooterSemanticAction(ParameterList* style, StatementList* body);
 
-ListItem* ParseListItems(char* itemsText);
-ListItem* SingleListItemNodeSemanticAction(ListItem* item);
-ListItem* AppendListItemNodeSemanticAction(ListItem* list, ListItem* item);
-ListItem* ListItemSemanticActionWithParameters(ParameterList* parameters);
+Statement* ColumnSemanticAction(ParameterList* style, StatementList* body);
+Statement* RowSemanticAction(ParameterList* style, StatementList* columns);
 
 
 #endif

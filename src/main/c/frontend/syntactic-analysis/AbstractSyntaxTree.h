@@ -4,11 +4,11 @@
 #include "../../shared/Logger.h"
 #include <stdlib.h>
 
-typedef struct Node Node;
+
 typedef struct Program Program;
 typedef struct StatementList StatementList;
-typedef struct Parameter Parameter;
-typedef struct ParameterList ParameterList;
+typedef struct Statement Statement;
+
 typedef struct Define Define;
 typedef struct Use Use;
 typedef struct Form Form;
@@ -20,41 +20,41 @@ typedef struct Text Text;
 typedef struct Image Image;
 typedef struct Button Button;
 typedef struct Card Card;
-typedef struct ListItem ListItem;
 typedef struct OrderedList OrderedList;
 typedef struct UnorderedList UnorderedList;
 typedef struct Table Table;
-typedef struct TableRow TableRow;
-typedef struct TableCell TableCell;
-typedef struct TableRowList TableRowList;
-typedef struct TableCellList TableCellList;
+typedef struct Modifiers Modifiers;
 
+// Programa y lista de sentencias
+// -----------------------------
+struct Program {
+    StatementList* statements;
+};
 
-// -----------------------------
-// Enum de tipos de nodo
-// -----------------------------
-typedef enum NodeType {
-    NODE_DEFINE,
-    NODE_USE,
-    NODE_FORM,
-    NODE_FOOTER,
-    NODE_ROW,
-    NODE_COLUMN,
-    NODE_NAV,
-    NODE_TEXT,
-    NODE_IMAGE,
-    NODE_ORDERED_LIST,
-    NODE_UNORDERED_LIST,
-    NODE_BUTTON,
-    NODE_CARD,
-    NODE_TABLE,
-} NodeType;
+typedef struct StatementList {
+	Statement* statement;
+	StatementList* next;
+} StatementList;
 
-// -----------------------------
-// Nodo genérico
-// -----------------------------
-struct Node {
-    NodeType type;
+enum StatementType {
+    STATEMENT_DEFINE,
+    STATEMENT_USE,
+    STATEMENT_FORM,
+    STATEMENT_FOOTER,
+    STATEMENT_ROW,
+    STATEMENT_COLUMN,
+    STATEMENT_NAV,
+    STATEMENT_TEXT,
+    STATEMENT_IMAGE,
+    STATEMENT_BUTTON,
+    STATEMENT_CARD,
+    STATEMENT_ORDERED_LIST,
+    STATEMENT_UNORDERED_LIST,
+    STATEMENT_TABLE
+};
+
+typedef struct Statement {
+    enum StatementType type;
     union {
         Define* define;
         Use* use;
@@ -63,165 +63,111 @@ struct Node {
         Row* row;
         Column* column;
         Nav* nav;
-        Button* button;
-        Card* card;
         Text* text;
         Image* image;
+        Button* button;
+        Card* card;
         OrderedList* ordered_list;
         UnorderedList* unordered_list;
         Table* table;
     };
-};
+} Statement;
 
-// -----------------------------
-// Programa y lista de sentencias
-// -----------------------------
-struct Program {
-    StatementList* statements;
-};
+typedef struct Parameter {
+    char* key;
+    char* value;
+    struct Parameter* next;
+} Parameter;
 
-struct StatementList {
-    Node* statement;
-    StatementList* next;
-};
-
-// -----------------------------
-// Parámetros
-// -----------------------------
-struct Parameter {
-    char* name;
-    char* type;
-    char* default_value;
-    Parameter* next;
-};
-
-struct ParameterList {
+typedef struct ParameterList {
     Parameter* head;
-};
+} ParameterList;
 
-// -----------------------------
-// Nodo Define y Use
-// -----------------------------
-struct Define {
+typedef struct Define {
     char* name;
     ParameterList* parameters;
+    ParameterList* style;
     StatementList* body;
-};
+} Define;
 
-struct Use {
+
+typedef struct Text {
+    char* content;
+} Text;
+
+typedef struct Image {
+	char* src;
+	char* alt;
+	ParameterList* style;
+} Image;
+
+typedef struct FormItem {
+    char* label;
+    char* placeholder;
+    struct FormItem* next;
+} FormItem;
+
+typedef struct Form {
+    ParameterList* style;
+    ParameterList* attributes;
+    FormItem* items;
+} Form;
+
+typedef struct NavItem {
+    char* label;
+    char* link;
+    struct NavItem* next;
+} NavItem;
+
+typedef struct Nav {
+    ParameterList* style;
+    ParameterList* attributes;
+    NavItem* items;
+} Nav;
+
+
+typedef struct Button {
+    ParameterList* style;
+    ParameterList* action;
+    StatementList* body;
+} Button;
+
+
+typedef struct Card {
+    ParameterList* style;
+    StatementList* body;
+} Card;
+
+typedef struct Use {
     char* name;
-    ParameterList* arguments; // reutiliza estructura de parámetros
-};
-
-// -----------------------------
-// Formulario
-// -----------------------------
-struct Form {
-    ParameterList* attributes;  // parámetros entre corchetes []
-    ParameterList* styles;      // parámetros de estilo entre llaves {}
-    ListItem* body;        // ítems o contenido del form
-};
-
-
-// -----------------------------
-// Footer, Row, Column, Nav
-// -----------------------------
-struct Footer {
-    ParameterList* attributes;
-    StatementList* body;
-};
-
-struct Row {
-    StatementList* columns; // solo columnas permitidas
-};
-
-struct Column {
-    ParameterList* attributes;
-    StatementList* body;
-};
-
-struct Button {
-    ParameterList* attributes;  // atributos entre corchetes []
-    ParameterList* styles;      // estilos entre llaves {}
-    StatementList* body;        // contenido del botón
-};
-
-
-struct Card {
-    ParameterList* attributes;  // atributos como style, width, etc.
-    StatementList* body;        // contenido del card
-};
-
-
-struct Nav {
-    ParameterList* attributes;
-    ListItem* items;
-};
-
-// -----------------------------
-// Texto, Imagen, Listas
-// -----------------------------
-struct Text {
-    char* content;
-    int level; // 1, 2, 3 para encabezado o 0 para texto plano
-};
-
-struct Image {
-    char * src;
-    char * alt;
-};
-
-
-typedef struct ListItem {
     ParameterList* parameters;
-    char* content; 
-    ListItem* next;
-} ListItem;
+} Use;
+
+typedef struct Footer {
+    ParameterList* style;
+    StatementList* body;
+} Footer;
+
+typedef struct Column {
+    ParameterList* style;
+    StatementList* body;
+} Column;
+
+typedef struct Row {
+    ParameterList* style;
+    StatementList* columns; // lista de Column envueltos como Statement
+} Row;
 
 
-struct OrderedList {
-    ListItem* items;
-    ParameterList* attributes; // atributos como style, width, etc.
-};
 
-struct UnorderedList {
-    ListItem* items;
-    ParameterList* attributes; // atributos como style, width, etc.
-};
-
-typedef struct TableCell {
-    char* content;
-} TableCell;
-
-typedef struct TableCellList {
-    TableCell* cell;
-    struct TableCellList* next;
-} TableCellList;
-
-typedef struct TableRow {
-    TableCellList* cells;
-} TableRow;
-
-typedef struct TableRowList {
-    TableRow* row;
-    struct TableRowList* next;
-} TableRowList;
-
-typedef struct Table {
-    TableRowList* rows;
-} Table;
-
-
-// -----------------------------
-// Funciones de creación y destrucción
-// -----------------------------
 void initializeAbstractSyntaxTreeModule();
 void shutdownAbstractSyntaxTreeModule();
-
 void releaseProgram(Program* program);
-void releaseNode(Node* node);
 void releaseStatementList(StatementList* list);
-void releaseParameterList(ParameterList* params);
-void releaseListItems(ListItem* items);
+void releaseStatement(Statement* statement);
+void releaseParameterList(ParameterList* list);
+void releaseParameterList(ParameterList* list);
+void releaseFormItems(FormItem* item);
+void releaseNavItems(NavItem* item);
 
 #endif

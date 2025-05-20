@@ -3,4 +3,7 @@
     @item('Correo', 'tu@mail.com')
 @end
 
+@form
+@item('Campo', 'placeholder')
+@end
 
