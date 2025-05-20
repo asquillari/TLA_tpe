@@ -7,7 +7,6 @@
 %union {
 	Token token;
 	char* string;
-	int integer;
 
 
 	struct Program* program;
@@ -15,22 +14,8 @@
     struct StatementList* statement_list;
     struct ParameterList* parameter_list;
 
-	struct Define* define;
-	struct Use* use;
-	struct Form* form;
     struct FormItem* form_item;
-	struct Footer* footer;
-	struct Row* row;
-	struct Column* column;
-	struct Nav* nav;
     struct NavItem* nav_item;
-	struct Text* text;
-	struct Image* image;
-	struct Button* button;
-	struct Card* card;
-	struct OrderedList* ordered_list;
-	struct UnorderedList* unordered_list;
-	struct Table* table;
     struct TableRow* table_row;
     struct TableCell* table_cell;
     struct TableRowList* table_row_list;
@@ -204,7 +189,7 @@ action_parameters:
 
 
 footer:
-    FOOTER style_parameters statement_list END {
+    FOOTER maybe_style statement_list END {
         $$ = FooterSemanticAction($2, $3);
     }
 
