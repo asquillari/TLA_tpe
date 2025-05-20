@@ -50,5 +50,21 @@ Statement* FooterSemanticAction(ParameterList* style, StatementList* body);
 Statement* ColumnSemanticAction(ParameterList* style, StatementList* body);
 Statement* RowSemanticAction(ParameterList* style, StatementList* columns);
 
+Statement* TableSemanticAction(ParameterList* style, TableRowList* rows);
+TableRowList* SingleTableRowAction(TableRow* row);
+TableRowList* AppendTableRowAction(TableRowList* list, TableRow* row);
+TableRow* TableRowSemanticAction(TableCellList* cells);
+TableCellList* SingleTableCellAction(TableCell* cell);
+TableCellList* AppendTableCellAction(TableCellList* list, TableCell* cell);
+TableCell* TableCellSemanticAction(StatementList* content);
+
+// Lista ordenada
+Statement* OrderedListSemanticAction(ParameterList* style, StatementList* items);
+Statement* OrderedItemSemanticAction(char* number, Statement* body);
+
+// Lista no ordenada
+Statement* UnorderedListSemanticAction(ParameterList* style, StatementList* items);
+Statement* BulletItemSemanticAction(char* bullet, Statement* body);
+
 
 #endif

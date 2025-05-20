@@ -31,6 +31,10 @@
 	struct OrderedList* ordered_list;
 	struct UnorderedList* unordered_list;
 	struct Table* table;
+    struct TableRow* table_row;
+    struct TableCell* table_cell;
+    struct TableRowList* table_row_list;
+    struct TableCellList* table_cell_list;
 }
 
 %token <token> DEFINE USE FORM IMG FOOTER ROW COLUMN NAV ITEM END BUTTON CARD LIST_BEGIN TABLE_BEGIN
@@ -46,7 +50,7 @@
 
 %type <program> program
 %type <statement> statement 
-%type <statement_list> statement_list content maybe_content column_list
+%type <statement_list> statement_list content maybe_content column_list unordered_list_items ordered_list_items
 
 %type <parameter_list> style_parameters action_parameters
 %type <parameter_list> style_parameter_list identifier_list parameters use_parameters use_parameter_list
@@ -70,13 +74,18 @@
 %type <statement> ordered_list
 %type <statement> unordered_list
 
-
+%type <table_row_list> table_row_list
+%type <table_row> table_row
+%type <table_cell_list> nonempty_table_cell_list
+%type <table_cell> table_cell
 
 %%
 
 program:
-    statement_list  { $$ = StatementSemanticAction(currentCompilerState(), $1); }
-  ;
+      /* vacío */ { $$ = StatementSemanticAction(currentCompilerState(), NULL); }
+    | statement_list  { $$ = StatementSemanticAction(currentCompilerState(), $1); }
+;
+
 
 statement_list:
     statement { $$ = createSingleStatementList($1); }
@@ -95,9 +104,9 @@ statement:
     | text { $$ = $1; }
     | button { $$ = $1; }
     | card { $$ = $1; }
-    | table { $$ = NULL; }
-    | ordered_list { $$ = NULL; }
-    | unordered_list { $$ = NULL; }
+    | table { $$ = $1; }
+    | ordered_list { $$ = $1; }
+    | unordered_list { $$ = $1; }
 ;
 
 define:
@@ -291,40 +300,72 @@ card:
 
 
 table:
-    TABLE_BEGIN style_parameters table_items END { $$ = NULL; }
-
-table_items:
-    table_row_list
-  ;
+    TABLE_BEGIN maybe_style table_row_list END
+    {
+        $$ = TableSemanticAction($2, $3); // style, rows
+    }
+;
 
 table_row_list:
-    table_row
-  | table_row_list table_row
-  ;
+      table_row
+        { $$ = SingleTableRowAction($1); }
+    | table_row_list table_row
+        { $$ = AppendTableRowAction($1, $2); }
+;
 
 table_row:
-    PIPE table_cell_list PIPE NEWLINE
-  ;
+    PIPE nonempty_table_cell_list PIPE
+    {
+        $$ = TableRowSemanticAction($2);
+    }
+;
 
-table_cell_list:
+nonempty_table_cell_list:
+      table_cell
+        { $$ = SingleTableCellAction($1); }
+    | nonempty_table_cell_list PIPE table_cell
+        { $$ = AppendTableCellAction($1, $3); }
+;
+
+table_cell:
     content
-  | table_cell_list PIPE content
-  ;
+    {
+        $$ = TableCellSemanticAction($1); 
+    }
+;
 
 
 ordered_list:
-    LIST_BEGIN style_parameters ordered_list_items END { $$ = NULL; }
+    LIST_BEGIN maybe_style ordered_list_items END {
+        $$ = OrderedListSemanticAction($2, $3);
+    }
+;
 
 ordered_list_items:
-    ordered_list_items ORDERED_ITEM text
-  | ORDERED_ITEM text
-  ;
+      ORDERED_ITEM text {
+          Statement* item = OrderedItemSemanticAction($1, $2);
+          $$ = createSingleStatementList(item);
+      }
+    | ordered_list_items ORDERED_ITEM text {
+          Statement* item = OrderedItemSemanticAction($2, $3);
+          $$ = appendStatementToList($1, item);
+      }
+;
 
 unordered_list:
-    LIST_BEGIN style_parameters unordered_list_items END { $$ = NULL; }
-
+    LIST_BEGIN maybe_style unordered_list_items END {
+        $$ = UnorderedListSemanticAction($2, $3);
+    }
+;
 
 unordered_list_items:
-    unordered_list_items BULLET text
-  | BULLET text
-  ;
+      BULLET text {
+          Statement* item = BulletItemSemanticAction($1, $2);
+          $$ = createSingleStatementList(item);
+      }
+    | unordered_list_items BULLET text {
+          Statement* item = BulletItemSemanticAction($2, $3);
+          $$ = appendStatementToList($1, item);
+      }
+;
+

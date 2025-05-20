@@ -1,0 +1,4 @@
+@define vacio
+@end
+
+@use vacio()

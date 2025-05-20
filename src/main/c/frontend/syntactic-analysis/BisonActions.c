@@ -252,3 +252,97 @@ Statement* RowSemanticAction(ParameterList* style, StatementList* columns) {
     return stmt;
 }
 
+Statement* TableSemanticAction(ParameterList* style, TableRowList* rows) {
+    Table* table = calloc(1, sizeof(Table));
+    table->style = style;
+    table->rows = rows;
+
+    Statement* stmt = calloc(1, sizeof(Statement));
+    stmt->type = STATEMENT_TABLE;
+    stmt->table = table;
+    return stmt;
+}
+TableRowList* SingleTableRowAction(TableRow* row) {
+    TableRowList* list = calloc(1, sizeof(TableRowList));
+    list->row = row;
+    list->next = NULL;
+    return list;
+}
+TableRowList* AppendTableRowAction(TableRowList* list, TableRow* row) {
+    TableRowList* current = list;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = calloc(1, sizeof(TableRowList));
+    current->next->row = row;
+    return list;
+}
+TableRow* TableRowSemanticAction(TableCellList* cells) {
+    TableRow* row = calloc(1, sizeof(TableRow));
+    row->cells = cells;
+    return row;
+}
+TableCellList* SingleTableCellAction(TableCell* cell) {
+    TableCellList* list = calloc(1, sizeof(TableCellList));
+    list->cell = cell;
+    list->next = NULL;
+    return list;
+}
+TableCellList* AppendTableCellAction(TableCellList* list, TableCell* cell) {
+    TableCellList* current = list;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = calloc(1, sizeof(TableCellList));
+    current->next->cell = cell;
+    return list;
+}
+TableCell* TableCellSemanticAction(StatementList* content) {
+    TableCell* cell = calloc(1, sizeof(TableCell));
+    cell->content = content;
+    return cell;
+}
+
+Statement* OrderedListSemanticAction(ParameterList* style, StatementList* items) {
+    OrderedList* list = calloc(1, sizeof(OrderedList));
+    list->style = style;
+    list->items = items;
+
+    Statement* stmt = calloc(1, sizeof(Statement));
+    stmt->type = STATEMENT_ORDERED_LIST;
+    stmt->ordered_list = list;
+    return stmt;
+}
+
+Statement* OrderedItemSemanticAction(char* number, Statement* body) {
+    OrderedItem* item = calloc(1, sizeof(OrderedItem));
+    item->number = number;
+    item->body = body;
+
+    Statement* stmt = calloc(1, sizeof(Statement));
+    stmt->type = STATEMENT_ORDERED_ITEM;
+    stmt->ordered_item = item;
+    return stmt;
+}
+
+Statement* UnorderedListSemanticAction(ParameterList* style, StatementList* items) {
+    UnorderedList* list = calloc(1, sizeof(UnorderedList));
+    list->style = style;
+    list->items = items;
+
+    Statement* stmt = calloc(1, sizeof(Statement));
+    stmt->type = STATEMENT_UNORDERED_LIST;
+    stmt->unordered_list = list;
+    return stmt;
+}
+
+Statement* BulletItemSemanticAction(char* bullet, Statement* body) {
+    BulletItem* item = calloc(1, sizeof(BulletItem));
+    item->symbol = bullet;
+    item->body = body;
+
+    Statement* stmt = calloc(1, sizeof(Statement));
+    stmt->type = STATEMENT_BULLET_ITEM;
+    stmt->bullet_item = item;
+    return stmt;
+}

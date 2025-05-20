@@ -101,6 +101,28 @@ void releaseStatement(Statement* statement) {
             releaseStatementList(statement->row->columns);
             free(statement->row);
             break;
+        case STATEMENT_TABLE:
+            releaseTable(statement);
+            break;
+        case STATEMENT_ORDERED_ITEM:
+            releaseStatement(statement->ordered_item->body);
+            free(statement->ordered_item);
+            break;
+        case STATEMENT_BULLET_ITEM:
+            releaseStatement(statement->bullet_item->body);
+            free(statement->bullet_item);
+            break;
+        case STATEMENT_ORDERED_LIST:
+            releaseParameterList(statement->ordered_list->style);
+            releaseStatementList(statement->ordered_list->items);
+            free(statement->ordered_list);
+            break;
+        case STATEMENT_UNORDERED_LIST:
+            releaseParameterList(statement->unordered_list->style);
+            releaseStatementList(statement->unordered_list->items);
+            free(statement->unordered_list);
+            break;
+        
 		default:
 			break;
 	}
@@ -135,3 +157,41 @@ void releaseNavItems(NavItem* item) {
     }
 }
 
+
+void releaseTable(Statement* statement) {
+    if (!statement || !statement->table) return;
+
+    releaseParameterList(statement->table->style);
+    releaseTableRowList(statement->table->rows);
+    free(statement->table);
+}
+
+void releaseTableRowList(TableRowList* list) {
+    while (list) {
+        TableRowList* next = list->next;
+        releaseTableRow(list->row);
+        free(list);
+        list = next;
+    }
+}
+
+void releaseTableRow(TableRow* row) {
+    if (!row) return;
+    releaseTableCellList(row->cells);
+    free(row);
+}
+
+void releaseTableCellList(TableCellList* list) {
+    while (list) {
+        TableCellList* next = list->next;
+        releaseTableCellContent(list->cell);
+        free(list->cell);
+        free(list);
+        list = next;
+    }
+}
+
+void releaseTableCellContent(TableCell* cell) {
+    if (!cell) return;
+    releaseStatementList(cell->content);
+}

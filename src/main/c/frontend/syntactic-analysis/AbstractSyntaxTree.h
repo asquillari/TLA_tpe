@@ -22,8 +22,13 @@ typedef struct Button Button;
 typedef struct Card Card;
 typedef struct OrderedList OrderedList;
 typedef struct UnorderedList UnorderedList;
+typedef struct OrderedItem OrderedItem;
+typedef struct BulletItem BulletItem;
 typedef struct Table Table;
-typedef struct Modifiers Modifiers;
+typedef struct TableRow TableRow;
+typedef struct TableCell TableCell;
+typedef struct TableRowList TableRowList;
+typedef struct TableCellList TableCellList;
 
 // Programa y lista de sentencias
 // -----------------------------
@@ -50,7 +55,9 @@ enum StatementType {
     STATEMENT_CARD,
     STATEMENT_ORDERED_LIST,
     STATEMENT_UNORDERED_LIST,
-    STATEMENT_TABLE
+    STATEMENT_TABLE,
+    STATEMENT_ORDERED_ITEM,
+    STATEMENT_BULLET_ITEM,
 };
 
 typedef struct Statement {
@@ -68,8 +75,11 @@ typedef struct Statement {
         Button* button;
         Card* card;
         OrderedList* ordered_list;
+        OrderedItem* ordered_item;
         UnorderedList* unordered_list;
+        BulletItem* bullet_item;
         Table* table;
+
     };
 } Statement;
 
@@ -158,6 +168,50 @@ typedef struct Row {
     StatementList* columns; // lista de Column envueltos como Statement
 } Row;
 
+typedef struct TableRowList {
+    struct TableRow* row;
+    struct TableRowList* next;
+} TableRowList;
+
+typedef struct TableCellList {
+    struct TableCell* cell;
+    struct TableCellList* next;
+} TableCellList;
+
+
+typedef struct Table {
+    ParameterList* style;
+    TableRowList* rows;
+} Table;
+
+typedef struct TableRow {
+    TableCellList* cells;
+} TableRow;
+
+typedef struct TableCell {
+    StatementList* content;
+} TableCell;
+
+typedef struct OrderedList {
+    ParameterList* style;
+    StatementList* items;
+} OrderedList;
+
+typedef struct OrderedItem {
+    char* number;
+    Statement* body;
+} OrderedItem;
+
+typedef struct UnorderedList {
+    ParameterList* style;
+    StatementList* items;
+} UnorderedList;
+
+typedef struct BulletItem {
+    char* symbol;
+    Statement* body;
+} BulletItem;
+
 
 
 void initializeAbstractSyntaxTreeModule();
@@ -169,5 +223,11 @@ void releaseParameterList(ParameterList* list);
 void releaseParameterList(ParameterList* list);
 void releaseFormItems(FormItem* item);
 void releaseNavItems(NavItem* item);
+
+void releaseTableCellContent(TableCell* cell);
+void releaseTable(Statement* statement);
+void releaseTableRowList(TableRowList* list);
+void releaseTableRow(TableRow* row);
+void releaseTableCellList(TableCellList* list);
 
 #endif

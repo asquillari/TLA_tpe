@@ -1,0 +1,41 @@
+/* Comentario solo */
+/* Comentario 
+   multilínea 
+*/
+
+@form [ action: GET; ]
+@end
+
+@footer { color: gray; }
+"Pie de página"
+@end
+
+@card
+@end
+
+@button { background: blue; }
+"Click"
+@end
+
+@row { margin: 10px; }
+  @column { width: 50%; }
+    "Texto en columna"
+  @end
+@end
+
+@nav
+  @item("Inicio", "index.html")
+@end
+
+@table { border: 1px; }
+| "Columna 1" | "Columna 2" |
+| "Dato A"    | "Dato B"    |
+@end
+
+@list
+1. "Ítem uno"
+@end
+
+@list
+* "Bullet uno"
+@end
