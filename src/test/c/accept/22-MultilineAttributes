@@ -1,0 +1,6 @@
+@button {
+  background: blue;
+  border: 1px;
+}
+"Pulsa aquí"
+@end

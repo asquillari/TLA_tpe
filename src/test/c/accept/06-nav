@@ -1,7 +1,3 @@
-/*
-el primer parametro es el label y el segundo el link
-*/
-
 @nav
     @item('Inicio', 'home.html')
     @item('Servicios', 'servicios.html')

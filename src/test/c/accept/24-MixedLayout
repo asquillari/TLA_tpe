@@ -1,0 +1,13 @@
+@row
+  /* coment dentro de fila */
+  @column{ width: 60%; }
+    "Col 1"
+    #{{encabezado}}
+  @end
+  @column{ width: 40%; }
+    @list
+    * "Elemento A"
+    * "Elemento B"
+    @end
+  @end
+@end

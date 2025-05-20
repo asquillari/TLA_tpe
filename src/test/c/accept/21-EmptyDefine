@@ -1,0 +1,4 @@
+@define vacio
+@button { color: red; }
+@end
+@end
