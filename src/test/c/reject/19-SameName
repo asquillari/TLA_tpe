@@ -1,0 +1,14 @@
+/*no deberia permitir que dos define tengan el mismo id*/
+
+@define botonSimple(texto)
+@button { background: blue; }
+{{texto}}
+@end
+@end
+
+@define botonSimple(texto)
+@button { background: blue; }
+{{texto}} {{texto}}
+@end
+@end
+
