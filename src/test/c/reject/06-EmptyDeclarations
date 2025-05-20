@@ -1,4 +1,4 @@
-@define vacio
+@define empty
 @end
 
-@use vacio()
+@use empty()

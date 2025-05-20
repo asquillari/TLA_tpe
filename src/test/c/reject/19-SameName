@@ -1,14 +1,14 @@
-/*no deberia permitir que dos define tengan el mismo id*/
+/*With Bison we are not going to accept two defines with the same id*/
 
-@define botonSimple(texto)
+@define bsimpleButton(texto)
 @button { background: blue; }
-{{texto}}
+{{text}}
 @end
 @end
 
-@define botonSimple(texto)
+@define simpleButton(texto)
 @button { background: blue; }
-{{texto}} {{texto}}
+{{text}} {{text}}
 @end
 @end
 

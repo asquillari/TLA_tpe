@@ -1,3 +1,3 @@
 @form
-Nombre: [text name="nombre"
+Name: [text name="nombre"
 @end

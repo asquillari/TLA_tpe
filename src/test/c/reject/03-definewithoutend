@@ -1,4 +1,4 @@
-@define componente
+@define component
 @button { background: blue; }
-Texto
+Text
 @end

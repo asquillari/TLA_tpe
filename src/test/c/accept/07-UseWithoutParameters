@@ -1,7 +1,7 @@
-@define sinParametros
+@define noParameters
 @button
-"Texto sin parámetros"
+"Text without parameters"
 @end
 @end
 
-@use sinParametros
+@use noParameters

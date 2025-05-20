@@ -1,11 +1,11 @@
 @define M1
 @button 
-"Boton1" 
+"Button1" 
 @end 
 @end
 @define M2
 @button 
-"Boton2" 
+"Button2" 
 @end 
 @end
 

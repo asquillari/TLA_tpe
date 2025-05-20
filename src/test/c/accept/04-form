@@ -1,9 +1,11 @@
+/*The first parameter is the label and the second one is the palceholder*/
+
 @form [ action: POST;  method: /api/submit; ]
-    @item('Nombre', 'Tu nombre')
-    @item('Correo', 'tu@mail.com')
+    @item('Name', 'Your name')
+    @item('Email', 'your@email.com')
 @end
 
 @form
-@item('Campo', 'placeholder')
+@item('Place', 'placeholder')
 @end
 

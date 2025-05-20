@@ -3,5 +3,5 @@
   method: /api/user;
   enctype: multipart/form-data;
 ]
-  @item('Foto', 'Selecciona un archivo')
+  @item('Photo', 'Select file')
 @end

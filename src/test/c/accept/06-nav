@@ -1,5 +1,7 @@
+/*The first parameter is the label and the second one is the link*/
+
 @nav
-    @item('Inicio', 'home.html')
-    @item('Servicios', 'servicios.html')
-    @item('Contacto', 'contacto.html')
+    @item('Home', 'home.html')
+    @item('Service', 'services.html')
+    @item('Contact', 'contact.html')
 @end

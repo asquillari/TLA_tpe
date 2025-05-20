@@ -1,82 +1,82 @@
-#"Titulo Principal" 
-## "Titulo Secundario" 
-## "Titulo Secundario"
+#"Title" 
+## "Subtitle" 
+## "Subtitle"
 
-@define botonSimple(texto)
+@define simpleButton(text)
 @button { background: blue; }
-{{texto}}
+{{text}}
 @end
 @end
 
-@use botonSimple('Hola Mundo')
+@use simpleButton('Hello World!')
 
 @form [ action: POST;  method: /api/submit; ]
-    @item('Nombre', 'Tu nombre')
-    @item('Correo', 'tu@mail.com')
+    @item('Name', 'Your name')
+    @item('Email', 'your@email.com')
 @end
 
 
 @row
   @column{ width : 70%; }
-    "columna 1"
+    "column 1"
   @end
 
   @column { width : 30%; }
-    "columna 2"
+    "column 2"
   @end
 @end
 
 
 @nav
-    @item('Inicio', 'home.html')
-    @item('Servicios','servicios.html')
-    @item('Contacto', 'contacto.html')
+    @item('Home', 'home.html')
+    @item('Services','services.html')
+    @item('Contact', 'contact.html')
 @end
 
 
 @use navbar1
 
-@img('https://example.com/imagen.jpg','Imagen de ejemplo')
+@img('https://example.com/imagen.jpg','example image')
 
 @table
-| "Nombre "     | "Edad" | "Ciudad" |
+| "Name "     | "Age" | "City" |
 | "Juan"        | "25"   | "Buenos Aires"|
 | "Maria"       | "30"   | "Cordoba"     |
 @end
 
 
-#"titulo de lista numerada"
+#"Ordered List Title"
 @list
-1 . "Primer item"
-2. "Segundo item"
-3. "Tercer item"
+1. "First item"
+2. "Second item"
+3. "Third item"
 @end
 
 
-### "titulo Lista No Numerada"
+### "Unordered List Title"
 @list
-* "Primer item"
-* "Segundo item"
-* "Tercer item"
+* "First item"
+* "Second item"
+* "Third item"
 @end
 
-@define tarjetaDestacada(titulo, texto)
+@define downloadedCard(title, text)
 @card { background: eee; border: rounded; }
-#{{titulo}}
-{{texto}}
+#{{title}}
+{{text}}
 @end
 @end
 
-@use tarjetaDestacada('#Bienvenidos', '##Gracias por visitar nuestro sitio.')
+@use tarjetaDestacada('#Welcome', '##Thank you for visiting our site.')
 
 
 @button { background: blue; }
-{{texto}}
+{{text}}
 @end
 
 
 @card
-# {{titulo}}
-{{texto}}
+# {{title}}
+{{text}}
 @end
 

@@ -1,4 +1,4 @@
-@define vacio
+@define empty
 @button { color: red; }
 @end
 @end

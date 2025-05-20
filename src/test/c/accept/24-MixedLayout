@@ -1,13 +1,13 @@
 @row
-  /* coment dentro de fila */
+  /* comment inside @row */
   @column{ width: 60%; }
     "Col 1"
-    #{{encabezado}}
+    #{{header}}
   @end
   @column{ width: 40%; }
     @list
-    * "Elemento A"
-    * "Elemento B"
+    * "Item A"
+    * "Item B"
     @end
   @end
 @end
