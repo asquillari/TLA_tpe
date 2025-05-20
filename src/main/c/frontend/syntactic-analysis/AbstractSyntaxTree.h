@@ -165,7 +165,7 @@ typedef struct Column {
 
 typedef struct Row {
     ParameterList* style;
-    StatementList* columns; // lista de Column envueltos como Statement
+    StatementList* columns; 
 } Row;
 
 typedef struct TableRowList {

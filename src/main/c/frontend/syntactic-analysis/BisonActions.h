@@ -15,7 +15,6 @@ void shutdownBisonActionsModule();
  * Acciones semánticas para construir nodos del AST
  */
 
-// Programa
 Program* StatementSemanticAction(CompilerState* compilerState, StatementList* statement);
 ParameterList* createParameterList();
 void appendParameter(ParameterList* list, char* key, char* value);
@@ -58,11 +57,9 @@ TableCellList* SingleTableCellAction(TableCell* cell);
 TableCellList* AppendTableCellAction(TableCellList* list, TableCell* cell);
 TableCell* TableCellSemanticAction(StatementList* content);
 
-// Lista ordenada
 Statement* OrderedListSemanticAction(ParameterList* style, StatementList* items);
 Statement* OrderedItemSemanticAction(char* number, Statement* body);
 
-// Lista no ordenada
 Statement* UnorderedListSemanticAction(ParameterList* style, StatementList* items);
 Statement* BulletItemSemanticAction(char* bullet, Statement* body);
 

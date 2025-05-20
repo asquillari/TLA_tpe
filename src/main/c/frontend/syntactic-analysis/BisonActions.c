@@ -31,7 +31,7 @@ static void _logSyntacticAnalyzerAction(const char * functionName) {
 
 /* PUBLIC FUNCTIONS */
 
-// Programa
+
 Program* StatementSemanticAction(CompilerState* compilerState, StatementList* statements) {
     Program * program = calloc(1, sizeof(Program));
     program->statements = statements;

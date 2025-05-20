@@ -229,7 +229,7 @@ nav_item_list:
 
 nav_item:
     ITEM OPEN_PAREN QUOTED_VALUE COMMA QUOTED_VALUE CLOSE_PAREN {
-        $$ = NavItemSemanticAction($3, $5); // label, link
+        $$ = NavItemSemanticAction($3, $5); 
     }
 ;
 
@@ -287,7 +287,7 @@ card:
 table:
     TABLE_BEGIN maybe_style table_row_list END
     {
-        $$ = TableSemanticAction($2, $3); // style, rows
+        $$ = TableSemanticAction($2, $3); 
     }
 ;
 

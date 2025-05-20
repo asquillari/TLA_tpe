@@ -24,9 +24,6 @@ void releaseProgram(Program* program) {
 	}
 }
 
-// ------------------------
-// Lista de Statements
-// ------------------------
 void releaseStatementList(StatementList* list) {
 	while (list != NULL) {
 		StatementList* next = list->next;
@@ -36,9 +33,6 @@ void releaseStatementList(StatementList* list) {
 	}
 }
 
-// ------------------------
-// Statement
-// ------------------------
 void releaseStatement(Statement* statement) {
 	if (statement == NULL) return;
 
