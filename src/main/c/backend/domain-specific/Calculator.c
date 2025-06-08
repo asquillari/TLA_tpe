@@ -1,6 +1,11 @@
 #include "Calculator.h"
 
 /* MODULE INTERNAL STATE */
+//todo lo que esta en esta carpeta de domain-specific es lo especificoo para el lenguaje
+//el resto son cosas especificas del compilador
+//dijo tipo en una pagina web no es necesarioo porque no tenes que computar nada
+//asi que quizas esto no necesitamos hacer nada
+//esto tambien es todo recursivo, dijo que puede ser una buena forma pero no es obligatorio
 
 static Logger * _logger = NULL;
 

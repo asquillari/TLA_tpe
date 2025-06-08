@@ -57,6 +57,7 @@ static void _generateConstant(const unsigned int indentationLevel, Constant * co
  * Creates the epilogue of the generated output, that is, the final lines that
  * completes a valid Latex document.
  */
+//no se si necesitamos agregar algo al final, para html
 static void _generateEpilogue(const int value) {
 	_output(0, "%s%d%s",
 		"            [ $", value, "$, circle, draw, blue ]\n"
@@ -114,6 +115,7 @@ static void _generateFactor(const unsigned int indentationLevel, Factor * factor
 /**
  * Generates the output of the program.
  */
+//en el caso del ejemplo el programa solo arranca una expresion
 static void _generateProgram(Program * program) {
 	_generateExpression(3, program->expression);
 }
@@ -124,6 +126,8 @@ static void _generateProgram(Program * program) {
  *
  * @see https://ctan.dcc.uchile.cl/graphics/pgf/contrib/forest/forest-doc.pdf
  */
+// esto es lo que se genera al principio del archivo, el prologo
+//tendriamos que poner lo de doctype ponele
 static void _generatePrologue(void) {
 	_output(0, "%s",
 		"\\documentclass{standalone}\n\n"
@@ -142,6 +146,7 @@ static void _generatePrologue(void) {
 /**
  * Generates an indentation string for the specified level.
  */
+//lo hace mas lindo, para html sirve para que se vea mejor
 static char * _indentation(const unsigned int level) {
 	return indentation(_indentationCharacter, level, _indentationSize);
 }
@@ -151,6 +156,9 @@ static char * _indentation(const unsigned int level) {
  * allows to see the output even close to a failure, because it drops the
  * buffering.
  */
+//esto hay que modificar si queres cambiar el tipo de salida, por ejemplo a un archivo
+//el generador deberia quedar transparente al tipo de salida, por eso es importante
+//que la salida la maneje output
 static void _output(const unsigned int indentationLevel, const char * const format, ...) {
 	va_list arguments;
 	va_start(arguments, format);
@@ -168,6 +176,9 @@ static void _output(const unsigned int indentationLevel, const char * const form
 void generate(CompilerState * compilerState) {
 	logDebugging(_logger, "Generating final output...");
 	_generatePrologue();
+	//podemos tener un generador de codigo por cada tipo de nodo y hacerlo recursivo
+	//nos enfoocamos en cada nodo, arrancamos con el nodo raiz y vamos bajando
+	//no si o si tiene que ser recursivo, pero es una buena forma de hacerlo
 	_generateProgram(compilerState->abstractSyntaxtTree);
 	_generateEpilogue(compilerState->value);
 	logDebugging(_logger, "Generation is done.");

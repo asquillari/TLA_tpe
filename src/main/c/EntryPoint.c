@@ -40,11 +40,16 @@ const int main(const int count, const char ** arguments) {
 	if (syntacticAnalysisStatus == ACCEPT) {
 		// ----------------------------------------------------------------------------------------
 		// Beginning of the Backend... ------------------------------------------------------------
+		//lo corre con este comando: ./script/ubuntu/start.sh program
 		/*
 		logDebugging(logger, "Computing expression value...");
+		//computa la expresion pasandosela al ast 
 		ComputationResult computationResult = computeExpression(program->expression);
 		if (computationResult.succeed) {
 			compilerState.value = computationResult.value;
+			//no es necesario para la primera parte pero aca seguro
+			//vamos a tener una tabla de simbolos y demas cosas que le tenemos que guardar en el compilerState
+			//con esa expresion genera el codigo
 			generate(&compilerState);
 		}
 		else {
