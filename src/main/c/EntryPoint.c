@@ -21,7 +21,7 @@ const int main(const int count, const char ** arguments) {
 	initializeSyntacticAnalyzerModule();
 	initializeAbstractSyntaxTreeModule();
 	//initializeCalculatorModule();
-	//initializeGeneratorModule();
+	initializeGeneratorModule();
 
 	// Logs the arguments of the application.
 	for (int k = 0; k < count; ++k) {
@@ -38,27 +38,8 @@ const int main(const int count, const char ** arguments) {
 	CompilationStatus compilationStatus = SUCCEED;
 	Program * program = compilerState.abstractSyntaxtTree;
 	if (syntacticAnalysisStatus == ACCEPT) {
-		// ----------------------------------------------------------------------------------------
-		// Beginning of the Backend... ------------------------------------------------------------
-		//lo corre con este comando: ./script/ubuntu/start.sh program
-		/*
-		logDebugging(logger, "Computing expression value...");
-		//computa la expresion pasandosela al ast 
-		ComputationResult computationResult = computeExpression(program->expression);
-		if (computationResult.succeed) {
-			compilerState.value = computationResult.value;
-			//no es necesario para la primera parte pero aca seguro
-			//vamos a tener una tabla de simbolos y demas cosas que le tenemos que guardar en el compilerState
-			//con esa expresion genera el codigo
-			generate(&compilerState);
-		}
-		else {
-			logError(logger, "The computation phase rejects the input program.");
-			compilationStatus = FAILED;
-		}
-		*/
-		// ...end of the Backend. -----------------------------------------------------------------
-		// ----------------------------------------------------------------------------------------
+		logDebugging(logger, "Generating HTML output...");
+		generate(&compilerState);
 	}
 	else {
 		logError(logger, "The syntactic-analysis phase rejects the input program.");
@@ -67,7 +48,7 @@ const int main(const int count, const char ** arguments) {
 	logDebugging(logger, "Releasing AST resources...");
 	releaseProgram(program);
 	logDebugging(logger, "Releasing modules resources...");
-	//shutdownGeneratorModule();
+	shutdownGeneratorModule();
 	//shutdownCalculatorModule();
 	shutdownAbstractSyntaxTreeModule();
 	shutdownSyntacticAnalyzerModule();
