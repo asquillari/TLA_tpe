@@ -35,16 +35,26 @@ void releaseStatementList(StatementList* list) {
 
 void releaseStatement(Statement* statement) {
 	if (statement == NULL) return;
-
-	switch (statement->type) {
+    //seguro hay que ajustar los frees si es que hacemos el strdup para id y demas
+	//para ajustar bien hay que ver cuales son char en el .h
+    switch (statement->type) {
 		case STATEMENT_TEXT:
             logDebugging(_logger, "Releasing text: %s", __FUNCTION__);
 			if (statement->text != NULL) {
+                if (statement->text->content != NULL) {
+                    free(statement->text->content);
+                }
 				free(statement->text);
 			}
 			break;
         case STATEMENT_IMAGE:
             releaseParameterList(statement->image->style);
+            if(statement->image->src != NULL) {
+                free(statement->image->src);
+            }
+            if(statement->image->alt != NULL) {
+                free(statement->image->alt);
+            }
             free(statement->image);
             break;
         case STATEMENT_BUTTON:
@@ -138,6 +148,12 @@ void releaseParameterList(ParameterList* list) {
 void releaseFormItems(FormItem* item) {
     while (item) {
         FormItem* next = item->next;
+        if(item->label != NULL) {
+            free(item->label);
+        }
+        if(item->placeholder != NULL) {
+            free(item->placeholder);
+        }
         free(item);
         item = next;
     }
@@ -146,6 +162,12 @@ void releaseFormItems(FormItem* item) {
 void releaseNavItems(NavItem* item) {
     while (item) {
         NavItem* next = item->next;
+        if(item->label != NULL) {
+            free(item->label);
+        }
+        if(item->link != NULL) {
+            free(item->link);
+        }
         free(item);
         item = next;
     }

@@ -87,6 +87,7 @@ Token HeaderLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
 }
 
 
+//estos dos tambien habria que ver si los copiamos, y si lo hacemos hacer el free en el tree
 Token OrderedItemLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
 	ctx->semanticValue->string = ctx->lexeme;
@@ -161,23 +162,39 @@ Token TableLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
 	return token;
 }
 
+
 Token QuotedValueLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = ctx->lexeme;
-	ctx->semanticValue->token = QUOTED_VALUE;
+	char *raw= ctx->lexeme;
+	size_t len = strlen(raw);
+	//yo no se si esta bien hacer el strdup porque el lexeme ya es un strdup 
+	//pero sino no se guarda ni sacando el destroy
+	if (len >= 2 && raw[0] == '"' && raw[len-1] == '"') {
+		ctx->semanticValue->string = strndup(raw+1, len-2);     
+	} else {
+		ctx->semanticValue->string = strdup(raw);
+    }
 	destroyLexicalAnalyzerContext(ctx);
 	return QUOTED_VALUE;
 }
 
 Token QuotedParameterValueLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = ctx->lexeme;
-	ctx->semanticValue->token = QUOTED_VALUE;
+	char *raw= ctx->lexeme;
+	size_t len = strlen(raw);
+	//yo no se si esta bien hacer el strdup porque el lexeme ya es un strdup 
+	//pero sino no se guarda ni sacando el destroy
+	if (len >= 2 && raw[0] == '\'' && raw[len-1] == '\'') {
+		ctx->semanticValue->string = strndup(raw+1, len-2);     
+	} else {
+		ctx->semanticValue->string = strdup(raw);
+    }
 	destroyLexicalAnalyzerContext(ctx);
 	return QUOTED_VALUE;
 }
 
-
+//seguro hay que copiar de vuelta aca tambien, si lo hacemos ajustar el free en el tree 
+//en use y define
 Token IdentifierLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
 	ctx->semanticValue->string = ctx->lexeme;
@@ -185,7 +202,7 @@ Token IdentifierLexemeAction(LexicalAnalyzerContext * ctx) {
 	destroyLexicalAnalyzerContext(ctx);
 	return IDENTIFIER;
 }
-
+//si copiamos hay que liberar en los parametros seguro
 Token UnquotedValueLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
 	ctx->semanticValue->string = ctx->lexeme;
