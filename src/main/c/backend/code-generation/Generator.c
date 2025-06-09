@@ -183,6 +183,12 @@ static void _generateStatement(unsigned indent, Statement *s) {
 			break;
 		}
         // define y use queda medio para despues porque necesitamos variables
+		case STATEMENT_DEFINE: {
+			break;
+		}
+		case STATEMENT_USE: {
+			break;
+		}
         default:
             logError(_logger, "Tipo de statement no soportado: %d", s->type);
             break;
