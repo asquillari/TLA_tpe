@@ -247,15 +247,15 @@ maybe_style:
 
 
 text:
-      HEADER_1 QUOTED_VALUE   { $$ = TextFromQuotedValueSemanticAction($2); }
-    | HEADER_2 QUOTED_VALUE   { $$ = TextFromQuotedValueSemanticAction($2); }
-    | HEADER_3 QUOTED_VALUE   { $$ = TextFromQuotedValueSemanticAction($2); }
-    | HEADER_1 VARIABLE       { $$ = TextFromVariableSemanticAction($2); }
-    | HEADER_2 VARIABLE       { $$ = TextFromVariableSemanticAction($2); }
-    | HEADER_3 VARIABLE       { $$ = TextFromVariableSemanticAction($2); }
-    | QUOTED_VALUE            { $$ = TextFromQuotedValueSemanticAction($1); }
-    | VARIABLE                { $$ = TextFromVariableSemanticAction($1); }
-
+      HEADER_1 QUOTED_VALUE   { $$ = HeaderSemanticAction($2, 1); }
+    | HEADER_2 QUOTED_VALUE   { $$ = HeaderSemanticAction($2, 2); }
+    | HEADER_3 QUOTED_VALUE   { $$ = HeaderSemanticAction($2, 3); }
+    | HEADER_1 VARIABLE       { $$ = HeaderSemanticAction($2, 1); }
+    | HEADER_2 VARIABLE       { $$ = HeaderSemanticAction($2, 2); }
+    | HEADER_3 VARIABLE       { $$ = HeaderSemanticAction($2, 3); }
+    | QUOTED_VALUE            { $$ = ParagraphSemanticAction($1); }
+    | VARIABLE                { $$ = ParagraphSemanticAction($1); }
+;
 
 button:
     BUTTON maybe_style maybe_action maybe_content END {

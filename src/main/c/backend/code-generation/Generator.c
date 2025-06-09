@@ -43,10 +43,16 @@ static void _generateStatement(unsigned indent, Statement *s) {
 		//lo de style esta mal pero porque hay que iterar por los parametros
 		//y no se como hacerlo bien, por ahora lo dejamos asi
 		//lo de action tambien hay que agregarlo segun corresponda
-        case STATEMENT_TEXT:
-			// esto en realidad no tiene que ser <p> porque puede ser texto que este entre headers	
-			//quizas tenemos que poner un flag en el nodo de texto para saber si es un header o no	
-			//tambien tenemos que tener cuidado con las variables {{}}	
+        case STATEMENT_HEADER1:
+			_output(indent, "<h1>%s</h1>", s->text->content);
+			break;
+		case STATEMENT_HEADER2:
+			_output(indent, "<h2>%s</h2>", s->text->content);
+			break;
+		case STATEMENT_HEADER3:
+			_output(indent, "<h3>%s</h3>", s->text->content);
+			break;
+		case STATEMENT_PARAGRAPH:
 			_output(indent, "<p>%s</p>", s->text->content);
 			break;
 		case STATEMENT_IMAGE: {

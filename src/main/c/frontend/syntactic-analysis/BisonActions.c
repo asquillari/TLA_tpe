@@ -96,27 +96,28 @@ Statement* DefineSemanticAction(char* name, ParameterList* parameters, Parameter
     return stmt;
 }
 
-Statement* TextFromQuotedValueSemanticAction(char* value) {
-	Text* text = calloc(1, sizeof(Text));
-	text->content = value;  
-
-	Statement* stmt = calloc(1, sizeof(Statement));
-	stmt->type = STATEMENT_TEXT;
-	stmt->text = text;
-
-	return stmt;
+Statement* HeaderSemanticAction(char* value, int level) {
+    Text* t = calloc(1, sizeof(Text));
+    t->content = value;
+    Statement* s = calloc(1, sizeof(Statement));
+    switch (level) {
+      case 1: s->type = STATEMENT_HEADER1; break;
+      case 2: s->type = STATEMENT_HEADER2; break;
+      case 3: s->type = STATEMENT_HEADER3; break;
+    }
+    s->text = t;
+    return s;
 }
 
-Statement* TextFromVariableSemanticAction(char* varName) {
-	Text* text = calloc(1, sizeof(Text));
-	text->content = varName;
-
-	Statement* stmt = calloc(1, sizeof(Statement));
-	stmt->type = STATEMENT_TEXT;
-	stmt->text = text;
-
-	return stmt;
+Statement* ParagraphSemanticAction(char* value) {
+    Text* t = calloc(1, sizeof(Text));
+    t->content = value;
+    Statement* s = calloc(1, sizeof(Statement));
+    s->type = STATEMENT_PARAGRAPH;
+    s->text = t;
+    return s;
 }
+
 
 Statement* ImageSemanticAction(ParameterList* style, char* src, char* alt) {
     Image* image = calloc(1, sizeof(Image));

@@ -23,8 +23,8 @@ StatementList* createSingleStatementList(Statement* stmt);
 StatementList* appendStatementToList(StatementList* list, Statement* stmt);
 
 
-Statement* TextFromQuotedValueSemanticAction(char* value);
-Statement* TextFromVariableSemanticAction(char* varName);
+Statement* HeaderSemanticAction(char* value, int level);
+Statement* ParagraphSemanticAction(char* value);
 
 Statement* ImageSemanticAction(ParameterList* style, char* src, char* alt);
 

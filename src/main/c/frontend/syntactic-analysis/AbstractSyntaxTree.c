@@ -38,15 +38,17 @@ void releaseStatement(Statement* statement) {
     //seguro hay que ajustar los frees si es que hacemos el strdup para id y demas
 	//para ajustar bien hay que ver cuales son char en el .h
     switch (statement->type) {
-		case STATEMENT_TEXT:
-            logDebugging(_logger, "Releasing text: %s", __FUNCTION__);
-			if (statement->text != NULL) {
+		case STATEMENT_PARAGRAPH:
+        case STATEMENT_HEADER1:
+        case STATEMENT_HEADER2:
+        case STATEMENT_HEADER3:
+            if (statement->text) {
                 if (statement->text->content != NULL) {
                     free(statement->text->content);
                 }
-				free(statement->text);
-			}
-			break;
+                free(statement->text);
+            }
+            break;
         case STATEMENT_IMAGE:
             releaseParameterList(statement->image->style);
             if(statement->image->src != NULL) {
