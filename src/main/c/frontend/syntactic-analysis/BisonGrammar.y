@@ -29,8 +29,7 @@
 %token <token>  UNKNOWN EQUALS
 
 %token <string> ORDERED_ITEM BULLET
-%token <string> QUOTED_VALUE UNQUOTED_VALUE IDENTIFIER 
-%token <string> VARIABLE
+%token <string> QUOTED_VALUE UNQUOTED_VALUE IDENTIFIER VARIABLE
 
 
 %type <program> program

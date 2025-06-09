@@ -70,14 +70,6 @@ Token TagLexemeAction(LexicalAnalyzerContext *ctx, Token token) {
 	return token;
 }
 
-Token VariableLexemeAction(LexicalAnalyzerContext * ctx) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = ctx->lexeme;
-	ctx->semanticValue->token = VARIABLE;
-	destroyLexicalAnalyzerContext(ctx);
-	return VARIABLE;
-}
-
 
 Token HeaderLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
@@ -197,18 +189,33 @@ Token QuotedParameterValueLexemeAction(LexicalAnalyzerContext * ctx) {
 //en use y define
 Token IdentifierLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = ctx->lexeme;
-	ctx->semanticValue->token = IDENTIFIER;
+	char *raw = ctx->lexeme;
+	size_t len = strlen(raw);
+	ctx->semanticValue->string = strndup(raw, len);
+	logDebugging(_logger, "Identifier: %s", ctx->semanticValue->string);
 	destroyLexicalAnalyzerContext(ctx);
 	return IDENTIFIER;
 }
 //si copiamos hay que liberar en los parametros seguro
 Token UnquotedValueLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = ctx->lexeme;
-	ctx->semanticValue->token = UNQUOTED_VALUE;
+	ctx->semanticValue->string = strdup(ctx->lexeme);
+	logDebugging(_logger, "Unquoted value: %s", ctx->semanticValue->string);
 	destroyLexicalAnalyzerContext(ctx);
 	return UNQUOTED_VALUE;
+}
+
+Token VariableLexemeAction(LexicalAnalyzerContext * ctx) {
+    _logLexicalAnalyzerContext(__FUNCTION__, ctx);
+    char *raw = ctx->lexeme;      
+    size_t len = strlen(raw);
+    if (len >= 4 && raw[0]=='{' && raw[1]=='{' && raw[len-2]=='}' && raw[len-1]=='}') {
+        ctx->semanticValue->string = strndup(raw+2, len-4);   
+    } else {
+        ctx->semanticValue->string = strdup(raw);
+    }
+    destroyLexicalAnalyzerContext(ctx);
+    return VARIABLE;
 }
 
 

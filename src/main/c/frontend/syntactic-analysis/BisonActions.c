@@ -67,6 +67,7 @@ ParameterList* createParameterList() {
 }
 
 void appendParameter(ParameterList* list, char* key, char* value) {
+    logDebugging(_logger, "Appending parameter: %s = %s", key ? key : "NULL", value ? value : "NULL");
     Parameter* param = calloc(1, sizeof(Parameter));
     param->key = key;
     param->value = value;
