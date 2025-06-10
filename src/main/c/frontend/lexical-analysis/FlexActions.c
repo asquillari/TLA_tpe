@@ -40,59 +40,54 @@ void BeginMultilineCommentLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerC
 	if (_logIgnoredLexemes) {
 		_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 	}
-	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 }
 
 void EndMultilineCommentLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	if (_logIgnoredLexemes) {
 		_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 	}
-	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 }
 
 void IgnoredLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	if (_logIgnoredLexemes) {
 		_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 	}
-	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 }
 
 Token UnknownLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 	return UNKNOWN;
 }
 
 Token TagLexemeAction(LexicalAnalyzerContext *ctx, Token token) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
 	ctx->semanticValue->token = token;
-	destroyLexicalAnalyzerContext(ctx);
 	return token;
+}
+
+Token VariableLexemeAction(LexicalAnalyzerContext * ctx) {
+	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->semanticValue->string = ctx->lexeme;
+	return VARIABLE;
 }
 
 
 Token HeaderLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
 	ctx->semanticValue->token = token;
-	destroyLexicalAnalyzerContext(ctx);
 	return token;
 }
 
 
-//estos dos tambien habria que ver si los copiamos, y si lo hacemos hacer el free en el tree
 Token OrderedItemLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
 	ctx->semanticValue->string = ctx->lexeme;
-	ctx->semanticValue->token = ORDERED_ITEM;
-	destroyLexicalAnalyzerContext(ctx);
 	return ORDERED_ITEM;
 }
 
 Token BulletLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
 	ctx->semanticValue->string = ctx->lexeme;
-	ctx->semanticValue->token = BULLET;
-	destroyLexicalAnalyzerContext(ctx);
 	return BULLET;
 }
 
@@ -100,21 +95,18 @@ Token ListLexemeAction(LexicalAnalyzerContext * ctx, char *text, Token token) {
     _logLexicalAnalyzerContext(__FUNCTION__, ctx);
     ctx->semanticValue->string = text;
     ctx->semanticValue->token  = token;
-    destroyLexicalAnalyzerContext(ctx);
     return token;
 }
 
 Token StyleLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
 	ctx->semanticValue->token = token;
-	destroyLexicalAnalyzerContext(ctx);
 	return token;
 }
 
 Token ActionLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
 	ctx->semanticValue->token = token;
-	destroyLexicalAnalyzerContext(ctx);
 	return token;
 }
 
@@ -122,27 +114,23 @@ Token ActionLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
 Token ParenthesisLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
 	ctx->semanticValue->token = token;
-	destroyLexicalAnalyzerContext(ctx);
 	return token;
 }
 
 Token ColonLexemeAction(LexicalAnalyzerContext * ctx){
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
 	ctx->semanticValue->token = COLON;
-	destroyLexicalAnalyzerContext(ctx);
 	return COLON;
 }
 Token CommaLexemeAction(LexicalAnalyzerContext * ctx){
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
 	ctx->semanticValue->token = COMMA;
-	destroyLexicalAnalyzerContext(ctx);
 	return COMMA;
 }
 
 Token EqualLexemeAction(LexicalAnalyzerContext * ctx){
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
 	ctx->semanticValue->token = EQUALS;
-	destroyLexicalAnalyzerContext(ctx);
 	return EQUALS;
 }
 
@@ -150,71 +138,37 @@ Token EqualLexemeAction(LexicalAnalyzerContext * ctx){
 Token TableLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
 	ctx->semanticValue->token = token;
-	destroyLexicalAnalyzerContext(ctx);
 	return token;
 }
 
-
 Token QuotedValueLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	char *raw= ctx->lexeme;
-	size_t len = strlen(raw);
-	if (len >= 2 && raw[0] == '"' && raw[len-1] == '"') {
-		ctx->semanticValue->string = strndup(raw+1, len-2);     
-	} else {
-		ctx->semanticValue->string = strdup(raw);
-    }
-	destroyLexicalAnalyzerContext(ctx);
+	ctx->semanticValue->string = ctx->lexeme;
 	return QUOTED_VALUE;
 }
 
 Token QuotedParameterValueLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	char *raw= ctx->lexeme;
-	size_t len = strlen(raw);
-	if (len >= 2 && raw[0] == '\'' && raw[len-1] == '\'') {
-		ctx->semanticValue->string = strndup(raw+1, len-2);     
-	} else {
-		ctx->semanticValue->string = strdup(raw);
-    }
-	destroyLexicalAnalyzerContext(ctx);
+	ctx->semanticValue->string = ctx->lexeme;
 	return QUOTED_VALUE;
 }
 
+
 Token IdentifierLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	char *raw = ctx->lexeme;
-	size_t len = strlen(raw);
-	ctx->semanticValue->string = strndup(raw, len);
-	logDebugging(_logger, "Identifier: %s", ctx->semanticValue->string);
-	destroyLexicalAnalyzerContext(ctx);
+	ctx->semanticValue->string = ctx->lexeme;
 	return IDENTIFIER;
 }
+
 Token UnquotedValueLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = strdup(ctx->lexeme);
-	logDebugging(_logger, "Unquoted value: %s", ctx->semanticValue->string);
-	destroyLexicalAnalyzerContext(ctx);
+	ctx->semanticValue->string = ctx->lexeme;
 	return UNQUOTED_VALUE;
-}
-
-Token VariableLexemeAction(LexicalAnalyzerContext * ctx) {
-    _logLexicalAnalyzerContext(__FUNCTION__, ctx);
-    char *raw = ctx->lexeme;      
-    size_t len = strlen(raw);
-    if (len >= 4 && raw[0]=='{' && raw[1]=='{' && raw[len-2]=='}' && raw[len-1]=='}') {
-        ctx->semanticValue->string = strndup(raw+2, len-4);   
-    } else {
-        ctx->semanticValue->string = strdup(raw);
-    }
-    destroyLexicalAnalyzerContext(ctx);
-    return VARIABLE;
 }
 
 
 Token NewlineLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
 	ctx->semanticValue->token = NEWLINE;
-	destroyLexicalAnalyzerContext(ctx);
 	return NEWLINE;
 }

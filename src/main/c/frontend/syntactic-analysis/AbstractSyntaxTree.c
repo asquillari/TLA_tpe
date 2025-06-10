@@ -43,22 +43,11 @@ void releaseStatement(Statement* statement) {
         case STATEMENT_HEADER2:
         case STATEMENT_HEADER3:
             if (statement->text) {
-                logDebugging(_logger, "Releasing text statement: %s", statement->text->content);
-                if (statement->text->content != NULL) {
-                    free(statement->text->content);
-                }
-                logDebugging(_logger, "Freeing text structure");
                 free(statement->text);
             }
             break;
         case STATEMENT_IMAGE:
             releaseParameterList(statement->image->style);
-            if(statement->image->src != NULL) {
-                free(statement->image->src);
-            }
-            if(statement->image->alt != NULL) {
-                free(statement->image->alt);
-            }
             free(statement->image);
             break;
         case STATEMENT_BUTTON:
@@ -76,16 +65,10 @@ void releaseStatement(Statement* statement) {
             releaseParameterList(statement->define->parameters);
             releaseParameterList(statement->define->style);
             releaseStatementList(statement->define->body);
-            if(statement->define->name != NULL) {
-                free(statement->define->name);
-            }
             free(statement->define);
             break;
         case STATEMENT_USE:
             releaseParameterList(statement->use->parameters);
-            if(statement->use->name != NULL) {
-                free(statement->use->name);
-            }
             free(statement->use);
             break;
         case STATEMENT_FORM:
@@ -149,14 +132,6 @@ void releaseParameterList(ParameterList* list) {
     Parameter* current = list->head;
     while (current) {
         Parameter* next = current->next;
-        logDebugging(_logger, "Releasing parameter: %s = %s", current->key ? current->key : "NULL", current->value ? current->value : "NULL");
-        if(current->value != NULL) {
-            free(current->value);
-        }
-        logDebugging(_logger, "Freeing parameter key: %s", current->key ? current->key : "NULL");
-        if(current->key != NULL) {
-            free(current->key);
-        }
         free(current);
         current = next;
     }

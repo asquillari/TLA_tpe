@@ -5,7 +5,7 @@
 
 %option stack
 
-%x MULTILINE_COMMENT
+%x MULTILINE_COMMENT QUOTED PARAM VARIABLE
 
 %%
 
@@ -14,6 +14,18 @@
 <MULTILINE_COMMENT>[[:space:]]+  { IgnoredLexemeAction(ctx()); }
 <MULTILINE_COMMENT>[^*]+         { IgnoredLexemeAction(ctx()); }
 <MULTILINE_COMMENT>.             { IgnoredLexemeAction(ctx()); }
+
+"\""                             { BEGIN(QUOTED); }
+<QUOTED>[^"\\\n]+                { return QuotedValueLexemeAction(ctx()); }
+<QUOTED>"\""                     { BEGIN(INITIAL); }
+
+"'"                              { BEGIN(PARAM); }
+<PARAM>[^'\\\n]+                 { return QuotedParameterValueLexemeAction(ctx()); }
+<PARAM>"'"                       { BEGIN(INITIAL); }
+
+"{{"                             { BEGIN(VARIABLE); }
+<VARIABLE>[A-Za-z_][A-Za-z0-9_]*         { return VariableLexemeAction(ctx()); }
+<VARIABLE>"}}"                   { BEGIN(INITIAL); }
 
 "@define"                        { return TagLexemeAction(ctx(), DEFINE); }
 "@use"                           { return TagLexemeAction(ctx(), USE); }
@@ -30,8 +42,6 @@
 "@table"                         { return TagLexemeAction(ctx(), TABLE_BEGIN); }
 "@list"                          { return TagLexemeAction(ctx(), LIST_BEGIN); }
 
-
-"{{"[a-zA-Z_][a-zA-Z0-9_]*"}}"   { return VariableLexemeAction(ctx()); }
 
 "###"                            { return HeaderLexemeAction(ctx(), HEADER_3); }
 "##"                             { return HeaderLexemeAction(ctx(), HEADER_2); }
@@ -53,8 +63,6 @@
 "="                              { return EqualLexemeAction(ctx()); }
 "|"                              { return TableLexemeAction(ctx(), PIPE); }
 
-\"([^\\"]|\\.)*\"                { return QuotedValueLexemeAction(ctx()); }     
-\'[^\']*\'                       { return QuotedParameterValueLexemeAction(ctx()); } 
 
 [[:space:]]+                     { IgnoredLexemeAction(ctx()); }
 
