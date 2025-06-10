@@ -81,6 +81,7 @@ Token HeaderLexemeAction(LexicalAnalyzerContext * ctx, Token token) {
 
 Token OrderedItemLexemeAction(LexicalAnalyzerContext * ctx) {
 	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
+	ctx->lexeme[ctx->length - 1] = '\0';
 	ctx->semanticValue->string = ctx->lexeme;
 	return ORDERED_ITEM;
 }

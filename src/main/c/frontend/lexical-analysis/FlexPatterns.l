@@ -47,7 +47,7 @@
 "##"                             { return HeaderLexemeAction(ctx(), HEADER_2); }
 "#"                              { return HeaderLexemeAction(ctx(), HEADER_1); }
 
-[0-9]+[[:space:]]*\.[[:space:]]* { return OrderedItemLexemeAction(ctx()); }
+[0-9]+[[:space:]]*\. { return OrderedItemLexemeAction(ctx()); }
 "*"                              { return BulletLexemeAction(ctx()); }
 
 "{"                              { return StyleLexemeAction(ctx(), OPEN_BRACE); }
