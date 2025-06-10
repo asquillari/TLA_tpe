@@ -93,7 +93,6 @@ Token BulletLexemeAction(LexicalAnalyzerContext * ctx) {
 
 Token ListLexemeAction(LexicalAnalyzerContext * ctx, char *text, Token token) {
     _logLexicalAnalyzerContext(__FUNCTION__, ctx);
-    ctx->semanticValue->string = text;
     ctx->semanticValue->token  = token;
     return token;
 }
@@ -160,10 +159,11 @@ Token IdentifierLexemeAction(LexicalAnalyzerContext * ctx) {
 	return IDENTIFIER;
 }
 
-Token UnquotedValueLexemeAction(LexicalAnalyzerContext * ctx) {
-	_logLexicalAnalyzerContext(__FUNCTION__, ctx);
-	ctx->semanticValue->string = ctx->lexeme;
-	return UNQUOTED_VALUE;
+Token UnquotedValueLexemeAction(LexicalAnalyzerContext *ctx) {
+    _logLexicalAnalyzerContext(__FUNCTION__, ctx);
+    ctx->lexeme[ctx->length - 1] = '\0';
+    ctx->semanticValue->string = ctx->lexeme;
+    return UNQUOTED_VALUE;
 }
 
 
