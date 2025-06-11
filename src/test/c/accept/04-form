@@ -1,6 +1,6 @@
 /*The first parameter is the label and the second one is the palceholder*/
 
-@form [ action: POST;  method: /api/submit; ]
+@form [ action: /api/submit;  method: POST; ]
     @item('Name', 'Your name')
     @item('Email', 'your@email.com')
 @end

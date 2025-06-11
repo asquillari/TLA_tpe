@@ -25,6 +25,7 @@ static char * _indentation(const unsigned int indentationLevel);
 static void _output(const unsigned int indentationLevel, const char * const format, ...);
 static void _generateStatement(unsigned indent, Statement *s);
 static char * styleToString(ParameterList *style);
+static char * attributesToString(ParameterList *attrs);
 
 /**
  * Creates the epilogue of the generated output, that is, the final lines that
@@ -63,12 +64,33 @@ static char * styleToString(ParameterList *style) {
     return buf;
 }
 
+static char * attributesToString(ParameterList *attrs) {
+    if (!attrs || !attrs->head) return strdup("");
+
+    size_t total = 1;
+    for (Parameter *p = attrs->head; p; p = p->next) {
+        total += strlen(p->key) + 2 + strlen(p->value) + 2;
+    }
+
+    char *buf = malloc(total);
+    if (!buf) return strdup("");
+
+    buf[0] = '\0';
+    for (Parameter *p = attrs->head; p; p = p->next) {
+        strcat(buf, p->key);
+        strcat(buf, "=\"");
+        strcat(buf, p->value);
+        strcat(buf, "\" ");
+    }
+    if (strlen(buf) > 0) buf[strlen(buf) - 1] = '\0';
+    return buf;
+}
+
+
 static void _generateStatement(unsigned indent, Statement *s) {
     switch (s->type) {
 		//podemos cambiar que style no aparezca vacio pero no me parece mal dejar como para que 
 		//lo complete el programador si quiere
-
-		//lo de action tambien hay que agregarlo segun corresponda
         case STATEMENT_HEADER1:
 			_output(indent, "<h1>%s</h1>", s->text->content);
 			break;
@@ -93,18 +115,20 @@ static void _generateStatement(unsigned indent, Statement *s) {
 		}
 		case STATEMENT_NAV: {
 			char *styleStr = styleToString(s->nav->style);
-			_output(indent, "<nav style=\"%s\">", styleStr);
+			char *attrsStr = attributesToString(s->nav->attributes);
+			_output(indent, "<nav style=\"%s\" %s>", styleStr, attrsStr);
 			for (NavItem *it = s->nav->items; it; it = it->next) {
 				_output(indent+1, "<a href=\"%s\">%s</a>", it->link, it->label);
 			}
 			_output(indent, "</nav>");
 			free(styleStr);
+			free(attrsStr);
 			break;
 		}
 		case STATEMENT_FORM: {
 			char *styleStr = styleToString(s->form->style);
-			//falta la parte del action
-			_output(indent, "<form style=\"%s\">", styleStr);
+			char *attrsStr = attributesToString(s->form->attributes);
+			_output(indent, "<form style=\"%s\" %s>", styleStr, attrsStr);
 			for (FormItem *it = s->form->items; it; it = it->next) {
 				_output(indent+1,
 					"<label>%s<input placeholder=\"%s\"/></label>",
@@ -114,6 +138,7 @@ static void _generateStatement(unsigned indent, Statement *s) {
 			}
 			_output(indent, "</form>");
 			free(styleStr);
+			free(attrsStr);
 			break;
 		}
 		case STATEMENT_FOOTER: {
@@ -138,15 +163,14 @@ static void _generateStatement(unsigned indent, Statement *s) {
 		}
 		case STATEMENT_BUTTON: {
 			char *styleStr = styleToString(s->button->style);
-			_output(indent, "<button style=\"%s\" actions?=\"%s\">", 
-				styleStr,
-				s->button->action ? s->button->action->head->value : ""
-			);
+			char *actionStr = attributesToString(s->button->action);
+			_output(indent, "<button style=\"%s\" %s>", styleStr, actionStr);
 			for (StatementList *it = s->button->body; it; it = it->next) {
 				_generateStatement(indent+1, it->statement);
 			}
 			_output(indent, "</button>");
 			free(styleStr);
+			free(actionStr);
 			break;
 		}
 		case STATEMENT_TABLE: {
