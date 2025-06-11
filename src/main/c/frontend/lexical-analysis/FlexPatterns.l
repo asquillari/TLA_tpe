@@ -16,7 +16,7 @@
 <MULTILINE_COMMENT>.             { IgnoredLexemeAction(ctx()); }
 
 "\""                             { BEGIN(QUOTED); }
-<QUOTED>[^"\\\n]+                { return QuotedValueLexemeAction(ctx()); }
+<QUOTED>(\\.|[^"\\\n])+          { return QuotedValueLexemeAction(ctx()); }
 <QUOTED>"\""                     { BEGIN(INITIAL); }
 
 "'"                              { BEGIN(PARAM); }
