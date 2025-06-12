@@ -7,6 +7,9 @@
 #include "../../shared/String.h"
 #include <stdarg.h>
 #include <stdio.h>
+#include <sys/stat.h>
+
+extern FILE * _outputFile;
 
 /** Initialize module's internal state. */
 void initializeGeneratorModule();

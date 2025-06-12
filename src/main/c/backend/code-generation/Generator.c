@@ -6,13 +6,39 @@ const char _indentationCharacter = ' ';
 const char _indentationSize = 4;
 static Logger * _logger = NULL;
 
+FILE * _outputFile = NULL;
+
 void initializeGeneratorModule() {
 	_logger = createLogger("Generator");
+
+	const char * dir = "src/output";
+
+	struct stat st = {0};
+	if(stat(dir, &st) == -1) {
+		if (mkdir(dir, 0755) != 0) {
+			_outputFile = stdout; 
+			return;
+		}
+	}
+    const char * name = getStringOrDefault("OUTPUT_FILE", "output.html");
+
+    size_t len = strlen(dir) + 1 + strlen(name) + 1;
+    char * path = malloc(len);
+    snprintf(path, len, "%s/%s", dir, name);
+
+    _outputFile = fopen(path, "w");
+    if (_outputFile == NULL) {
+        _outputFile = stdout;
+    }
+    free(path);
 }
 
 void shutdownGeneratorModule() {
 	if (_logger != NULL) {
 		destroyLogger(_logger);
+	}
+	if (_outputFile != NULL && _outputFile != stdout) {
+		fclose(_outputFile);
 	}
 }
 
@@ -308,16 +334,16 @@ static void _output(const unsigned int indentationLevel, const char * const form
     va_start(args, format);
 
     char *indent = _indentation(indentationLevel);
-    fputs(indent, stdout);
+    fputs(indent, _outputFile);
     free(indent);
 
-    vfprintf(stdout, format, args);
-
-    fputc('\n', stdout);
-    fflush(stdout);
+    vfprintf(_outputFile, format, args);
+    fputc('\n', _outputFile);
+    fflush(_outputFile);
 
     va_end(args);
 }
+
 
 
 /** PUBLIC FUNCTIONS */
