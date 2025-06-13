@@ -83,7 +83,11 @@ void appendParameter(ParameterList* list, char* key, char* value) {
     }
 }
 
-Statement* DefineSemanticAction(char* name, ParameterList* parameters, ParameterList* style, StatementList* body) {
+Statement* DefineSemanticAction(CompilerState *st,
+                                char* name,
+                                ParameterList* parameters,
+                                ParameterList* style,
+                                StatementList* body) {
     Define* define = calloc(1, sizeof(Define));
     define->name = name;
     define->parameters = parameters;
@@ -113,6 +117,15 @@ Statement* HeaderSemanticAction(char* value, int level) {
 Statement* ParagraphSemanticAction(char* value) {
     Text* t = calloc(1, sizeof(Text));
     t->content = value;
+    Statement* s = calloc(1, sizeof(Statement));
+    s->type = STATEMENT_PARAGRAPH;
+    s->text = t;
+    return s;
+}
+
+Statement* ParagraphVariableSemanticAction(CompilerState* compilerState, char* variableName){
+    Text* t = calloc(1, sizeof(Text));
+    t->content = variableName;
     Statement* s = calloc(1, sizeof(Statement));
     s->type = STATEMENT_PARAGRAPH;
     s->text = t;
@@ -156,7 +169,9 @@ Statement* CardSemanticAction(ParameterList* style, StatementList* body) {
     return stmt;
 }
 
-Statement* UseSemanticAction(char* name, ParameterList* parameters) {
+Statement* UseSemanticAction(CompilerState *st,
+                             char* name,
+                             ParameterList* parameters) {
     Use* use = calloc(1, sizeof(Use));
     use->name = name;
     use->parameters = parameters;

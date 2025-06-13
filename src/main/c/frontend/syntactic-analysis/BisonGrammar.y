@@ -95,7 +95,7 @@ statement:
 
 define:
     DEFINE IDENTIFIER maybe_parameters maybe_style statement_list END {
-        $$ = DefineSemanticAction($2, $3, $4, $5);
+        $$ = DefineSemanticAction(currentCompilerState(), $2, $3, $4, $5);
     }
 ;
 
@@ -135,7 +135,7 @@ style_parameter_list:
 
 use:
     USE IDENTIFIER maybe_use {
-        $$ = UseSemanticAction($2, $3);
+        $$ = UseSemanticAction(currentCompilerState(), $2, $3);
     }
 ;
 
@@ -253,7 +253,7 @@ text:
     | HEADER_2 VARIABLE       { $$ = HeaderSemanticAction($2, 2); }
     | HEADER_3 VARIABLE       { $$ = HeaderSemanticAction($2, 3); }
     | QUOTED_VALUE            { $$ = ParagraphSemanticAction($1); }
-    | VARIABLE                { $$ = ParagraphSemanticAction($1); }
+    | VARIABLE                { $$ = ParagraphVariableSemanticAction(currentCompilerState(), $1); }
 ;
 
 button:

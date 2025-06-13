@@ -8,6 +8,7 @@
 #include "shared/Environment.h"
 #include "shared/Logger.h"
 #include "shared/String.h"
+#include "shared/symbol-table/symbolTable.h"
 
 /**
  * The main entry-point of the entire application. If you use "strtok" to
@@ -32,6 +33,7 @@ const int main(const int count, const char ** arguments) {
 	CompilerState compilerState = {
 		.abstractSyntaxtTree = NULL,
 		.succeed = false,
+		.symbolTable = createSymbolTable(),
 		.value = 0
 	};
 	const SyntacticAnalysisStatus syntacticAnalysisStatus = parse(&compilerState);
@@ -55,6 +57,7 @@ const int main(const int count, const char ** arguments) {
 	shutdownBisonActionsModule();
 	shutdownFlexActionsModule();
 	logDebugging(logger, "Compilation is done.");
+	destroySymbolTable(compilerState.symbolTable);
 	destroyLogger(logger);
 	return compilationStatus;
 }

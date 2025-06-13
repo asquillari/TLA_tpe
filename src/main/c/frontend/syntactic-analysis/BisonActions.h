@@ -3,6 +3,7 @@
 
 #include "../../shared/CompilerState.h"
 #include "../../shared/Logger.h"
+#include "../../shared/symbol-table/symbolTable.h"
 #include "AbstractSyntaxTree.h"
 #include "SyntacticAnalyzer.h"
 #include <stdlib.h>
@@ -25,6 +26,7 @@ StatementList* appendStatementToList(StatementList* list, Statement* stmt);
 
 Statement* HeaderSemanticAction(char* value, int level);
 Statement* ParagraphSemanticAction(char* value);
+Statement* ParagraphVariableSemanticAction(CompilerState* compilerState, char* variableName);
 
 Statement* ImageSemanticAction(ParameterList* style, char* src, char* alt);
 
@@ -32,9 +34,16 @@ Statement* ButtonSemanticAction(ParameterList* style, ParameterList* action, Sta
 
 Statement* CardSemanticAction(ParameterList* style, StatementList* body);
 
-Statement* DefineSemanticAction(char* name, ParameterList* parameters, ParameterList* style, StatementList* body);
+Statement* DefineSemanticAction(CompilerState *st,
+                                char* name,
+                                ParameterList* parameters,
+                                ParameterList* style,
+                                StatementList* body);
 
-Statement* UseSemanticAction(char* name, ParameterList* parameters);
+Statement* UseSemanticAction(CompilerState *st,
+                             char* name,
+                             ParameterList* parameters);
+
 
 FormItem* FormItemSemanticAction(char* label, char* placeholder);
 FormItem* appendFormItem(FormItem* list, FormItem* newItem);
