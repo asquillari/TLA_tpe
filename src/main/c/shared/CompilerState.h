@@ -27,6 +27,7 @@ typedef struct {
 
 	// The computed value of the entire program (only for the calculator).
 	int value;
+	ErrorManager* errorManager;
 } CompilerState;
 
 #endif
