@@ -10,7 +10,7 @@ FILE * _outputFile = NULL;
 
 
 static void _freeParameterList(ParameterList *list);
-static void _freeStatementList(StatementList *list);
+
 
 static void _freeDefineStatementList() {
     DefineStatementList *current = _defineStatementList;
@@ -18,8 +18,6 @@ static void _freeDefineStatementList() {
         DefineStatementList *next = current->next;
         if (current->define) {
             free(current->define->name);
-            _freeParameterList(current->define->parameters);
-            _freeStatementList(current->define->body);
             free(current->define);
         }
         free(current);
@@ -28,18 +26,6 @@ static void _freeDefineStatementList() {
     _defineStatementList = NULL;
 }
 
-static void _freeParameterList(ParameterList *list) {
-    if (!list) return;
-    Parameter *p = list->head;
-    while (p) {
-        Parameter *next = p->next;
-        free(p->key);
-        free(p->value);
-        free(p);
-        p = next;
-    }
-    free(list);
-}
 
 static void _freeStatementList(StatementList *list) {
     while (list) {
@@ -318,7 +304,6 @@ static void _generateStatement(unsigned indent, Statement *s) {
 			break;
 		}
 		case STATEMENT_DEFINE: {
-			/*
 			DefineStatementList *newNode = malloc(sizeof(DefineStatementList));
     		newNode->define = calloc(1, sizeof(Define));
 			newNode->define->name = strdup(s->define->name);
@@ -336,12 +321,11 @@ static void _generateStatement(unsigned indent, Statement *s) {
         		}
         		it->next = newNode;
     		}
-			*/
+			
     	break;
 			
 		}
 		case STATEMENT_USE: {
-			/*
 			DefineStatementList *it = _defineStatementList;
     		while (it) {
         		if (strcmp(it->define->name, s->use->name) == 0) {
@@ -349,10 +333,10 @@ static void _generateStatement(unsigned indent, Statement *s) {
                 		Parameter *p1 = it->define->parameters->head;
                 		Parameter *p2 = s->use->parameters->head;
                			while (p1 && p2) {
-                    		if (strcmp(p1->key, p2->key) != 0 ||
-                        		strcmp(p1->value, p2->value) != 0) {
-                        		break; 
-                    	}
+                    		if (!p1->key || !p2->key || strcmp(p1->key, p2->key) != 0 ||
+    								strcmp(p1->value, p2->value) != 0) {
+    							break;
+							}
                     	p1 = p1->next;
                     	p2 = p2->next;
                  		}
@@ -365,7 +349,7 @@ static void _generateStatement(unsigned indent, Statement *s) {
         		}
         	it = it->next;
     		}
-			*/
+			
     		break;
 		}
         default:

@@ -140,7 +140,7 @@ Statement* ParagraphSemanticAction(char* value) {
 }
 
 Statement* ParagraphVariableSemanticAction(CompilerState* compilerState, char* variableName){
-    /* 
+    /*
     if(symbolTableLookup(compilerState->symbolTable, variableName) == NULL) {
         useUndefinedVariable(compilerState->errorManager, variableName);
         compilerState->succeed = false;
@@ -195,7 +195,7 @@ Statement* CardSemanticAction(ParameterList* style, StatementList* body) {
 Statement* UseSemanticAction(CompilerState *st,
                              char* name,
                              ParameterList* parameters) {
-    /*                            
+                                /*
     if(symbolTableLookup(st->symbolTable, name) == NULL) {
         useUndefinedFunction(st->errorManager, name);
         st->succeed = false;
