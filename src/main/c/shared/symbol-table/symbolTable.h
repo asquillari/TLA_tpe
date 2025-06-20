@@ -11,7 +11,8 @@ typedef enum {
 } SymbolType;
 
 typedef struct Symbol {
-    char          *name;      
+    char          *name;   
+    char          *ofFunction;   
     SymbolType     type;      
     char          *value;   
     struct Symbol *next;     
@@ -24,27 +25,14 @@ typedef struct SymbolTable {
 
 SymbolTable* createSymbolTable(void);
 
-//Nota: aca abria que hacer un struck de una pila para los scopes
-/* GPT me tiro esta
-typedef struct SymbolTableStack {
-    SymbolTable *table;
-    struct SymbolTableStack *next;
-} SymbolTableStack;
-
-SymbolTableStack * symbolTableStack;
-
-void pushScope(SymbolTableStack **stack);
-void popScope(SymbolTableStack **stack);
-Symbol* scopedLookup(SymbolTableStack *stack, const char *name);
-Symbol* scopedInsert(SymbolTableStack *stack, const char *name, SymbolType type, const char *initialValue);
-*/
 void         destroySymbolTable(SymbolTable *table);
 
 Symbol*      symbolTableLookup(SymbolTable *table, const char *name);
-Symbol*      symbolTableInsert(SymbolTable *table, const char *name, SymbolType type, const char *initialValue);
+Symbol*      symbolTableInsert(SymbolTable *table, const char *name, const char *ofFunction, SymbolType type, const char *initialValue);
 
-bool         symbolTableSetValue(SymbolTable *table, const char *name, const char *value);
-bool         symbolTableGetValue(SymbolTable *table, const char *name, char **outValue);
+bool symbolTableSetValue(SymbolTable *table, const char *function, const char *value, int index);
+
+bool symbolTableGetValue(SymbolTable *table, const char *name, char **outValue);
 
 // Nota: PARA FUNCIONES
 //todavia no se como lo implementariamos porque no deberiamos poder usar parameterlist desde aca

@@ -148,6 +148,9 @@ static char * attributesToString(ParameterList *attrs) {
 
 
 static void _generateStatement(unsigned indent, Statement *s) {
+	if(!s){
+		return;
+	}
     switch (s->type) {
 		//podemos cambiar que style no aparezca vacio pero no me parece mal dejar como para que 
 		//lo complete el programador si quiere
@@ -365,7 +368,9 @@ static void _generateStatement(unsigned indent, Statement *s) {
 //en el caso del ejemplo el programa solo arranca una expresion
 static void _generateProgram(Program *program) {
     for (StatementList *it = program->statements; it; it = it->next) {
-        _generateStatement(1, it->statement);
+		if(it->statement){
+        	_generateStatement(1, it->statement);
+		}
     }
 }
 

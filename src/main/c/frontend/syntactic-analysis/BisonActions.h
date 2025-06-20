@@ -67,11 +67,12 @@ TableCellList* SingleTableCellAction(TableCell* cell);
 TableCellList* AppendTableCellAction(TableCellList* list, TableCell* cell);
 TableCell* TableCellSemanticAction(StatementList* content);
 
-Statement* OrderedListSemanticAction(ParameterList* style, StatementList* items);
+Statement* OrderedListSemanticAction(CompilerState* st, ParameterList* style, StatementList* items);
 Statement* OrderedItemSemanticAction(char* number, Statement* body);
 
 Statement* UnorderedListSemanticAction(ParameterList* style, StatementList* items);
 Statement* BulletItemSemanticAction(char* bullet, Statement* body);
 
+Statement* HeaderVariableSemanticAction(CompilerState* st, char* variableName, int level);
 
 #endif

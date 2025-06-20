@@ -29,7 +29,7 @@ Symbol* symbolTableLookup(SymbolTable *table, const char *name) {
     return NULL;
 }
 
-Symbol* symbolTableInsert(SymbolTable *table, const char *name, SymbolType type, const char *initialValue) {
+Symbol* symbolTableInsert(SymbolTable *table, const char *name, const char *ofFunction, SymbolType type, const char *initialValue) {
     if (!table || !name || strlen(name) == 0) return NULL;
     Symbol *existing = symbolTableLookup(table, name);
     if (existing) return existing;
@@ -39,17 +39,32 @@ Symbol* symbolTableInsert(SymbolTable *table, const char *name, SymbolType type,
     sym->type  = type;
     sym->value = initialValue ? strdup(initialValue) : NULL;
     sym->next  = table->head;
+    sym->ofFunction = ofFunction ? strdup(ofFunction) : NULL; 
     table->head = sym;
     return sym;
 }
 
-bool symbolTableSetValue(SymbolTable *table, const char *name, const char *value) {
-    if (!table || !name || strlen(name) == 0) return false;
-    Symbol *sym = symbolTableLookup(table, name);
-    if (!sym || sym->type != SYM_VAR) return false;
-    free(sym->value);
-    sym->value = strdup(value);
-    return true;
+bool symbolTableSetValue(SymbolTable *table,
+                         const char *function,
+                         const char *value,
+                         int index) {
+    if (!table || !function || strlen(function) == 0)
+        return false;
+
+    int count = 0;
+    for (Symbol *s = table->head; s; s = s->next) {
+        if (s->type == SYM_VAR
+            && s->ofFunction
+            && strcmp(s->ofFunction, function) == 0) {
+            if (count == index) {
+                free(s->value);
+                s->value = strdup(value);
+                return true;
+            }
+            count++;
+        }
+    }
+    return false;
 }
 
 bool symbolTableGetValue(SymbolTable *table, const char *name, char **outValue) {

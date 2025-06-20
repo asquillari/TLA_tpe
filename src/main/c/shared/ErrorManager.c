@@ -18,7 +18,6 @@ ErrorManager * newErrorManager(){
 static void newErrorNode(ErrorManager* em, ErrorType type, char * msg, printErrorFunction errorFunction){
     ErrorNode * newNode = malloc(sizeof(ErrorNode));
     if(newNode == NULL){
-        //outOfMemory(em);
         return;
     }
     newNode->msg = msg;
@@ -40,7 +39,9 @@ static void printError(int errorNumber, ErrorNode* node){
         "Undefined variable.",
         "Variable already defined.",
         "Undefined function.",
-        "Function already defined."
+        "Function already defined.",
+        "Too many parameters for function.",
+        "Invalid ordered list item."
                               };
     
     fprintf(stderr, "[Error %i]: %s.\n", errorNumber, messages[node->type]);
@@ -64,6 +65,16 @@ static void printErrorUndifinedFunction(int errorNumber, ErrorNode* node){
 
 static void printErrorExistsFunction(int errorNumber, ErrorNode* node){
     printf("[Error %i]: Function \"%s\" already defined.\n", errorNumber, node->msg);
+    return;
+}
+
+static void printErrorTooManyVariables(int errorNumber, ErrorNode* node){
+    printf("[Error %i]: Too many parameters for function \"%s\".\n", errorNumber, node->msg);
+    return;
+}
+
+static void printInvalidOrderedListError(int errorNumber, ErrorNode* node){
+    printf("[Error %i]: Invalid ordered list item: expected %s.\n", errorNumber, node->msg);
     return;
 }
 
@@ -112,3 +123,26 @@ void addAlreadyDefinedFunction(ErrorManager* em, char* funcName){
     strcpy(msg, funcName);
     newErrorNode(em, ALREADY_DEFINED_FUNC, msg, printErrorExistsFunction);
 }
+
+void useParameterIndexOutOfRange(ErrorManager* em, char* name, int idx){
+    char * ms = malloc(strlen(name) + 1);
+    strcpy(ms, name);
+    newErrorManager(em, OUT_OF_INDEX, ms, printErrorTooManyVariables);
+}
+
+void addInvalidOrderedListError(ErrorManager *em,
+                                const char *numeroRecibido,
+                                int numeroEsperado) {
+    char buf[16];
+    snprintf(buf, sizeof(buf), "%d", numeroEsperado);
+
+    char *msg = malloc(strlen(buf) + 1);
+    if (!msg) return;
+    strcpy(msg, buf);
+
+    newErrorNode(em,
+                 INVALID_ORDERED_LIST_ITEM, 
+                 msg,
+                 printInvalidOrderedListError);
+}
+

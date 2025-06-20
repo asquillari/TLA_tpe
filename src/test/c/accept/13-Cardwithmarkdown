@@ -1,7 +1,7 @@
 @define downloadedCard(title, text)
 @card { background: red; border: rounded; }
-# {{title}}
-{{text}}
+#"title"
+"text"
 @end
 @end
 

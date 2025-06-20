@@ -2,7 +2,7 @@
   /* comment inside @row */
   @column{ width: 60%; }
     "Col 1"
-    #{{header}}
+    #"header 1"
   @end
   @column{ width: 40%; }
     @list
