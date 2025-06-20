@@ -88,6 +88,20 @@ Statement* DefineSemanticAction(CompilerState *st,
                                 ParameterList* parameters,
                                 ParameterList* style,
                                 StatementList* body) {
+    if(symbolTableLookup(st->symbolTable, name) == NULL) {
+        st->errorManager->addAlreadyDefinedFunction(st->errorManager, name);
+        st->succeed = false;
+        return NULL;
+    }
+    symbolTableInsert(st->symbolTable, name, SYM_FUN, NULL);
+    for(Parameter* p = parameters->head; p != NULL; p = p->next) {
+        if(symbolTableLookup(st->symbolTable, p->key) == NULL) {
+            st->errorManager->addAlreadyDefinedVariable(st->errorManager, p->key);
+            st->succeed = false;
+            return NULL;
+        }
+        symbolTableInsert(st->symbolTable, p->key, SYM_VAR, NULL);
+    }
     Define* define = calloc(1, sizeof(Define));
     define->name = name;
     define->parameters = parameters;
@@ -124,6 +138,11 @@ Statement* ParagraphSemanticAction(char* value) {
 }
 
 Statement* ParagraphVariableSemanticAction(CompilerState* compilerState, char* variableName){
+    if(symbolTableLookup(compilerState->symbolTable, variableName) == NULL) {
+        compilerState->errorManager->useUndefinedVariable(compilerState->errorManager, variableName);
+        compilerState->succeed = false;
+        return NULL;
+    }
     Text* t = calloc(1, sizeof(Text));
     t->content = variableName;
     Statement* s = calloc(1, sizeof(Statement));
@@ -172,6 +191,11 @@ Statement* CardSemanticAction(ParameterList* style, StatementList* body) {
 Statement* UseSemanticAction(CompilerState *st,
                              char* name,
                              ParameterList* parameters) {
+    if(symbolTableLookup(st->symbolTable, name) == NULL) {
+        st->errorManager->useUndefinedFunction(name, st);
+        st->succeed = false;
+        return NULL;
+    }
     Use* use = calloc(1, sizeof(Use));
     use->name = name;
     use->parameters = parameters;

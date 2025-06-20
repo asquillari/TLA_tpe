@@ -93,26 +93,22 @@ void freeErrorManager(ErrorManager* em){
     }
     free(em);
 }
-void useUndefinedVariable(ErrorManager* em, char* varName, CompilerState* compilerState){
-    compilerState->succeed = FAILED;
+void useUndefinedVariable(ErrorManager* em, char* varName){
     char * msg = malloc(strlen(varName) + 1);
     strcpy(msg,varName);
     newErrorNode(em, UNDIFINED_VAR, msg, printErrorUndifinedVariable);
 }
-void addAlreadyDefinedVariable(ErrorManager* em, char* varName, CompilerState* compilerState){
-    compilerState->succeed = FAILED;
+void addAlreadyDefinedVariable(ErrorManager* em, char* varName){
     char * msg = malloc(strlen(varName) + 1);
     strcpy(msg,varName);
     newErrorNode(em, UNDIFINED_VAR, msg, printErrorExistsVariable);
 }
-void useUndefinedFunction(ErrorManager* em, char* funcName, CompilerState* compilerState){
-    compilerState->succeed = FAILED;
+void useUndefinedFunction(ErrorManager* em, char* funcName){
     char * msg = malloc(strlen(funcName) + 1);
     strcpy(msg, funcName);
     newErrorNode(em, UNDIFINED_FUNC, msg, printErrorUndifinedFunction);
 }
-void addAlreadyDefinedFunction(ErrorManager* em, char* funcName, CompilerState* compilerState){
-    compilerState->succeed = FAILED;
+void addAlreadyDefinedFunction(ErrorManager* em, char* funcName){
     char * msg = malloc(strlen(funcName) + 1);
     strcpy(msg, funcName);
     newErrorNode(em, ALREADY_DEFINED_FUNC, msg, printErrorExistsFunction);
