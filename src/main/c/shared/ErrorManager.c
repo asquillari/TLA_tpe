@@ -1,5 +1,4 @@
 #include "ErrorManager.h"
-#include "shared/CompilerState.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -19,7 +18,7 @@ ErrorManager * newErrorManager(){
 static void newErrorNode(ErrorManager* em, ErrorType type, char * msg, printErrorFunction errorFunction){
     ErrorNode * newNode = malloc(sizeof(ErrorNode));
     if(newNode == NULL){
-        outOfMemory(em);
+        //outOfMemory(em);
         return;
     }
     newNode->msg = msg;
@@ -73,7 +72,7 @@ void showErrors(ErrorManager* em){
     if(em->errorsShown){
         return;
     }
-    em->errorsShown = true;
+    em->errorsShown = 0;
     
     ErrorNode * aux = em->first;
     for(int i=1 ; aux!=NULL ; ++i){

@@ -6,6 +6,7 @@
 #include "../../shared/symbol-table/symbolTable.h"
 #include "AbstractSyntaxTree.h"
 #include "SyntacticAnalyzer.h"
+#include "../../shared/ErrorManager.h"
 #include <stdlib.h>
 
 /** Inicializa y libera estado interno del módulo */

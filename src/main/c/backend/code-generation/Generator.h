@@ -11,6 +11,14 @@
 
 extern FILE * _outputFile;
 
+typedef struct DefineStatementList DefineStatementList;
+
+struct DefineStatementList {
+    Define *define;
+    DefineStatementList *next;
+};
+
+
 /** Initialize module's internal state. */
 void initializeGeneratorModule();
 

@@ -1,12 +1,59 @@
 #include "Generator.h"
 
 /* MODULE INTERNAL STATE */
-
 const char _indentationCharacter = ' ';
 const char _indentationSize = 4;
 static Logger * _logger = NULL;
-
+static DefineStatementList * _defineStatementList = NULL;
 FILE * _outputFile = NULL;
+
+
+
+static void _freeParameterList(ParameterList *list);
+static void _freeStatementList(StatementList *list);
+
+static void _freeDefineStatementList() {
+    DefineStatementList *current = _defineStatementList;
+    while (current) {
+        DefineStatementList *next = current->next;
+        if (current->define) {
+            free(current->define->name);
+            _freeParameterList(current->define->parameters);
+            _freeStatementList(current->define->body);
+            free(current->define);
+        }
+        free(current);
+        current = next;
+    }
+    _defineStatementList = NULL;
+}
+
+static void _freeParameterList(ParameterList *list) {
+    if (!list) return;
+    Parameter *p = list->head;
+    while (p) {
+        Parameter *next = p->next;
+        free(p->key);
+        free(p->value);
+        free(p);
+        p = next;
+    }
+    free(list);
+}
+
+static void _freeStatementList(StatementList *list) {
+    while (list) {
+        StatementList *next = list->next;
+        if (list->statement) {
+            // Si tenés una función para liberar statements según tipo, usala acá.
+            // Por simplicidad, se asume solo se hace free del statement.
+            free(list->statement);
+        }
+        free(list);
+        list = next;
+    }
+}
+
 
 void initializeGeneratorModule() {
 	_logger = createLogger("Generator");
@@ -40,6 +87,7 @@ void shutdownGeneratorModule() {
 	if (_outputFile != NULL && _outputFile != stdout) {
 		fclose(_outputFile);
 	}
+	_freeDefineStatementList();
 }
 
 /** PRIVATE FUNCTIONS */
@@ -269,12 +317,56 @@ static void _generateStatement(unsigned indent, Statement *s) {
 			free(styleStr);
 			break;
 		}
-        // define y use queda medio para despues porque necesitamos variables
 		case STATEMENT_DEFINE: {
-			break;
+			/*
+			DefineStatementList *newNode = malloc(sizeof(DefineStatementList));
+    		newNode->define = calloc(1, sizeof(Define));
+			newNode->define->name = strdup(s->define->name);
+			newNode->define->parameters = s->define->parameters ? s->define->parameters : NULL;
+			newNode->define->style = s->define->style ? s->define->style : NULL;
+			newNode->define->body = s->define->body ? s->define->body : calloc(1, sizeof(StatementList));
+    		newNode->next = NULL;
+
+   			if (_defineStatementList == NULL) {
+        		_defineStatementList = newNode;
+    		} else {
+        		DefineStatementList *it = _defineStatementList;
+        		while (it->next != NULL) {
+            		it = it->next;
+        		}
+        		it->next = newNode;
+    		}
+			*/
+    	break;
+			
 		}
 		case STATEMENT_USE: {
-			break;
+			/*
+			DefineStatementList *it = _defineStatementList;
+    		while (it) {
+        		if (strcmp(it->define->name, s->use->name) == 0) {
+            		if (it->define->parameters && s->use->parameters) {
+                		Parameter *p1 = it->define->parameters->head;
+                		Parameter *p2 = s->use->parameters->head;
+               			while (p1 && p2) {
+                    		if (strcmp(p1->key, p2->key) != 0 ||
+                        		strcmp(p1->value, p2->value) != 0) {
+                        		break; 
+                    	}
+                    	p1 = p1->next;
+                    	p2 = p2->next;
+                 		}
+                		if (p1 != NULL || p2 != NULL) break; 
+            		}
+            		for (StatementList *stmt = it->define->body; stmt; stmt = stmt->next) {
+                		_generateStatement(indent, stmt->statement);
+            		}
+            		break;
+        		}
+        	it = it->next;
+    		}
+			*/
+    		break;
 		}
         default:
             logError(_logger, "Tipo de statement no soportado: %d", s->type);
@@ -351,6 +443,7 @@ static void _output(const unsigned int indentationLevel, const char * const form
 void generate(CompilerState * compilerState) {
 	logDebugging(_logger, "Generating final output...");
 	_generatePrologue();
+	//si el arbol es nulo no hay nada que generar
 	//podemos tener un generador de codigo por cada tipo de nodo y hacerlo recursivo
 	//nos enfoocamos en cada nodo, arrancamos con el nodo raiz y vamos bajando
 	//no si o si tiene que ser recursivo, pero es una buena forma de hacerlo

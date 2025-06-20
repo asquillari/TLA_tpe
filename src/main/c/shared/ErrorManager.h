@@ -26,10 +26,10 @@ typedef void (*printErrorFunction)(int errorNumber, ErrorNode* aux);
 
 ErrorManager* newErrorManager();
 
-void useUndefinedVariable(ErrorManager* em, char* varName, CompilerState* compilerState);
-void addAlreadyDefinedVariable(ErrorManager* em, char* varName, CompilerState* compilerState);
-void useUndefinedFunction(ErrorManager* em, char* funcName, CompilerState* compilerState);
-void addAlreadyDefinedFunction(ErrorManager* em, char* funcNamem, CompilerState* compilerState);
+void useUndefinedVariable(ErrorManager* em, char* varName);
+void addAlreadyDefinedVariable(ErrorManager* em, char* varName);
+void useUndefinedFunction(ErrorManager* em, char* funcName);
+void addAlreadyDefinedFunction(ErrorManager* em, char* funcName);
 void showErrors(ErrorManager* em);
 void freeErrorManager(ErrorManager* em);
 

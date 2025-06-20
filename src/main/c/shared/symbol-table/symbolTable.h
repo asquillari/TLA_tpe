@@ -14,9 +14,6 @@ typedef struct Symbol {
     char          *name;      
     SymbolType     type;      
     char          *value;   
-    /* Nota: para funciones
-    void *params; // como no puedo usar ParamenterList, lo carga como void y proximarmente se castea
-    */  
     struct Symbol *next;     
 } Symbol;
 
