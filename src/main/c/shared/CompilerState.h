@@ -3,6 +3,7 @@
 
 #include "Type.h"
 #include "symbol-table/symbolTable.h"
+#include "ErrorManager.h"
 
 /**
  * The general status of a compilation.
@@ -16,7 +17,7 @@ typedef enum {
  * The global state of the compiler. Should transport every data structure
  * needed across the different phases of a compilation.
  */
-typedef struct {
+typedef struct CompilerState{
 	// The root node of the AST.
 	void * abstractSyntaxtTree;
 	// The current compilation status.		
@@ -27,6 +28,7 @@ typedef struct {
 
 	// The computed value of the entire program (only for the calculator).
 	int value;
+	ErrorManager* errorManager;
 } CompilerState;
 
 #endif

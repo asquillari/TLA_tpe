@@ -1,5 +1,5 @@
 @button { background: blue; }
-{{text}}
+"text"
 @end
 
 @button

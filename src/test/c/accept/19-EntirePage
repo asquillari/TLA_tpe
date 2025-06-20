@@ -4,7 +4,7 @@
 
 @define simpleButton(text)
 @button { background: blue; }
-{{text}}
+"text"
 @end
 @end
 
@@ -34,7 +34,6 @@
 @end
 
 
-@use navbar1
 
 @img('https://example.com/imagen.jpg','example image')
 
@@ -60,23 +59,18 @@
 * "Third item"
 @end
 
-@define downloadedCard(title, text)
+@define downloadedCard(title)
 @card { background: eee; border: rounded; }
-#{{title}}
-{{text}}
+#"title"
 @end
 @end
-
-@use tarjetaDestacada('#Welcome', '##Thank you for visiting our site.')
-
 
 @button { background: blue; }
-{{text}}
+"text"
 @end
 
 
 @card
-# {{title}}
-{{text}}
+#"text"
 @end
 

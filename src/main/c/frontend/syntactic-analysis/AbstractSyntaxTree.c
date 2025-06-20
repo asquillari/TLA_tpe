@@ -43,6 +43,7 @@ void releaseStatement(Statement* statement) {
         case STATEMENT_HEADER2:
         case STATEMENT_HEADER3:
             if (statement->text) {
+                free(statement->text->content);
                 free(statement->text);
             }
             break;
@@ -62,12 +63,14 @@ void releaseStatement(Statement* statement) {
             free(statement->card);
             break;
         case STATEMENT_DEFINE:
+            if (statement->define->name) free(statement->define->name);
             releaseParameterList(statement->define->parameters);
             releaseParameterList(statement->define->style);
             releaseStatementList(statement->define->body);
             free(statement->define);
             break;
         case STATEMENT_USE:
+            if (statement->use->name) free(statement->use->name);
             releaseParameterList(statement->use->parameters);
             free(statement->use);
             break;
@@ -102,6 +105,7 @@ void releaseStatement(Statement* statement) {
             releaseTable(statement);
             break;
         case STATEMENT_ORDERED_ITEM:
+            if (statement->ordered_item->number) free(statement->ordered_item->number);
             releaseStatement(statement->ordered_item->body);
             free(statement->ordered_item);
             break;

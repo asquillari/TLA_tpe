@@ -11,9 +11,10 @@ typedef enum {
 } SymbolType;
 
 typedef struct Symbol {
-    char          *name;      
+    char          *name;   
+    char          *ofFunction;   
     SymbolType     type;      
-    char          *value;     
+    char          *value;   
     struct Symbol *next;     
 } Symbol;
 
@@ -23,20 +24,22 @@ typedef struct SymbolTable {
 } SymbolTable;
 
 SymbolTable* createSymbolTable(void);
+
 void         destroySymbolTable(SymbolTable *table);
 
 Symbol*      symbolTableLookup(SymbolTable *table, const char *name);
-Symbol*      symbolTableInsert(SymbolTable *table, const char *name, SymbolType type, const char *initialValue);
+Symbol*      symbolTableInsert(SymbolTable *table, const char *name, const char *ofFunction, SymbolType type, const char *initialValue);
 
-bool         symbolTableSetValue(SymbolTable *table, const char *name, const char *value);
-bool         symbolTableGetValue(SymbolTable *table, const char *name, char **outValue);
+bool symbolTableSetValue(SymbolTable *table, const char *function, const char *value, int index);
 
-// *** PARA FUNCIONES ***
+bool symbolTableGetValue(SymbolTable *table, const char *name, char **outValue);
+
+// Nota: PARA FUNCIONES
 //todavia no se como lo implementariamos porque no deberiamos poder usar parameterlist desde aca
 //no se si quizas deberia estar todo junto y no separado por tipo de simbolo
-// bool         symbolTableInsertFunction(...);
-// ParameterList* symbolTableGetFunctionParams(...);
-// bool         symbolTableHasFunction(...);
+// bool         symbolTableInsertFunction(SymbolTable *table, const char *name, void *params);
+// void * symbolTableGetFunctionParams(SymbolTable *table, const char *name);
+// bool         symbolTableHasFunction(SymbolTable *table, const char *name);
 
 #endif // SYMBOL_TABLE_H
 

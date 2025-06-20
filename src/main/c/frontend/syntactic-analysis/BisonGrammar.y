@@ -101,7 +101,7 @@ define:
 
 
 maybe_parameters:
-      /* vacío */ { $$ = NULL; }
+      /* vacío */ { $$ = createParameterList(); }
     | parameters { $$ = $1; }
 ;
 
@@ -140,7 +140,7 @@ use:
 ;
 
 maybe_use:
-      /* vacío */ { $$ = NULL; }
+      /* vacío */ { $$ = createParameterList(); }
     | use_parameters { $$ = $1; }
 
 use_parameters:
@@ -249,9 +249,9 @@ text:
       HEADER_1 QUOTED_VALUE   { $$ = HeaderSemanticAction($2, 1); }
     | HEADER_2 QUOTED_VALUE   { $$ = HeaderSemanticAction($2, 2); }
     | HEADER_3 QUOTED_VALUE   { $$ = HeaderSemanticAction($2, 3); }
-    | HEADER_1 VARIABLE       { $$ = HeaderSemanticAction($2, 1); }
-    | HEADER_2 VARIABLE       { $$ = HeaderSemanticAction($2, 2); }
-    | HEADER_3 VARIABLE       { $$ = HeaderSemanticAction($2, 3); }
+    | HEADER_1 VARIABLE       { $$ = HeaderVariableSemanticAction(currentCompilerState(), $2, 1); }
+    | HEADER_2 VARIABLE       { $$ = HeaderVariableSemanticAction(currentCompilerState(), $2, 2); }
+    | HEADER_3 VARIABLE       { $$ = HeaderVariableSemanticAction(currentCompilerState(), $2, 3); }
     | QUOTED_VALUE            { $$ = ParagraphSemanticAction($1); }
     | VARIABLE                { $$ = ParagraphVariableSemanticAction(currentCompilerState(), $1); }
 ;
@@ -321,7 +321,7 @@ table_cell:
 
 ordered_list:
     LIST_BEGIN maybe_style ordered_list_items END {
-        $$ = OrderedListSemanticAction($2, $3);
+        $$ = OrderedListSemanticAction(currentCompilerState(), $2, $3);
     }
 ;
 

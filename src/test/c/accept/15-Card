@@ -1,10 +1,10 @@
 @card { background: red; border: rounded; }
-#{{title}}
-{{text}}
+#"title"
+"text"
 @end
 
 
 @card
-#{{title}}
-{{text}}
+#"title"
+"text"
 @end
