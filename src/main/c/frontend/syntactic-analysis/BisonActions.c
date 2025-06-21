@@ -225,8 +225,8 @@ Statement* UseSemanticAction(CompilerState *st, char* name, ParameterList* param
         parameters = createParameterList();
     }
 
-    int idx = 0;
-    for (Parameter* p = parameters->head; p; p = p->next, idx++) {
+    int idx = symbolTableGetParameterCount(st->symbolTable, name)-1;
+    for (Parameter* p = parameters->head; p; p = p->next, idx--) {
         bool ok = symbolTableSetValue(
             st->symbolTable,
             name,        

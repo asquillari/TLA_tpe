@@ -34,5 +34,7 @@ bool symbolTableSetValue(SymbolTable *table, const char *function, const char *v
 
 bool symbolTableGetValue(SymbolTable *table, const char *name, char **outValue);
 
+int symbolTableGetParameterCount(SymbolTable *table, const char *function);
+
 #endif // SYMBOL_TABLE_H
 

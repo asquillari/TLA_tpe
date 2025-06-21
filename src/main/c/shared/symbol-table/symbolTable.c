@@ -74,3 +74,15 @@ bool symbolTableGetValue(SymbolTable *table, const char *name, char **outValue) 
     *outValue = strdup(sym->value);
     return true;
 }
+
+int symbolTableGetParameterCount(SymbolTable *table, const char *function) {
+    if (!table || !function || strlen(function) == 0) return 0;
+
+    int count = 0;
+    for (Symbol *s = table->head; s; s = s->next) {
+        if (s->type == SYM_VAR && s->ofFunction && strcmp(s->ofFunction, function) == 0) {
+            count++;
+        }
+    }
+    return count;
+}

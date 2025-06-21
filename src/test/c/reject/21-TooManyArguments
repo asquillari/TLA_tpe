@@ -1,0 +1,7 @@
+@define bsimpleButton(texto)
+@button { background: blue; }
+{{text}}
+@end
+@end
+
+@use bsimpleButton("argument1", "argument2")
