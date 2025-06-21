@@ -1,6 +1,6 @@
 @row
   @column
-    Text in column 1
+    "Text in column 1"
   @end
   @column
-    Text in column 2
+    "Text in column 2"

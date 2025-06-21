@@ -1,4 +1,4 @@
 @define component
 @button { background: blue; }
-Text
+"Text"
 @end

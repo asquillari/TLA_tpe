@@ -1,5 +1,5 @@
-@define simpleButton(texto)
+@define simpleButton(text)
 @button 
-{{texto}}
+{{text}}
 @end
 @enddefine

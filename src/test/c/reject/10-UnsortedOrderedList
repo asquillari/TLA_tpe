@@ -1,6 +1,7 @@
 /*With Bison we are not going to accept an unordered list*/
 
 @list
-10. "Diez"
-9. "Nueve"
+10. "Ten"
+9. "Nine"
+8. "Eight"
 @end

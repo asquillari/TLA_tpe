@@ -1,4 +1,4 @@
-@define bsimpleButton(texto)
+@define bsimpleButton(text)
 @button { background: blue; }
 {{text}}
 @end
