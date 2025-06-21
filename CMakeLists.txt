@@ -69,7 +69,7 @@ add_executable(Compiler
 	src/main/c/shared/Logger.c
 	src/main/c/shared/ErrorManager.c
 	src/main/c/shared/String.c
-	src/main/c/shared/symbol-table/SymbolTable.c
+	src/main/c/shared/symbol-table/symbolTable.c
 	# Add more *.c files if needed (otherwise, they won't be compiled).
 	# ...
 )
