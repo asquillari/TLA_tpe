@@ -1,5 +1,6 @@
 %{
 #include "FlexActions.h"
+#include "../syntactic-analysis/SyntacticAnalyzer.h"
 #define ctx() createLexicalAnalyzerContext()
 %}
 
@@ -27,12 +28,19 @@
 <VARIABLE>[A-Za-z_][A-Za-z0-9_]*         { return VariableLexemeAction(ctx()); }
 <VARIABLE>"}}"                   { BEGIN(INITIAL); }
 
-"@define"                        { return TagLexemeAction(ctx(), DEFINE); }
+"@define"                        {
+                                    currentCompilerState()->inDefineBody = true;
+                                    return TagLexemeAction(ctx(), DEFINE);
+                                }
 "@use"                           { return TagLexemeAction(ctx(), USE); }
 "@form"                          { return TagLexemeAction(ctx(), FORM); }
 "@img"                           { return TagLexemeAction(ctx(), IMG); }
 "@row"                           { return TagLexemeAction(ctx(), ROW); }
 "@column"                        { return TagLexemeAction(ctx(), COLUMN); }
+"@enddefine"                     {
+                                    currentCompilerState()->inDefineBody = false;
+                                    return TagLexemeAction(ctx(), END_DEFINE);
+                                }
 "@end"                           { return TagLexemeAction(ctx(), END); }
 "@footer"                        { return TagLexemeAction(ctx(), FOOTER); }
 "@button"                        { return TagLexemeAction(ctx(), BUTTON); }

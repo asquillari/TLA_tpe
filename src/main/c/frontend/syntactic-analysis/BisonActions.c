@@ -65,7 +65,6 @@ ParameterList* createParameterList() {
 }
 
 void appendParameter(ParameterList* list, char* key, char* value) {
-    logDebugging(_logger, "Appending parameter: %s = %s", key ? key : "NULL", value ? value : "NULL");
     Parameter* param = calloc(1, sizeof(Parameter));
     param->key = key;
     param->value = value;
@@ -81,14 +80,12 @@ void appendParameter(ParameterList* list, char* key, char* value) {
     }
 }
 
-Statement* DefineSemanticAction(CompilerState *st,
-                                char* name,
-                                ParameterList* parameters,
-                                ParameterList* style,
-                                StatementList* body) {     
+Statement* DefineSemanticAction(CompilerState *st, char* name, ParameterList* parameters, ParameterList* style, StatementList* body){
+    _logSyntacticAnalyzerAction("DefineSemanticAction");
+    // El resto de tu lógica original…
     if (parameters == NULL) {
         parameters = createParameterList();
-    }                     
+    }
     if(symbolTableLookup(st->symbolTable, name) != NULL) {
         addAlreadyDefinedFunction(st->errorManager, name);
         st->succeed = false;
@@ -103,16 +100,16 @@ Statement* DefineSemanticAction(CompilerState *st,
         }
         symbolTableInsert(st->symbolTable, p->key, name, SYM_VAR, NULL);
     }
+    // …creación del nodo Define…
     Define* define = calloc(1, sizeof(Define));
-    define->name = name;
+    define->name       = name;
     define->parameters = parameters;
-    define->style = style;
-    define->body = body;
+    define->style      = style;
+    define->body       = body;
 
     Statement* stmt = calloc(1, sizeof(Statement));
-    stmt->type = STATEMENT_DEFINE;
+    stmt->type   = STATEMENT_DEFINE;
     stmt->define = define;
-
     return stmt;
 }
 
@@ -138,19 +135,35 @@ Statement* ParagraphSemanticAction(char* value) {
     return s;
 }
 
-Statement* ParagraphVariableSemanticAction(CompilerState* compilerState, char* variableName){
-    if(symbolTableLookup(compilerState->symbolTable, variableName) == NULL) {
-        useUndefinedVariable(compilerState->errorManager, variableName);
-        compilerState->succeed = false;
+Statement* ParagraphVariableSemanticAction(CompilerState* st, char* variableName) {
+    _logSyntacticAnalyzerAction("ParagraphVariableSemanticAction");
+
+    if (st->inDefineBody) {
+        Text* t = calloc(1, sizeof(Text));
+        t->content = variableName;
+        Statement* s = calloc(1, sizeof(Statement));
+        s->type = STATEMENT_PARAGRAPH;
+        s->text = t;
+        return s;
+    }
+
+    char *val = NULL;
+    if (!symbolTableGetValue(st->symbolTable, variableName, &val)) {
+        useUndefinedVariable(st->errorManager, variableName);
+        st->succeed = false;
         return NULL;
     }
+
     Text* t = calloc(1, sizeof(Text));
-    t->content = variableName;
+    t->content = val;   
     Statement* s = calloc(1, sizeof(Statement));
+    logDebugging(_logger, "ParagraphVariable: name=\"%s\" → value=\"%s\"", variableName, val);
     s->type = STATEMENT_PARAGRAPH;
     s->text = t;
     return s;
 }
+
+
 
 
 Statement* ImageSemanticAction(ParameterList* style, char* src, char* alt) {
@@ -199,9 +212,8 @@ Statement* CardSemanticAction(ParameterList* style, StatementList* body) {
     return stmt;
 }
 
-Statement* UseSemanticAction(CompilerState *st,
-                             char* name,
-                             ParameterList* parameters) {
+Statement* UseSemanticAction(CompilerState *st, char* name, ParameterList* parameters) {
+    _logSyntacticAnalyzerAction("UseSemanticAction");
     Symbol* funEntry = symbolTableLookup(st->symbolTable, name);
     if (!funEntry || funEntry->type != SYM_FUN) {
         useUndefinedFunction(st->errorManager, name);
@@ -438,13 +450,21 @@ Statement* BulletItemSemanticAction(char* bullet, Statement* body) {
     return stmt;
 }
 
-Statement* HeaderVariableSemanticAction(CompilerState* st,
-                                        char* variableName,
-                                        int level) {
-    if (symbolTableLookup(st->symbolTable, variableName) == NULL) {
+Statement* HeaderVariableSemanticAction(CompilerState* st, char* variableName, int level) {
+    _logSyntacticAnalyzerAction("HeaderVariableSemanticAction");
+
+    if (st->inDefineBody) {
+        return HeaderSemanticAction(variableName, level);
+    }
+
+    char *val = NULL;
+    if (!symbolTableGetValue(st->symbolTable, variableName, &val)) {
         useUndefinedVariable(st->errorManager, variableName);
         st->succeed = false;
         return NULL;
     }
-    return HeaderSemanticAction(variableName, level);
+
+    logDebugging(_logger, "HeaderVariable: name=\"%s\" → value=\"%s\"", variableName, val);
+    return HeaderSemanticAction(val, level);
 }
+

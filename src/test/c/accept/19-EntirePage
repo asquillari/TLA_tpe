@@ -6,7 +6,7 @@
 @button { background: blue; }
 "text"
 @end
-@end
+@enddefine
 
 @use simpleButton('Hello World!')
 
@@ -63,7 +63,7 @@
 @card { background: eee; border: rounded; }
 #"title"
 @end
-@end
+@enddefine
 
 @button { background: blue; }
 "text"

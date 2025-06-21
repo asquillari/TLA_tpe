@@ -2,6 +2,6 @@
 @button
 "Text without parameters"
 @end
-@end
+@enddefine
 
 @use noParameters

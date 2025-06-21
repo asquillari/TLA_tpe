@@ -34,12 +34,5 @@ bool symbolTableSetValue(SymbolTable *table, const char *function, const char *v
 
 bool symbolTableGetValue(SymbolTable *table, const char *name, char **outValue);
 
-// Nota: PARA FUNCIONES
-//todavia no se como lo implementariamos porque no deberiamos poder usar parameterlist desde aca
-//no se si quizas deberia estar todo junto y no separado por tipo de simbolo
-// bool         symbolTableInsertFunction(SymbolTable *table, const char *name, void *params);
-// void * symbolTableGetFunctionParams(SymbolTable *table, const char *name);
-// bool         symbolTableHasFunction(SymbolTable *table, const char *name);
-
 #endif // SYMBOL_TABLE_H
 

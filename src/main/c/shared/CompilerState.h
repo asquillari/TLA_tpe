@@ -24,6 +24,8 @@ typedef struct CompilerState{
 	// A flag that indicates the current state of the compilation so far.
 	boolean succeed;
 
+	bool inDefineBody;
+
 	SymbolTable * symbolTable;
 
 	// The computed value of the entire program (only for the calculator).

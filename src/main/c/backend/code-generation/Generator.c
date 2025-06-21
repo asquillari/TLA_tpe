@@ -1,5 +1,9 @@
 #include "Generator.h"
 
+#include "../../shared/symbol-table/symbolTable.h"
+
+static SymbolTable *_symbolTable = NULL;
+
 /* MODULE INTERNAL STATE */
 const char _indentationCharacter = ' ';
 const char _indentationSize = 4;
@@ -154,18 +158,47 @@ static void _generateStatement(unsigned indent, Statement *s) {
     switch (s->type) {
 		//podemos cambiar que style no aparezca vacio pero no me parece mal dejar como para que 
 		//lo complete el programador si quiere
-        case STATEMENT_HEADER1:
-			_output(indent, "<h1>%s</h1>", s->text->content);
+        case STATEMENT_HEADER1: {
+			const char *raw = s->text->content;
+			char *resolved = NULL;
+			if (symbolTableGetValue(_symbolTable, raw, &resolved)) {
+				_output(indent, "<h1>%s</h1>", resolved);
+			} else {
+				_output(indent, "<h1>%s</h1>", raw);
+			}
 			break;
-		case STATEMENT_HEADER2:
-			_output(indent, "<h2>%s</h2>", s->text->content);
+		}
+		case STATEMENT_HEADER2: {
+			const char *raw = s->text->content;
+			char *resolved = NULL;
+			if (symbolTableGetValue(_symbolTable, raw, &resolved)) {
+				_output(indent, "<h2>%s</h2>", resolved);
+			} else {
+				_output(indent, "<h2>%s</h2>", raw);
+			}
 			break;
-		case STATEMENT_HEADER3:
-			_output(indent, "<h3>%s</h3>", s->text->content);
+		}
+
+		case STATEMENT_HEADER3: {
+			const char *raw = s->text->content;
+			char *resolved = NULL;
+			if (symbolTableGetValue(_symbolTable, raw, &resolved)) {
+				_output(indent, "<h3>%s</h3>", resolved);
+			} else {
+				_output(indent, "<h3>%s</h3>", raw);
+			}
 			break;
-		case STATEMENT_PARAGRAPH:
-			_output(indent, "<p>%s</p>", s->text->content);
+		}
+		case STATEMENT_PARAGRAPH: {
+			const char *raw = s->text->content;
+			char *resolved = NULL;
+			if (symbolTableGetValue(_symbolTable, raw, &resolved)) {
+				_output(indent, "<p>%s</p>", resolved);
+			} else {
+				_output(indent, "<p>%s</p>", raw);
+			}
 			break;
+		}
 		case STATEMENT_IMAGE: {
 			char *styleStr = styleToString(s->image->style);
 			_output(indent,
@@ -330,30 +363,27 @@ static void _generateStatement(unsigned indent, Statement *s) {
 		}
 		case STATEMENT_USE: {
 			DefineStatementList *it = _defineStatementList;
-    		while (it) {
-        		if (strcmp(it->define->name, s->use->name) == 0) {
-            		if (it->define->parameters && s->use->parameters) {
-                		Parameter *p1 = it->define->parameters->head;
-                		Parameter *p2 = s->use->parameters->head;
-               			while (p1 && p2) {
-                    		if (!p1->key || !p2->key || strcmp(p1->key, p2->key) != 0 ||
-    								strcmp(p1->value, p2->value) != 0) {
-    							break;
-							}
-                    	p1 = p1->next;
-                    	p2 = p2->next;
-                 		}
-                		if (p1 != NULL || p2 != NULL) break; 
-            		}
-            		for (StatementList *stmt = it->define->body; stmt; stmt = stmt->next) {
-                		_generateStatement(indent, stmt->statement);
-            		}
-            		break;
-        		}
-        	it = it->next;
-    		}
-			
-    		break;
+			while (it) {
+				if (strcmp(it->define->name, s->use->name) == 0) {
+					Parameter *pDefine = it->define->parameters->head;
+					Parameter *pUse    = s->use->parameters->head;
+					while (pDefine && pUse) {
+						pDefine->value = pUse->value;
+						pDefine = pDefine->next;
+						pUse    = pUse->next;
+					}
+
+					for (StatementList *stmt = it->define->body;
+						stmt;
+						stmt = stmt->next)
+					{
+						_generateStatement(indent, stmt->statement);
+					}
+					break;
+				}
+				it = it->next;
+			}
+			break;
 		}
         default:
             logError(_logger, "Tipo de statement no soportado: %d", s->type);
@@ -431,6 +461,7 @@ static void _output(const unsigned int indentationLevel, const char * const form
 
 void generate(CompilerState * compilerState) {
 	logDebugging(_logger, "Generating final output...");
+	_symbolTable = compilerState->symbolTable;
 	_generatePrologue();
 	//si el arbol es nulo no hay nada que generar
 	//podemos tener un generador de codigo por cada tipo de nodo y hacerlo recursivo

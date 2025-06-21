@@ -22,7 +22,7 @@
     struct TableCellList* table_cell_list;
 }
 
-%token <token> DEFINE USE FORM IMG FOOTER ROW COLUMN NAV ITEM END BUTTON CARD LIST_BEGIN TABLE_BEGIN
+%token <token> DEFINE USE FORM IMG FOOTER ROW COLUMN NAV ITEM END END_DEFINE BUTTON CARD LIST_BEGIN TABLE_BEGIN
 %token <token> OPEN_PAREN CLOSE_PAREN OPEN_BRACE CLOSE_BRACE COLON COMMA OPEN_BRACKET CLOSE_BRACKET PIPE 
 %token <token> NEWLINE HEADER_1 HEADER_2 HEADER_3
 
@@ -34,7 +34,7 @@
 
 %type <program> program
 %type <statement> statement 
-%type <statement_list> statement_list content maybe_content column_list unordered_list_items ordered_list_items
+%type <statement_list> statement_list content maybe_content column_list unordered_list_items ordered_list_items 
 
 %type <parameter_list> style_parameters action_parameters
 %type <parameter_list> style_parameter_list identifier_list parameters use_parameters use_parameter_list
@@ -94,8 +94,10 @@ statement:
 ;
 
 define:
-    DEFINE IDENTIFIER maybe_parameters maybe_style statement_list END {
-        $$ = DefineSemanticAction(currentCompilerState(), $2, $3, $4, $5);
+    DEFINE IDENTIFIER maybe_parameters maybe_style statement_list END_DEFINE
+    {
+        $$ = DefineSemanticAction(
+                currentCompilerState(), $2, $3, $4, $5);
     }
 ;
 

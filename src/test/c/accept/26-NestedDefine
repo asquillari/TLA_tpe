@@ -2,12 +2,12 @@
 @button 
 "Button1" 
 @end 
-@end
 @define M2
 @button 
 "Button2" 
 @end 
-@end
+@enddefine
+@enddefine
 
 @use M1
 @use M2
