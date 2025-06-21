@@ -2,6 +2,6 @@
 @button { background: blue; }
 {{text}}
 @end
-@end
+@enddefine
 
-@use bsimpleButton("argument1", "argument2")
+@use bsimpleButton('argument1', 'argument2')

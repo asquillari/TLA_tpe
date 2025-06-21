@@ -10,6 +10,8 @@ static void printErrorUndifinedVariable(int errorNumber, ErrorNode* node);
 static void printErrorExistsVariable(int errorNumber, ErrorNode* node);
 static void printErrorUndifinedFunction(int errorNumber, ErrorNode* node);
 static void printErrorExistsFunction(int errorNumber, ErrorNode* node);
+static void printErrorTooManyArgs(int errNo, ErrorNode* node);
+static void printErrorTooFewArgs(int errNo, ErrorNode* node);
 
 ErrorManager * newErrorManager(){
     return calloc(1,sizeof(ErrorManager));
@@ -75,6 +77,16 @@ static void printErrorTooManyVariables(int errorNumber, ErrorNode* node){
 
 static void printInvalidOrderedListError(int errorNumber, ErrorNode* node){
     printf("[Error %i]: Invalid ordered list item: expected %s.\n", errorNumber, node->msg);
+    return;
+}
+
+static void printErrorTooManyArgs(int errNo, ErrorNode* node) {
+    printf ("[Error %d]: Too many arguments for function %s.\n", errNo, node->msg);
+    return;
+}
+
+static void printErrorTooFewArgs(int errNo, ErrorNode* node) {
+    printf( "[Error %d]: Too few arguments for function %s.\n", errNo, node->msg);
     return;
 }
 
@@ -146,3 +158,18 @@ void addInvalidOrderedListError(ErrorManager *em,
                  printInvalidOrderedListError);
 }
 
+void addTooManyArgumentsError(ErrorManager* em, const char* funcName, int declared, int passed) {
+    char buf[64];
+    snprintf(buf, sizeof(buf), "%s: expected %d args but got %d", funcName, declared, passed);
+    char* msg = malloc(strlen(buf)+1);
+    strcpy(msg, buf);
+    newErrorNode(em, TOO_MANY_ARGS, msg, printErrorTooManyArgs);
+}
+
+void addTooFewArgumentsError(ErrorManager* em, const char* funcName, int declared, int passed) {
+    char buf[64];
+    snprintf(buf, sizeof(buf), "%s: expected %d args but got %d", funcName, declared, passed);
+    char* msg = malloc(strlen(buf)+1);
+    strcpy(msg, buf);
+    newErrorNode(em, TOO_FEW_ARGS, msg, printErrorTooFewArgs);
+}

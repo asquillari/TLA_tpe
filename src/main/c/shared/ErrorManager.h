@@ -1,13 +1,16 @@
 #ifndef ERROR_MANAGER_H
 #define ERROR_MANAGER_H
 
+
 typedef enum ErrorType {
     UNDIFINED_VAR = 0,
-    ALREADY_DEFINED_VAR = 1,
-    UNDIFINED_FUNC = 2,
-    ALREADY_DEFINED_FUNC = 3,
-    OUT_OF_INDEX = 4,
-    INVALID_ORDERED_LIST_ITEM = 5
+    ALREADY_DEFINED_VAR,
+    UNDIFINED_FUNC,
+    ALREADY_DEFINED_FUNC,
+    OUT_OF_INDEX,
+    TOO_MANY_ARGS,        
+    TOO_FEW_ARGS,        
+    INVALID_ORDERED_LIST_ITEM
 } ErrorType;
 
 typedef struct ErrorNode {
@@ -36,5 +39,7 @@ void showErrors(ErrorManager* em);
 void freeErrorManager(ErrorManager* em);
 void useParameterIndexOutOfRange(ErrorManager* em, char* name, int idx);
 void addInvalidOrderedListError(ErrorManager *em, const char *numeroRecibido, int numeroEsperado);
+void addTooManyArgumentsError(ErrorManager* em, const char* funcName, int declared, int passed);
+void addTooFewArgumentsError(ErrorManager* em, const char* funcName, int declared, int passed);
 
 #endif

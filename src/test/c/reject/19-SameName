@@ -4,11 +4,11 @@
 @button { background: blue; }
 {{text}}
 @end
-@end
+@enddefine
 
 @define simpleButton(text)
 @button { background: blue; }
 {{text}} {{text}}
 @end
-@end
+@enddefine
 

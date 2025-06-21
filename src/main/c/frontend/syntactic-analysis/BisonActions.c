@@ -214,6 +214,7 @@ Statement* CardSemanticAction(ParameterList* style, StatementList* body) {
 
 Statement* UseSemanticAction(CompilerState *st, char* name, ParameterList* parameters) {
     _logSyntacticAnalyzerAction("UseSemanticAction");
+
     Symbol* funEntry = symbolTableLookup(st->symbolTable, name);
     if (!funEntry || funEntry->type != SYM_FUN) {
         useUndefinedFunction(st->errorManager, name);
@@ -221,17 +222,33 @@ Statement* UseSemanticAction(CompilerState *st, char* name, ParameterList* param
         return NULL;
     }
 
+    int declared = symbolTableGetParameterCount(st->symbolTable, name);
+    int passed = 0;
+    for (Parameter* p = parameters ? parameters->head : NULL; p; p = p->next) {
+        ++passed;
+    }
+
+    if (passed > declared) {
+        addTooManyArgumentsError(st->errorManager, name, declared, passed);
+        st->succeed = false;
+        return NULL;
+    }
+    if (passed < declared) {
+        addTooFewArgumentsError(st->errorManager, name, declared, passed);
+        st->succeed = false;
+        return NULL;
+    }
+
     if (!parameters) {
         parameters = createParameterList();
     }
-
-    int idx = symbolTableGetParameterCount(st->symbolTable, name)-1;
-    for (Parameter* p = parameters->head; p; p = p->next, idx--) {
+    int idx = 0;
+    for (Parameter* p = parameters->head; p; p = p->next, ++idx) {
         bool ok = symbolTableSetValue(
             st->symbolTable,
-            name,        
-            p->value,    
-            idx        
+            name,       
+            p->value,   
+            idx         
         );
         if (!ok) {
             useParameterIndexOutOfRange(
@@ -250,6 +267,7 @@ Statement* UseSemanticAction(CompilerState *st, char* name, ParameterList* param
     stmt->use  = use;
     return stmt;
 }
+
 
 FormItem* FormItemSemanticAction(char* label, char* placeholder) {
     FormItem* item = calloc(1, sizeof(FormItem));
