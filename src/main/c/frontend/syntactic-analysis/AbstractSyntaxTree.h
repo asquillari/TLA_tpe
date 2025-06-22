@@ -30,8 +30,6 @@ typedef struct TableCell TableCell;
 typedef struct TableRowList TableRowList;
 typedef struct TableCellList TableCellList;
 
-// Programa y lista de sentencias
-// -----------------------------
 struct Program {
     StatementList* statements;
 };
