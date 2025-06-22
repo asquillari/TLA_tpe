@@ -343,7 +343,17 @@ static void _generateStatement(unsigned indent, Statement *s) {
 			break;
 		}
 		case STATEMENT_ROW: {
-			char *styleStr = styleToString(s->row->style);
+			char *userStyle = styleToString(s->row->style);
+			size_t prefixLen = strlen("display:flex;");
+			size_t totalLen  = prefixLen + strlen(userStyle) + 1;
+			char *styleStr   = malloc(totalLen);
+			if (!styleStr) styleStr = strdup(userStyle);
+			else {
+			strcpy(styleStr, "display:flex;");
+			strcat(styleStr, userStyle);
+			}
+			free(userStyle);
+
 			_output(indent, "<div class=\"row\" style=\"%s\">", styleStr);
 			for (StatementList *it = s->row->columns; it; it = it->next) {
 				_generateStatement(indent+1, it->statement);
