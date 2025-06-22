@@ -31,57 +31,456 @@ static void _logSyntacticAnalyzerAction(const char * functionName) {
 
 /* PUBLIC FUNCTIONS */
 
-Constant * IntegerConstantSemanticAction(const int value) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Constant * constant = calloc(1, sizeof(Constant));
-	constant->value = value;
-	return constant;
-}
 
-Expression * ArithmeticExpressionSemanticAction(Expression * leftExpression, Expression * rightExpression, ExpressionType type) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Expression * expression = calloc(1, sizeof(Expression));
-	expression->leftExpression = leftExpression;
-	expression->rightExpression = rightExpression;
-	expression->type = type;
-	return expression;
-}
-
-Expression * FactorExpressionSemanticAction(Factor * factor) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Expression * expression = calloc(1, sizeof(Expression));
-	expression->factor = factor;
-	expression->type = FACTOR;
-	return expression;
-}
-
-Factor * ConstantFactorSemanticAction(Constant * constant) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Factor * factor = calloc(1, sizeof(Factor));
-	factor->constant = constant;
-	factor->type = CONSTANT;
-	return factor;
-}
-
-Factor * ExpressionFactorSemanticAction(Expression * expression) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Factor * factor = calloc(1, sizeof(Factor));
-	factor->expression = expression;
-	factor->type = EXPRESSION;
-	return factor;
-}
-
-Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Expression * expression) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Program * program = calloc(1, sizeof(Program));
-	program->expression = expression;
+Program* StatementSemanticAction(CompilerState* compilerState, StatementList* statements) {
+    Program * program = calloc(1, sizeof(Program));
+    program->statements = statements;
 	compilerState->abstractSyntaxtTree = program;
-	if (0 < flexCurrentContext()) {
-		logError(_logger, "The final context is not the default (0): %d", flexCurrentContext());
+	if(flexCurrentContext() != 0) {
+		logError(_logger, "The final context is not the default(0): %d", flexCurrentContext());
 		compilerState->succeed = false;
 	}
-	else {
-		compilerState->succeed = true;
-	}
-	return program;
+    return program;
 }
+
+StatementList* createSingleStatementList(Statement* stmt) {
+    StatementList* list = calloc(1, sizeof(StatementList));
+    list->statement = stmt;
+    list->next = NULL;
+    return list;
+}
+
+StatementList* appendStatementToList(StatementList* list, Statement* stmt) {
+    StatementList* head = list;
+    while (list->next != NULL) {
+        list = list->next;
+    }
+    list->next = createSingleStatementList(stmt);
+    return head;
+}
+
+ParameterList* createParameterList() {
+    ParameterList* list = calloc(1, sizeof(ParameterList));
+    return list;
+}
+
+void appendParameter(ParameterList* list, char* key, char* value) {
+    Parameter* param = calloc(1, sizeof(Parameter));
+    param->key = key;
+    param->value = value;
+    param->next = NULL;
+
+    if (list->head == NULL) {
+        list->head = param;
+    } else {
+        Parameter* current = list->head;
+        while (current->next != NULL)
+            current = current->next;
+        current->next = param;
+    }
+}
+
+Statement* DefineSemanticAction(CompilerState *st, char* name, ParameterList* parameters, ParameterList* style, StatementList* body){
+    _logSyntacticAnalyzerAction("DefineSemanticAction");
+    if (parameters == NULL) {
+        parameters = createParameterList();
+    }
+    if(symbolTableLookup(st->symbolTable, name) != NULL) {
+        addAlreadyDefinedFunction(st->errorManager, name);
+        st->succeed = false;
+        return NULL;
+    }
+    symbolTableInsert(st->symbolTable, name, NULL, SYM_FUN, NULL);
+    for(Parameter* p = parameters->head; p != NULL; p = p->next) {
+        if(symbolTableLookup(st->symbolTable, p->key) != NULL) {
+            addAlreadyDefinedFunction(st->errorManager, p->key);
+            st->succeed = false;
+            return NULL;
+        }
+        symbolTableInsert(st->symbolTable, p->key, name, SYM_VAR, NULL);
+    }
+    Define* define = calloc(1, sizeof(Define));
+    define->name       = name;
+    define->parameters = parameters;
+    define->style      = style;
+    define->body       = body;
+
+    Statement* stmt = calloc(1, sizeof(Statement));
+    stmt->type   = STATEMENT_DEFINE;
+    stmt->define = define;
+    return stmt;
+}
+
+Statement* HeaderSemanticAction(char* value, int level) {
+    Text* t = calloc(1, sizeof(Text));
+    t->content = value;
+    Statement* s = calloc(1, sizeof(Statement));
+    switch (level) {
+      case 1: s->type = STATEMENT_HEADER1; break;
+      case 2: s->type = STATEMENT_HEADER2; break;
+      case 3: s->type = STATEMENT_HEADER3; break;
+    }
+    s->text = t;
+    return s;
+}
+
+Statement* ParagraphSemanticAction(char* value) {
+    Text* t = calloc(1, sizeof(Text));
+    t->content = value;
+    Statement* s = calloc(1, sizeof(Statement));
+    s->type = STATEMENT_PARAGRAPH;
+    s->text = t;
+    return s;
+}
+
+Statement* ParagraphVariableSemanticAction(CompilerState* st, char* variableName) {
+    _logSyntacticAnalyzerAction("ParagraphVariableSemanticAction");
+
+    if (st->inDefineBody) {
+        Text* t = calloc(1, sizeof(Text));
+        t->content = variableName;
+        Statement* s = calloc(1, sizeof(Statement));
+        s->type = STATEMENT_PARAGRAPH;
+        s->text = t;
+        return s;
+    }
+
+    char *val = NULL;
+    if (!symbolTableGetValue(st->symbolTable, variableName, &val)) {
+        useUndefinedVariable(st->errorManager, variableName);
+        st->succeed = false;
+        return NULL;
+    }
+
+    Text* t = calloc(1, sizeof(Text));
+    t->content = val;   
+    Statement* s = calloc(1, sizeof(Statement));
+    logDebugging(_logger, "ParagraphVariable: name=\"%s\" → value=\"%s\"", variableName, val);
+    s->type = STATEMENT_PARAGRAPH;
+    s->text = t;
+    return s;
+}
+
+
+
+
+Statement* ImageSemanticAction(ParameterList* style, char* src, char* alt) {
+    Image* image = calloc(1, sizeof(Image));
+    image->style = style;
+    image->src = src;
+    image->alt = alt;
+
+    Statement* stmt = calloc(1, sizeof(Statement));
+    stmt->type = STATEMENT_IMAGE;
+    stmt->image = image;
+
+    return stmt;
+}
+
+Statement* ButtonSemanticAction(ParameterList* style, ParameterList* action, StatementList* body) {
+    for (StatementList *it = body; it; it = it->next) {
+        if (it->statement == NULL) {
+            return NULL;
+        }
+    }
+    Button* btn = calloc(1, sizeof(Button));
+    btn->style = style;
+    btn->action = action;
+    btn->body = body;
+
+    Statement* stmt = calloc(1, sizeof(Statement));
+    stmt->type = STATEMENT_BUTTON;
+    stmt->button = btn;
+    return stmt;
+}
+
+Statement* CardSemanticAction(ParameterList* style, StatementList* body) {
+    for (StatementList *it = body; it; it = it->next) {
+        if (it->statement == NULL) {
+            return NULL;
+        }
+    }
+    Card* card = calloc(1, sizeof(Card));
+    card->style = style;
+    card->body = body;
+
+    Statement* stmt = calloc(1, sizeof(Statement));
+    stmt->type = STATEMENT_CARD;
+    stmt->card = card;
+    return stmt;
+}
+
+Statement* UseSemanticAction(CompilerState *st, char* name, ParameterList* parameters) {
+    _logSyntacticAnalyzerAction("UseSemanticAction");
+
+    Symbol* funEntry = symbolTableLookup(st->symbolTable, name);
+    if (!funEntry || funEntry->type != SYM_FUN) {
+        useUndefinedFunction(st->errorManager, name);
+        st->succeed = false;
+        return NULL;
+    }
+
+    int declared = symbolTableGetParameterCount(st->symbolTable, name);
+    int passed = 0;
+    for (Parameter* p = parameters ? parameters->head : NULL; p; p = p->next) {
+        ++passed;
+    }
+
+    if (passed > declared) {
+        addTooManyArgumentsError(st->errorManager, name, declared, passed);
+        st->succeed = false;
+        return NULL;
+    }
+    if (passed < declared) {
+        addTooFewArgumentsError(st->errorManager, name, declared, passed);
+        st->succeed = false;
+        return NULL;
+    }
+
+    if (!parameters) {
+        parameters = createParameterList();
+    }
+    int idx = 0;
+    for (Parameter* p = parameters->head; p; p = p->next, ++idx) {
+        bool ok = symbolTableSetValue(
+            st->symbolTable,
+            name,       
+            p->value,   
+            idx         
+        );
+        if (!ok) {
+            useParameterIndexOutOfRange(
+                st->errorManager, name, idx
+            );
+            st->succeed = false;
+            return NULL;
+        }
+    }
+
+    Use* use = calloc(1, sizeof(Use));
+    use->name       = name;
+    use->parameters = parameters;
+    Statement* stmt = calloc(1, sizeof(Statement));
+    stmt->type = STATEMENT_USE;
+    stmt->use  = use;
+    return stmt;
+}
+
+
+FormItem* FormItemSemanticAction(char* label, char* placeholder) {
+    FormItem* item = calloc(1, sizeof(FormItem));
+    item->label = label;
+    item->placeholder = placeholder;
+    return item;
+}
+
+FormItem* appendFormItem(FormItem* list, FormItem* newItem) {
+    if (!list) return newItem;
+    FormItem* current = list;
+    while (current->next) current = current->next;
+    current->next = newItem;
+    return list;
+}
+
+Statement* FormSemanticAction(ParameterList* style, ParameterList* attrs, FormItem* items) {
+    Form* form = calloc(1, sizeof(Form));
+    form->style = style;
+    form->attributes = attrs;
+    form->items = items;
+
+    Statement* stmt = calloc(1, sizeof(Statement));
+    stmt->type = STATEMENT_FORM;
+    stmt->form = form;
+    return stmt;
+}
+NavItem* NavItemSemanticAction(char* label, char* link) {
+    NavItem* item = calloc(1, sizeof(NavItem));
+    item->label = label;
+    item->link = link;
+    return item;
+}
+
+NavItem* appendNavItem(NavItem* list, NavItem* newItem) {
+    if (!list) return newItem;
+    NavItem* current = list;
+    while (current->next) current = current->next;
+    current->next = newItem;
+    return list;
+}
+
+Statement* NavSemanticAction(ParameterList* style, ParameterList* attrs, NavItem* items) {
+    Nav* nav = calloc(1, sizeof(Nav));
+    nav->style = style;
+    nav->attributes = attrs;
+    nav->items = items;
+
+    Statement* stmt = calloc(1, sizeof(Statement));
+    stmt->type = STATEMENT_NAV;
+    stmt->nav = nav;
+    return stmt;
+}
+
+Statement* FooterSemanticAction(ParameterList* style, StatementList* body){
+    Footer* footer = calloc(1, sizeof(Footer));
+    footer->style = style;
+    footer->body = body;
+
+    Statement* stmt = calloc(1, sizeof(Statement));
+    stmt->type = STATEMENT_FOOTER;
+    stmt->footer = footer;
+
+    return stmt;
+}
+
+Statement* ColumnSemanticAction(ParameterList* style, StatementList* body) {
+    Column* col = calloc(1, sizeof(Column));
+    col->style = style;
+    col->body = body;
+
+    Statement* stmt = calloc(1, sizeof(Statement));
+    stmt->type = STATEMENT_COLUMN;
+    stmt->column = col;
+    return stmt;
+}
+
+Statement* RowSemanticAction(ParameterList* style, StatementList* columns) {
+    Row* row = calloc(1, sizeof(Row));
+    row->style = style;
+    row->columns = columns;
+
+    Statement* stmt = calloc(1, sizeof(Statement));
+    stmt->type = STATEMENT_ROW;
+    stmt->row = row;
+    return stmt;
+}
+
+Statement* TableSemanticAction(ParameterList* style, TableRowList* rows) {
+    Table* table = calloc(1, sizeof(Table));
+    table->style = style;
+    table->rows = rows;
+
+    Statement* stmt = calloc(1, sizeof(Statement));
+    stmt->type = STATEMENT_TABLE;
+    stmt->table = table;
+    return stmt;
+}
+TableRowList* SingleTableRowAction(TableRow* row) {
+    TableRowList* list = calloc(1, sizeof(TableRowList));
+    list->row = row;
+    list->next = NULL;
+    return list;
+}
+TableRowList* AppendTableRowAction(TableRowList* list, TableRow* row) {
+    TableRowList* current = list;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = calloc(1, sizeof(TableRowList));
+    current->next->row = row;
+    return list;
+}
+TableRow* TableRowSemanticAction(TableCellList* cells) {
+    TableRow* row = calloc(1, sizeof(TableRow));
+    row->cells = cells;
+    return row;
+}
+TableCellList* SingleTableCellAction(TableCell* cell) {
+    TableCellList* list = calloc(1, sizeof(TableCellList));
+    list->cell = cell;
+    list->next = NULL;
+    return list;
+}
+TableCellList* AppendTableCellAction(TableCellList* list, TableCell* cell) {
+    TableCellList* current = list;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = calloc(1, sizeof(TableCellList));
+    current->next->cell = cell;
+    return list;
+}
+TableCell* TableCellSemanticAction(StatementList* content) {
+    TableCell* cell = calloc(1, sizeof(TableCell));
+    cell->content = content;
+    return cell;
+}
+
+Statement* OrderedListSemanticAction(CompilerState* st ,ParameterList* style, StatementList* items) {
+    int expected = 1;
+    for (StatementList *it = items; it; it = it->next) {
+        Statement *s = it->statement;
+        if (!s || s->type != STATEMENT_ORDERED_ITEM) {
+            continue;
+        }
+        OrderedItem *oi = s->ordered_item;
+        int numero = atoi(oi->number);
+        if (numero != expected) {
+            addInvalidOrderedListError(st->errorManager,
+                                       oi->number, expected);
+            st->succeed = false;
+            return NULL;
+        }
+        expected++;
+    }
+
+    OrderedList *list = calloc(1, sizeof(OrderedList));
+    list->style = style;
+    list->items = items;
+
+    Statement *stmt = calloc(1, sizeof(Statement));
+    stmt->type = STATEMENT_ORDERED_LIST;
+    stmt->ordered_list = list;
+    return stmt;
+}
+
+Statement* OrderedItemSemanticAction(char* number, Statement* body) {
+    OrderedItem* item = calloc(1, sizeof(OrderedItem));
+    item->number = number;
+    item->body = body;
+
+    Statement* stmt = calloc(1, sizeof(Statement));
+    stmt->type = STATEMENT_ORDERED_ITEM;
+    stmt->ordered_item = item;
+    return stmt;
+}
+
+Statement* UnorderedListSemanticAction(ParameterList* style, StatementList* items) {
+    UnorderedList* list = calloc(1, sizeof(UnorderedList));
+    list->style = style;
+    list->items = items;
+
+    Statement* stmt = calloc(1, sizeof(Statement));
+    stmt->type = STATEMENT_UNORDERED_LIST;
+    stmt->unordered_list = list;
+    return stmt;
+}
+
+Statement* BulletItemSemanticAction(char* bullet, Statement* body) {
+    BulletItem* item = calloc(1, sizeof(BulletItem));
+    item->symbol = bullet;
+    item->body = body;
+
+    Statement* stmt = calloc(1, sizeof(Statement));
+    stmt->type = STATEMENT_BULLET_ITEM;
+    stmt->bullet_item = item;
+    return stmt;
+}
+
+Statement* HeaderVariableSemanticAction(CompilerState* st, char* variableName, int level) {
+    _logSyntacticAnalyzerAction("HeaderVariableSemanticAction");
+
+    if (st->inDefineBody) {
+        return HeaderSemanticAction(variableName, level);
+    }
+
+    char *val = NULL;
+    if (!symbolTableGetValue(st->symbolTable, variableName, &val)) {
+        useUndefinedVariable(st->errorManager, variableName);
+        st->succeed = false;
+        return NULL;
+    }
+
+    logDebugging(_logger, "HeaderVariable: name=\"%s\" → value=\"%s\"", variableName, val);
+    return HeaderSemanticAction(val, level);
+}
+

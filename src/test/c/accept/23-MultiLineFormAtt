@@ -1,0 +1,7 @@
+@form [
+  action: PUT;
+  method: /api/user;
+  enctype: multipart/form-data;
+]
+  @item('Photo', 'Select file')
+@end

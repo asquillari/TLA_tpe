@@ -1,0 +1,5 @@
+@nav{background: red;}
+    @item('Home', 'home.html')
+    @item('Services', 'services.html')
+    @item('Contact', 'contact.html')
+@end

@@ -10,6 +10,8 @@
 #include "LexicalAnalyzerContext.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+
 
 /** Initialize module's internal state. */
 void initializeFlexActionsModule();
@@ -25,10 +27,34 @@ void BeginMultilineCommentLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerC
 void EndMultilineCommentLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 void IgnoredLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 
-Token ArithmeticOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token);
-Token IntegerLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
-Token ParenthesisLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token);
-
 Token UnknownLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+
+Token TagLexemeAction(LexicalAnalyzerContext *ctx, Token token);
+
+Token VariableLexemeAction(LexicalAnalyzerContext * ctx);
+
+Token HeaderLexemeAction(LexicalAnalyzerContext * ctx, Token token);
+
+Token OrderedItemLexemeAction(LexicalAnalyzerContext * ctx);
+Token BulletLexemeAction(LexicalAnalyzerContext * ctx);
+
+Token StyleLexemeAction(LexicalAnalyzerContext * ctx, Token token);
+Token ActionLexemeAction(LexicalAnalyzerContext * ctx, Token token);
+
+Token ParenthesisLexemeAction(LexicalAnalyzerContext * ctx, Token token);
+Token ColonLexemeAction(LexicalAnalyzerContext * ctx);
+Token CommaLexemeAction(LexicalAnalyzerContext * ctx);
+Token EqualLexemeAction(LexicalAnalyzerContext * ctx);
+Token TableLexemeAction(LexicalAnalyzerContext * ctx, Token token);
+
+Token QuotedValueLexemeAction(LexicalAnalyzerContext * ctx);
+Token QuotedParameterValueLexemeAction(LexicalAnalyzerContext * ctx);
+
+Token IdentifierLexemeAction(LexicalAnalyzerContext * ctx);
+Token UnquotedValueLexemeAction(LexicalAnalyzerContext * ctx);
+
+Token NewlineLexemeAction(LexicalAnalyzerContext * ctx);
+
+Token ListLexemeAction(LexicalAnalyzerContext * ctx, char *text, Token token);
 
 #endif

@@ -1,0 +1,76 @@
+#"Title" 
+## "Subtitle" 
+## "Subtitle"
+
+@define simpleButton(text)
+@button { background: blue; }
+"text"
+@end
+@enddefine
+
+@use simpleButton('Hello World!')
+
+@form [ action: POST;  method: /api/submit; ]
+    @item('Name', 'Your name')
+    @item('Email', 'your@email.com')
+@end
+
+
+@row
+  @column{ width : 70%; }
+    "column 1"
+  @end
+
+  @column { width : 30%; }
+    "column 2"
+  @end
+@end
+
+
+@nav
+    @item('Home', 'home.html')
+    @item('Services','services.html')
+    @item('Contact', 'contact.html')
+@end
+
+
+
+@img('https://example.com/imagen.jpg','example image')
+
+@table
+| "Name "     | "Age" | "City" |
+| "Juan"        | "25"   | "Buenos Aires"|
+| "Maria"       | "30"   | "Cordoba"     |
+@end
+
+
+#"Ordered List Title"
+@list
+1. "First item"
+2. "Second item"
+3. "Third item"
+@end
+
+
+### "Unordered List Title"
+@list
+* "First item"
+* "Second item"
+* "Third item"
+@end
+
+@define downloadedCard(title)
+@card { background: eee; border: rounded; }
+#"title"
+@end
+@enddefine
+
+@button { background: blue; }
+"text"
+@end
+
+
+@card
+#"text"
+@end
+

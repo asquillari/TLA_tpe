@@ -1,0 +1,52 @@
+@define siteHeader(title)
+    @row
+        @column
+            #{{title}}
+        @end
+        @column { text-align: right; }
+            @nav { background: #444; }
+                @item("Inicio", "/")
+                @item("Sobre mí", "/sobre")
+                @item("Contacto", "/contacto")
+            @end
+        @end
+    @end
+@enddefine
+
+@define featureCard(heading, text)
+@row
+  @column
+    @img { width:150px; height:150px; } ("https://via.placeholder.com/150", "Feature")
+  @end
+  @column
+    #{{heading}}
+    {{text}}
+  @end
+@end
+@enddefine
+
+@define pageFooter
+@footer { background: #222; }
+  @row
+    @column
+      "2025 Mi Sitio Genial"
+    @end
+  @end
+@end
+@enddefine
+
+@use siteHeader("¡Bienvenido a Mi Sitio Genial!")
+
+@row { justify-content:center; }
+  @column
+    @use featureCard("Rápido y Ligero", "Nuestra app carga en menos de un segundo.")
+  @end
+  @column
+    @use featureCard("Diseño Moderno", "Interfaz limpia y fácil de usar.")
+  @end
+  @column
+    @use featureCard("Soporte 24/7", "Siempre estamos aquí para ayudarte.")
+  @end
+@end
+
+@use pageFooter

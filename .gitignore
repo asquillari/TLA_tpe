@@ -9,6 +9,7 @@
 /log/
 /node_modules/
 /obj/
+src/output/
 
 # Files.
 .DS_Store

@@ -1,0 +1,13 @@
+@row
+  /* comment inside @row */
+  @column{ width: 60%; }
+    "Col 1"
+    #"header 1"
+  @end
+  @column{ width: 40%; }
+    @list
+    * "Item A"
+    * "Item B"
+    @end
+  @end
+@end

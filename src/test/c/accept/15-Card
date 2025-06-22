@@ -1,0 +1,10 @@
+@card { background: red; border: rounded; }
+#"title"
+"text"
+@end
+
+
+@card
+#"title"
+"text"
+@end

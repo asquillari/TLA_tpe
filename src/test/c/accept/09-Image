@@ -1,0 +1,2 @@
+@img{ background: red; }('https://example.com/imagen.jpg', 'example image')
+@img('https://example.com/imagen.jpg', 'Ixample image')

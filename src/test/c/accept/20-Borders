@@ -1,0 +1,41 @@
+/* comment */
+/* 
+  Multiline comment 
+*/
+
+@form [ action: GET; ]
+@end
+
+@footer { color: gray; }
+"Footer"
+@end
+
+@card
+@end
+
+@button { background: blue; }
+"Click"
+@end
+
+@row { margin: 10px; }
+  @column { width: 50%; }
+    "Column text"
+  @end
+@end
+
+@nav
+  @item("Inicio", "index.html")
+@end
+
+@table { border: 1px; }
+| "Column 1" | "Column 2" |
+| "A"        | "B"    |
+@end
+
+@list
+1. "Item one"
+@end
+
+@list
+* "Bullet one"
+@end

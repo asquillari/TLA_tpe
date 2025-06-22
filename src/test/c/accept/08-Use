@@ -1,0 +1,10 @@
+@define navbar1(text)
+@nav
+    @item('Home', 'home.html')
+    @item('Service', 'services.html')
+    @item('Contact', 'contact.html')
+@end
+{{text}}
+@enddefine
+
+@use navbar1('This is a navbar')

@@ -1,0 +1,14 @@
+/*With Bison we are not going to accept two defines with the same id*/
+
+@define bsimpleButton(text)
+@button { background: blue; }
+{{text}}
+@end
+@enddefine
+
+@define simpleButton(text)
+@button { background: blue; }
+{{text}} {{text}}
+@end
+@enddefine
+

@@ -16,11 +16,9 @@ if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
 	message(NOTICE "The C compiler is GCC.")
 
 	# Options for GCC.
-	add_compile_options(-fsanitize=address)
 	add_compile_options(-O3)
 	add_compile_options(-static-libgcc)
 	add_compile_options(-std=gnu99)
-	add_link_options(-fsanitize=address)
 
 	# Compiles the scanner with Flex.
 	add_custom_command(
@@ -56,7 +54,6 @@ endif ()
 # The header files (*.h extension), are automatically included from the source-codes.
 add_executable(Compiler
 	src/main/c/backend/code-generation/Generator.c
-	src/main/c/backend/domain-specific/Calculator.c
 	src/main/c/EntryPoint.c
 	src/main/c/frontend/lexical-analysis/FlexActions.c
 	src/main/c/frontend/lexical-analysis/FlexScanner.c
@@ -67,7 +64,9 @@ add_executable(Compiler
 	src/main/c/frontend/syntactic-analysis/SyntacticAnalyzer.c
 	src/main/c/shared/Environment.c
 	src/main/c/shared/Logger.c
+	src/main/c/shared/ErrorManager.c
 	src/main/c/shared/String.c
+	src/main/c/shared/symbol-table/symbolTable.c
 	# Add more *.c files if needed (otherwise, they won't be compiled).
 	# ...
 )

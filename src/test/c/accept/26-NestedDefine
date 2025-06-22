@@ -1,0 +1,13 @@
+@define M1
+@button 
+"Button1" 
+@end 
+@define M2
+@button 
+"Button2" 
+@end 
+@enddefine
+@enddefine
+
+@use M1
+@use M2

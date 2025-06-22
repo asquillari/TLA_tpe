@@ -1,0 +1,4 @@
+@define empty
+@button { color: red; }
+@end
+@enddefine

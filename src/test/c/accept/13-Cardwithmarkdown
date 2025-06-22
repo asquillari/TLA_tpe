@@ -1,0 +1,8 @@
+@define downloadedCard(title, text)
+@card { background: red; border: rounded; }
+#{{title}}
+{{text}}
+@end
+@enddefine
+
+@use downloadedCard('#Welcome', '##Thank you for visiting our site.')

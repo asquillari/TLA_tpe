@@ -1,0 +1,4 @@
+@list { background: red; }
+1. "A"
+2. "B"
+@end

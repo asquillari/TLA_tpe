@@ -22,6 +22,7 @@ Set the following environment variables to control and configure the behaviour o
 |-|:-:|-|
 |`LOG_IGNORED_LEXEMES`|`true`|When `true`, logs all of the ignored lexemes found with Flex at DEBUGGING level. To remove those logs from the console output set it to `false`.|
 |`LOGGING_LEVEL`|`INFORMATION`|The minimum level to log in the console output. From lower to higher, the available levels are: `ALL`, `DEBUGGING`, `INFORMATION`, `WARNING`, `ERROR` and `CRITICAL`.|
+|`OUTPUT_FILE`|`output.html`|Name of the file where the generator writes its output. Always placed in `src/output/`.|
 
 ## CI/CD
 
