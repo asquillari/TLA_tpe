@@ -35,15 +35,9 @@ Statement* ButtonSemanticAction(ParameterList* style, ParameterList* action, Sta
 
 Statement* CardSemanticAction(ParameterList* style, StatementList* body);
 
-Statement* DefineSemanticAction(CompilerState *st,
-                                char* name,
-                                ParameterList* parameters,
-                                ParameterList* style,
-                                StatementList* body);
+Statement* DefineSemanticAction(CompilerState *st, char* name, ParameterList* parameters, ParameterList* style, StatementList* body);
 
-Statement* UseSemanticAction(CompilerState *st,
-                             char* name,
-                             ParameterList* parameters);
+Statement* UseSemanticAction(CompilerState *st, char* name, ParameterList* parameters);
 
 
 FormItem* FormItemSemanticAction(char* label, char* placeholder);

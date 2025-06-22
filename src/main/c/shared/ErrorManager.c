@@ -142,9 +142,7 @@ void useParameterIndexOutOfRange(ErrorManager* em, char* name, int idx){
     newErrorManager(em, OUT_OF_INDEX, ms, printErrorTooManyVariables);
 }
 
-void addInvalidOrderedListError(ErrorManager *em,
-                                const char *numeroRecibido,
-                                int numeroEsperado) {
+void addInvalidOrderedListError(ErrorManager *em, const char *numeroRecibido, int numeroEsperado) {
     char buf[16];
     snprintf(buf, sizeof(buf), "%d", numeroEsperado);
 

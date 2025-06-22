@@ -35,8 +35,6 @@ void releaseStatementList(StatementList* list) {
 
 void releaseStatement(Statement* statement) {
 	if (statement == NULL) return;
-    //seguro hay que ajustar los frees si es que hacemos el strdup para id y demas
-	//para ajustar bien hay que ver cuales son char en el .h
     switch (statement->type) {
 		case STATEMENT_PARAGRAPH:
         case STATEMENT_HEADER1:

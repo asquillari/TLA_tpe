@@ -1,4 +1,3 @@
-// symbolTable.h
 #ifndef SYMBOL_TABLE_H
 #define SYMBOL_TABLE_H
 
@@ -18,7 +17,6 @@ typedef struct Symbol {
     struct Symbol *next;     
 } Symbol;
 
-// por ahora lo dejamos como una lista, quizas no es escalable y haya que cambiarlo
 typedef struct SymbolTable {
     Symbol *head;
 } SymbolTable;

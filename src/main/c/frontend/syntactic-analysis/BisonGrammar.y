@@ -209,7 +209,7 @@ column_list:
 ;
 
 column:
-    COLUMN style_parameters statement_list END {
+    COLUMN maybe_style statement_list END {
         $$ = ColumnSemanticAction($2, $3);
     }
 ;

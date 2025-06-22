@@ -44,10 +44,7 @@ Symbol* symbolTableInsert(SymbolTable *table, const char *name, const char *ofFu
     return sym;
 }
 
-bool symbolTableSetValue(SymbolTable *table,
-                         const char *function,
-                         const char *value,
-                         int index) {
+bool symbolTableSetValue(SymbolTable *table, const char *function, const char *value, int index) {
     if (!table || !function || strlen(function) == 0)
         return false;
 

@@ -82,7 +82,6 @@ void appendParameter(ParameterList* list, char* key, char* value) {
 
 Statement* DefineSemanticAction(CompilerState *st, char* name, ParameterList* parameters, ParameterList* style, StatementList* body){
     _logSyntacticAnalyzerAction("DefineSemanticAction");
-    // El resto de tu lógica original…
     if (parameters == NULL) {
         parameters = createParameterList();
     }
@@ -100,7 +99,6 @@ Statement* DefineSemanticAction(CompilerState *st, char* name, ParameterList* pa
         }
         symbolTableInsert(st->symbolTable, p->key, name, SYM_VAR, NULL);
     }
-    // …creación del nodo Define…
     Define* define = calloc(1, sizeof(Define));
     define->name       = name;
     define->parameters = parameters;

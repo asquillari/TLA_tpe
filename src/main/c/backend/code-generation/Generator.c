@@ -35,8 +35,6 @@ static void _freeStatementList(StatementList *list) {
     while (list) {
         StatementList *next = list->next;
         if (list->statement) {
-            // Si tenés una función para liberar statements según tipo, usala acá.
-            // Por simplicidad, se asume solo se hace free del statement.
             free(list->statement);
         }
         free(list);
@@ -90,12 +88,12 @@ static void _output(const unsigned int indentationLevel, const char * const form
 static void _generateStatement(unsigned indent, Statement *s);
 static char * styleToString(ParameterList *style);
 static char * attributesToString(ParameterList *attrs);
+static const char* lookupLocalParam(const char *key);
 
 /**
  * Creates the epilogue of the generated output, that is, the final lines that
  * completes a valid Latex document.
  */
-//no se si necesitamos agregar algo al final, para html
 static void _generateEpilogue(void) {
     _output(0,
       "</body>\n"
@@ -151,52 +149,77 @@ static char * attributesToString(ParameterList *attrs) {
 }
 
 
+static ParameterList * _currentParams = NULL;
+
+static const char* lookupLocalParam(const char *key) {
+    for (Parameter *p = _currentParams ? _currentParams->head : NULL; p; p = p->next) {
+        if (p->key && strcmp(p->key, key) == 0 && p->value) {
+            return p->value;
+        }
+    }
+    return NULL;
+}
+
+
 static void _generateStatement(unsigned indent, Statement *s) {
 	if(!s){
 		return;
 	}
     switch (s->type) {
-		//podemos cambiar que style no aparezca vacio pero no me parece mal dejar como para que 
-		//lo complete el programador si quiere
         case STATEMENT_HEADER1: {
 			const char *raw = s->text->content;
-			char *resolved = NULL;
-			if (symbolTableGetValue(_symbolTable, raw, &resolved)) {
-				_output(indent, "<h1>%s</h1>", resolved);
-			} else {
-				_output(indent, "<h1>%s</h1>", raw);
+			const char *val = lookupLocalParam(raw);
+			if (!val) {
+				char *resolved = NULL;
+				if (symbolTableGetValue(_symbolTable, raw, &resolved)) {
+					val = resolved;
+				} else {
+					val = raw;
+				}
 			}
+			_output(indent, "<h1>%s</h1>", val);
 			break;
 		}
 		case STATEMENT_HEADER2: {
 			const char *raw = s->text->content;
-			char *resolved = NULL;
-			if (symbolTableGetValue(_symbolTable, raw, &resolved)) {
-				_output(indent, "<h2>%s</h2>", resolved);
-			} else {
-				_output(indent, "<h2>%s</h2>", raw);
+			const char *val = lookupLocalParam(raw);
+			if (!val) {
+				char *resolved = NULL;
+				if (symbolTableGetValue(_symbolTable, raw, &resolved)) {
+					val = resolved;
+				} else {
+					val = raw;
+				}
 			}
+			_output(indent, "<h2>%s</h2>", val);
 			break;
 		}
-
 		case STATEMENT_HEADER3: {
 			const char *raw = s->text->content;
-			char *resolved = NULL;
-			if (symbolTableGetValue(_symbolTable, raw, &resolved)) {
-				_output(indent, "<h3>%s</h3>", resolved);
-			} else {
-				_output(indent, "<h3>%s</h3>", raw);
+			const char *val = lookupLocalParam(raw);
+			if (!val) {
+				char *resolved = NULL;
+				if (symbolTableGetValue(_symbolTable, raw, &resolved)) {
+					val = resolved;
+				} else {
+					val = raw;
+				}
 			}
+			_output(indent, "<h3>%s</h3>", val);
 			break;
 		}
 		case STATEMENT_PARAGRAPH: {
 			const char *raw = s->text->content;
-			char *resolved = NULL;
-			if (symbolTableGetValue(_symbolTable, raw, &resolved)) {
-				_output(indent, "<p>%s</p>", resolved);
-			} else {
-				_output(indent, "<p>%s</p>", raw);
+			const char *val = lookupLocalParam(raw);
+			if (!val) {
+				char *resolved = NULL;
+				if (symbolTableGetValue(_symbolTable, raw, &resolved)) {
+					val = resolved;
+				} else {
+					val = raw;
+				}
 			}
+			_output(indent, "<p>%s</p>", val);
 			break;
 		}
 		case STATEMENT_IMAGE: {
@@ -364,24 +387,25 @@ static void _generateStatement(unsigned indent, Statement *s) {
 		case STATEMENT_USE: {
 			DefineStatementList *it = _defineStatementList;
 			while (it) {
-				if (strcmp(it->define->name, s->use->name) == 0) {
-					Parameter *pDefine = it->define->parameters->head;
-					Parameter *pUse    = s->use->parameters->head;
-					while (pDefine && pUse) {
-						pDefine->value = pUse->value;
-						pDefine = pDefine->next;
-						pUse    = pUse->next;
-					}
-
-					for (StatementList *stmt = it->define->body;
-						stmt;
-						stmt = stmt->next)
-					{
-						_generateStatement(indent, stmt->statement);
-					}
-					break;
+			if (strcmp(it->define->name, s->use->name) == 0) {
+				Parameter *pDef = it->define->parameters->head;
+				Parameter *pUse = s->use->parameters->head;
+				while (pDef && pUse) {
+				pDef->value = pUse->value;
+				pDef = pDef->next;
+				pUse = pUse->next;
 				}
-				it = it->next;
+				ParameterList *oldCtx = _currentParams;
+				_currentParams = it->define->parameters;
+
+				for (StatementList *stmt = it->define->body; stmt; stmt = stmt->next) {
+				_generateStatement(indent, stmt->statement);
+				}
+
+				_currentParams = oldCtx;
+				break;
+			}
+			it = it->next;
 			}
 			break;
 		}
@@ -395,7 +419,6 @@ static void _generateStatement(unsigned indent, Statement *s) {
 /**
  * Generates the output of the program.
  */
-//en el caso del ejemplo el programa solo arranca una expresion
 static void _generateProgram(Program *program) {
     for (StatementList *it = program->statements; it; it = it->next) {
 		if(it->statement){
@@ -410,15 +433,13 @@ static void _generateProgram(Program *program) {
  *
  * @see https://ctan.dcc.uchile.cl/graphics/pgf/contrib/forest/forest-doc.pdf
  */
-// esto es lo que se genera al principio del archivo, el prologo
-//tendriamos que poner lo de doctype ponele
 static void _generatePrologue(void) {
     _output(0,
       "<!DOCTYPE html>\n"
       "<html lang=\"en\">\n"
       "<head>\n"
       "  <meta charset=\"UTF-8\">\n"
-      "  <title>Salida TP</title>\n"
+      "  <title>Output</title>\n"
       "</head>\n"
       "<body>"
     );
@@ -427,7 +448,6 @@ static void _generatePrologue(void) {
 /**
  * Generates an indentation string for the specified level.
  */
-//lo hace mas lindo, para html sirve para que se vea mejor
 static char * _indentation(const unsigned int level) {
 	return indentation(_indentationCharacter, level, _indentationSize);
 }
@@ -437,9 +457,6 @@ static char * _indentation(const unsigned int level) {
  * allows to see the output even close to a failure, because it drops the
  * buffering.
  */
-//esto hay que modificar si queres cambiar el tipo de salida, por ejemplo a un archivo
-//el generador deberia quedar transparente al tipo de salida, por eso es importante
-//que la salida la maneje output
 static void _output(const unsigned int indentationLevel, const char * const format, ...) {
     va_list args;
     va_start(args, format);
@@ -463,10 +480,6 @@ void generate(CompilerState * compilerState) {
 	logDebugging(_logger, "Generating final output...");
 	_symbolTable = compilerState->symbolTable;
 	_generatePrologue();
-	//si el arbol es nulo no hay nada que generar
-	//podemos tener un generador de codigo por cada tipo de nodo y hacerlo recursivo
-	//nos enfoocamos en cada nodo, arrancamos con el nodo raiz y vamos bajando
-	//no si o si tiene que ser recursivo, pero es una buena forma de hacerlo
 	_generateProgram(compilerState->abstractSyntaxtTree);
 	_generateEpilogue();
 	logDebugging(_logger, "Generation is done.");
